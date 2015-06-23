@@ -666,7 +666,7 @@ int Effect::saveEffect(char* filepath)
 			element->InsertEndChild(physic);
 
 			temp = doc.NewElement("BackToSource");
-			temp->SetText(emitter->getPhysicAttBacktoSource());
+			temp->SetText(emitter->getPhysicAttUseLocalCoordinates());
 			physic->InsertEndChild(temp);
 		}
 		else if (emitter->getPhysicSwarmCircleMotion()){

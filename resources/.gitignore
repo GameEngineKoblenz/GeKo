@@ -1,6 +1,7 @@
 *.png
 *.bmp
 *.jpg
+*.tif
 *.obj
 *.max
 *.mtl
@@ -10,5 +11,10 @@
 *.ply
 *.zip
 *.rar
+*.wav
+*.mp3
+*.aac
+*.flac
+*.wma
 Thumbs.db
 cubeMap/readme.txt

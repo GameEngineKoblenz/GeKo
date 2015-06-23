@@ -42,7 +42,7 @@ int main()
 	//cam.setFOV(50);
 	//cam.setNearFar(1, 100);
 
-	Window testWindow(500, 50, 800, 600, "testWindow");
+	Window testWindow(500, 50, 800, 600, "ParticleSystem");
 	glfwMakeContextCurrent(testWindow.getWindow());
 
 	// Callback
@@ -50,6 +50,7 @@ int main()
 
 	cam.setKeySpeed(4.0);
 	cam.setNearFar(0.1, 100);
+	cam.setPosition(glm::vec4(0, 0, 8, 0));
 
 	glewInit();
 
@@ -193,10 +194,12 @@ int main()
 	ParticleSystem* psSmokeWhite = new ParticleSystem(glm::vec3(2, 0, 3), efSmWhi);
 	//ParticleSystem* psSmokeWhite = new ParticleSystem(glm::vec3(2, 0, 3), RESOURCES_PATH "/XML/Effect_SmokeWhite.xml");
 
-	ParticleSystem* psFireworkRed = new ParticleSystem(glm::vec3(-3, -1, 5), RESOURCES_PATH "/XML/Effect_FireworkRed.xml");
-	ParticleSystem* psFireworkBlue = new ParticleSystem(glm::vec3(-1, -1, 5), RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
-	ParticleSystem* psFireworkGreen = new ParticleSystem(glm::vec3(1, -1, 5), RESOURCES_PATH "/XML/Effect_FireworkGreen.xml");
-	ParticleSystem* psFireworkGold = new ParticleSystem(glm::vec3(3, -1, 5), RESOURCES_PATH "/XML/Effect_FireworkGold.xml");
+	ParticleSystem* psFireworkRed = new ParticleSystem(glm::vec3(-6, -1, -3), RESOURCES_PATH "/XML/Effect_FireworkRed.xml");
+	ParticleSystem* psFireworkBlue = new ParticleSystem(glm::vec3(-2, -1, -3), RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
+	ParticleSystem* psFireworkGreen = new ParticleSystem(glm::vec3(2, -1, -3), RESOURCES_PATH "/XML/Effect_FireworkGreen.xml");
+	ParticleSystem* psFireworkGold = new ParticleSystem(glm::vec3(6, -1, -3), RESOURCES_PATH "/XML/Effect_FireworkGold.xml");
+
+	ParticleSystem* psComicCloud = new ParticleSystem(glm::vec3(0, -1, 3), RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
 
 
 	//////////////////////Node//////////////////////
@@ -289,11 +292,18 @@ int main()
 	testScene.getScenegraph()->addParticleSystem(psFireworkRed);
 	testScene.getScenegraph()->addParticleSystem(psFireworkGreen);
 	testScene.getScenegraph()->addParticleSystem(psFireworkGold);
+	//testScene.getScenegraph()->addParticleSystem(psComicCloud);
 
-	//TEST
-	/*ParticleSystem* psComicCloud = new ParticleSystem(glm::vec3(0, -1, 4), RESOURCES_PATH "/XML/ComicCloudEffect - Kopie.xml");
-	testScene.getScenegraph()->addParticleSystem(psComicCloud);
-	psComicCloud->start();*/
+	////TEST
+	//Emitter* etest = new Emitter(0, glm::vec3(0, 0, 0), 0, 1, 1000000, 1, true);
+	//etest->setVelocity(6);
+	//etest->usePhysicPointGravity(glm::vec3(0, 0, 0), 0.5, 20, 1, -2.5, true);
+	//etest->defineLook(false, 0.005);
+	//Effect* eftest = new Effect();
+	//eftest->addEmitter(etest);
+	//ParticleSystem* pstest = new ParticleSystem(glm::vec3(0, 2, 0), eftest);
+	//testScene.getScenegraph()->addParticleSystem(pstest);
+	//pstest->start();
 
 
 	//start the ParticleSystems
@@ -305,6 +315,7 @@ int main()
 	psFireworkBlue->start();
 	psFireworkGreen->start();
 	psFireworkGold->start();
+	//psComicCloud->start();
 
 	double startTime = glfwGetTime();
 	
@@ -323,7 +334,8 @@ int main()
 			lastTime += 1.0;
 		}
 
-		cam.setSensitivity(glfwGetTime() - startTime);
+		double dt = glfwGetTime() - startTime;
+		cam.setSensitivity(dt);
 		startTime = glfwGetTime();
 
 		/*glEnable(GL_DEPTH);
@@ -344,16 +356,16 @@ int main()
 
 		//update Positions of firework ParticleSystems
 		glm::vec3 pos = psFireworkRed->getPosition();
-		psFireworkRed->setPosition(glm::vec3(pos.x, pos.y + (glfwGetTime() - startTime), pos.z));
+		psFireworkRed->setPosition(glm::vec3(pos.x, pos.y + (2 * dt), pos.z));
 		
 		pos = psFireworkBlue->getPosition();
-		psFireworkBlue->setPosition(glm::vec3(pos.x, pos.y + (glfwGetTime() - startTime), pos.z));
+		psFireworkBlue->setPosition(glm::vec3(pos.x, pos.y + (2 * dt), pos.z));
 		
 		pos = psFireworkGreen->getPosition();
-		psFireworkGreen->setPosition(glm::vec3(pos.x, pos.y + (glfwGetTime() - startTime), pos.z));
+		psFireworkGreen->setPosition(glm::vec3(pos.x, pos.y + (2 * dt), pos.z));
 		
 		pos = psFireworkGold->getPosition();
-		psFireworkGold->setPosition(glm::vec3(pos.x, pos.y + (glfwGetTime() - startTime), pos.z));
+		psFireworkGold->setPosition(glm::vec3(pos.x, pos.y + (2 * dt), pos.z));
 
 
 		/*glfwSwapBuffers(testWindow.getWindow());

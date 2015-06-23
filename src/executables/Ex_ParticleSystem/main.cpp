@@ -37,7 +37,7 @@ void initGUI()
 
 	GuiElement::Header *moveableParticleHeader = new GuiElement::Header("Weather");
 
-	useSnowButton = new GuiElement::Checkbox("Snow");
+	useSnowButton = new GuiElement::Checkbox("Firework");
 	moveableParticleHeader->addElement(useSnowButton);
 	moveableParticleHeader->addElement(new GuiElement::Spacing);
 	
@@ -98,15 +98,15 @@ int main()
 
 
 	//new
-	Window window(500, 50, 1280, 720, "testWindow");
+	Window window(500, 50, 800, 600, "ParticleSystem");
 	glfwMakeContextCurrent(window.getWindow());
 
 	// Callback
 	glfwSetKeyCallback(window.getWindow(), key_callback);
 
-	cam.setKeySpeed(7.0);
+	cam.setKeySpeed(4.0);
 	cam.setNearFar(0.1, 100);
-	cam.setPosition(glm::vec4(-21, 0, 5, 0));
+	cam.setPosition(glm::vec4(-13, 0, 5, 0));
 
 	glewInit();
 
@@ -167,13 +167,13 @@ int main()
 	wallNode1.addTexture(&marble);
 	wallNode1.setModelMatrix(glm::translate(wallNode1.getModelMatrix(), glm::vec3(0.0, -1.0, 1.0)));
 	wallNode1.setModelMatrix(glm::rotate(wallNode1.getModelMatrix(), 90.0f, glm::vec3(1.0, 0.0, 0.0)));
-	wallNode1.setModelMatrix(glm::scale(wallNode1.getModelMatrix(), glm::vec3(25.0, 1.0, 1.0)));
+	wallNode1.setModelMatrix(glm::scale(wallNode1.getModelMatrix(), glm::vec3(15.0, 1.0, 1.0)));
 
 	Node wallNode2("wall2");
 	wallNode2.addGeometry(&plane);
 	wallNode2.addTexture(&bricks);
 	wallNode2.setModelMatrix(glm::translate(wallNode2.getModelMatrix(), glm::vec3(0.0, 0.0, 0.0)));
-	wallNode2.setModelMatrix(glm::scale(wallNode2.getModelMatrix(), glm::vec3(25.0, 1.0, 1.0)));
+	wallNode2.setModelMatrix(glm::scale(wallNode2.getModelMatrix(), glm::vec3(15.0, 1.0, 1.0)));
 
 	//CREATING A SCENEGRAPH
 	psScene.getScenegraph()->getRootNode()->addChildrenNode(&wallNode1);
@@ -603,66 +603,67 @@ int main()
 	psScene.getScenegraph()->addParticleSystem(psSnowStrong);
 	//psSnow->start();
 
-	ParticleSystem* psSmokeBlack = new ParticleSystem(glm::vec3(-5, -0.5, 1), RESOURCES_PATH "/XML/Effect_SmokeBlack.xml");
+	ParticleSystem* psSmokeBlack = new ParticleSystem(glm::vec3(3, -0.5, 1), RESOURCES_PATH "/XML/Effect_SmokeBlack.xml");
 	psScene.getScenegraph()->addParticleSystem(psSmokeBlack);
 	psSmokeBlack->start();
 	
-	ParticleSystem* psSmokeWhite = new ParticleSystem(glm::vec3(-2, -0.5, 1), RESOURCES_PATH "/XML/Effect_SmokeWhite.xml");
+	ParticleSystem* psSmokeWhite = new ParticleSystem(glm::vec3(6, -0.5, 1), RESOURCES_PATH "/XML/Effect_SmokeWhite.xml");
 	psScene.getScenegraph()->addParticleSystem(psSmokeWhite);
 	psSmokeWhite->start();
 
-	ParticleSystem* psSmokeCloud = new ParticleSystem(glm::vec3(1, -0.5, 1), RESOURCES_PATH "/XML/Effect_SmokeCloud.xml");
+	ParticleSystem* psSmokeCloud = new ParticleSystem(glm::vec3(9, -0.5, 1), RESOURCES_PATH "/XML/Effect_SmokeCloud.xml");
 	psScene.getScenegraph()->addParticleSystem(psSmokeCloud);
 	psSmokeCloud->start();
 
-	ParticleSystem* psFontaine = new ParticleSystem(glm::vec3(-21, 0, 1), RESOURCES_PATH "/XML/Effect_Fontaine.xml");
+	ParticleSystem* psFontaine = new ParticleSystem(glm::vec3(-13, 0, 1), RESOURCES_PATH "/XML/Effect_Fontaine.xml");
 	psScene.getScenegraph()->addParticleSystem(psFontaine);
 	psFontaine->start();
 
-	ParticleSystem* psCircle = new ParticleSystem(glm::vec3(-8, 0, 1), RESOURCES_PATH "/XML/Effect_Circle.xml");
+	ParticleSystem* psCircle = new ParticleSystem(glm::vec3(0, 0, 1), RESOURCES_PATH "/XML/Effect_Circle.xml");
 	psScene.getScenegraph()->addParticleSystem(psCircle);
 	psCircle->start();
 
-	ParticleSystem* psQuad = new ParticleSystem(glm::vec3(-18, 0, 1), RESOURCES_PATH "/XML/Effect_Quad.xml");
+	ParticleSystem* psQuad = new ParticleSystem(glm::vec3(-10, 0, 1), RESOURCES_PATH "/XML/Effect_Quad.xml");
 	psScene.getScenegraph()->addParticleSystem(psQuad);
 	psQuad->start();
 
-	ParticleSystem* psFruitFlies = new ParticleSystem(glm::vec3(-15, 0, 1), RESOURCES_PATH "/XML/Effect_FruitFlies.xml");
+	ParticleSystem* psFruitFlies = new ParticleSystem(glm::vec3(-7, 0, 1), RESOURCES_PATH "/XML/Effect_FruitFlies.xml");
 	psScene.getScenegraph()->addParticleSystem(psFruitFlies);
 	psFruitFlies->start();
 
-	ParticleSystem* psGlowworm = new ParticleSystem(glm::vec3(-14, 0, 1), RESOURCES_PATH "/XML/Effect_Glowworm.xml");
+	ParticleSystem* psGlowworm = new ParticleSystem(glm::vec3(-6, 0, 1), RESOURCES_PATH "/XML/Effect_Glowworm.xml");
 	psScene.getScenegraph()->addParticleSystem(psGlowworm);
 	psGlowworm->start();
 
-	ParticleSystem* psEnergyBall = new ParticleSystem(glm::vec3(-11, 0, 1), RESOURCES_PATH "/XML/Effect_EnergyBall.xml");
+	ParticleSystem* psEnergyBall = new ParticleSystem(glm::vec3(-3, 0, 1), RESOURCES_PATH "/XML/Effect_EnergyBall.xml");
 	psScene.getScenegraph()->addParticleSystem(psEnergyBall);
 	psEnergyBall->start();
 
-	ParticleSystem* psComicCloud = new ParticleSystem(glm::vec3(8, 0, 1), RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
+	ParticleSystem* psComicCloud = new ParticleSystem(glm::vec3(20, -2, -6), RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
 	psScene.getScenegraph()->addParticleSystem(psComicCloud);
 	psComicCloud->start();
 
 	//ParticleSystem* psFire = new ParticleSystem(glm::vec3(4, -0.5, 1), efFire);
-	ParticleSystem* psFire = new ParticleSystem(glm::vec3(4, -0.5, 1), RESOURCES_PATH "/XML/Effect_Fire.xml");
+	ParticleSystem* psFire = new ParticleSystem(glm::vec3(12, -0.5, 1), RESOURCES_PATH "/XML/Effect_Fire.xml");
 	psScene.getScenegraph()->addParticleSystem(psFire);
 	psFire->start();
 
 
-	ParticleSystem* psFireworkRed = new ParticleSystem(glm::vec3(-3, 0, 5), RESOURCES_PATH "/XML/Effect_FireworkRed.xml");
+	ParticleSystem* psFireworkRed = new ParticleSystem(glm::vec3(-6, 1, -2), RESOURCES_PATH "/XML/Effect_FireworkRed.xml");
 	psScene.getScenegraph()->addParticleSystem(psFireworkRed);
 	psFireworkRed->start();
-	ParticleSystem* psFireworkBlue = new ParticleSystem(glm::vec3(-1, 0, 5), RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
+	ParticleSystem* psFireworkBlue = new ParticleSystem(glm::vec3(-2, 1, -2), RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
 	psScene.getScenegraph()->addParticleSystem(psFireworkBlue);
 	psFireworkBlue->start();
-	ParticleSystem* psFireworkGreen = new ParticleSystem(glm::vec3(1, 0, 5), RESOURCES_PATH "/XML/Effect_FireworkGreen.xml");
+	ParticleSystem* psFireworkGreen = new ParticleSystem(glm::vec3(2, 1, -2), RESOURCES_PATH "/XML/Effect_FireworkGreen.xml");
 	psScene.getScenegraph()->addParticleSystem(psFireworkGreen);
 	psFireworkGreen->start();
-	ParticleSystem* psFireworkGold = new ParticleSystem(glm::vec3(3, 0, 5), RESOURCES_PATH "/XML/Effect_FireworkGold.xml");
+	ParticleSystem* psFireworkGold = new ParticleSystem(glm::vec3(6, 1, -2), RESOURCES_PATH "/XML/Effect_FireworkGold.xml");
 	psScene.getScenegraph()->addParticleSystem(psFireworkGold);
 	psFireworkGold->start();
 
-
+	bool isStarted = false;
+	bool bfirework = false;
 	//////////////////////////////////////Other Things//////////////////////////////////////////
 
 	//GUI
@@ -681,7 +682,8 @@ int main()
 		startCamTime = glfwGetTime();
 
 		if (useSnowButton->isActive()){
-			psSnow->start();
+			//psSnow->start();
+			bfirework = true;
 		}
 		else{
 			psSnow->stop();
@@ -701,6 +703,48 @@ int main()
 			psRain->stop();
 		}
 
+		//update firework
+		if (((int)glfwGetTime() % 7) < 1 && !isStarted && bfirework){
+			isStarted = true;
+			psFireworkRed->stop();
+			psFireworkBlue->stop();
+			psFireworkGreen->stop();
+			psFireworkGold->stop();
+
+			glm::vec3 pos = psFireworkRed->getPosition();
+			psFireworkRed->setPosition(glm::vec3(pos.x, 1, pos.z));
+			
+			pos = psFireworkBlue->getPosition();
+			psFireworkBlue->setPosition(glm::vec3(pos.x, 1, pos.z));
+
+			pos = psFireworkGreen->getPosition();
+			psFireworkGreen->setPosition(glm::vec3(pos.x, 1, pos.z));
+
+			pos = psFireworkGold->getPosition();
+			psFireworkGold->setPosition(glm::vec3(pos.x, 1, pos.z));
+
+			psFireworkRed->start();
+			psFireworkBlue->start();
+			psFireworkGreen->start();
+			psFireworkGold->start();
+		}
+		else if (((int)glfwGetTime() % 5) > 3 && isStarted){
+			isStarted = false;
+		}
+
+		glm::vec3 pos = psFireworkRed->getPosition();
+		psFireworkRed->setPosition(glm::vec3(pos.x, pos.y + (2 * dTime), pos.z));
+
+		pos = psFireworkBlue->getPosition();
+		psFireworkBlue->setPosition(glm::vec3(pos.x, pos.y + (2 * dTime), pos.z));
+
+		pos = psFireworkGreen->getPosition();
+		psFireworkGreen->setPosition(glm::vec3(pos.x, pos.y + (2 * dTime), pos.z));
+
+		pos = psFireworkGold->getPosition();
+		psFireworkGold->setPosition(glm::vec3(pos.x, pos.y + (2 * dTime), pos.z));
+
+
 		//Maximum Particle
 		if (!useMaximumParticle->isActive()){
 
@@ -711,7 +755,7 @@ int main()
 			shaderSkybox.sendMat4("viewMatrix", cam.getViewMatrix());
 			shaderSkybox.sendMat4("projectionMatrix", cam.getProjectionMatrix());
 			shaderSkybox.sendSkyboxTexture("testTexture", skybox.getSkyboxTexture());
-			skyboxNode.render();
+			//skyboxNode.render();
 			shaderSkybox.unbind();
 			glEnable(GL_DEPTH_TEST);
 

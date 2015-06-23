@@ -1,0 +1,79 @@
+<Effect>
+    <Emitter>
+        <OutputType>0</OutputType>
+        <Position x="0" y="0" z="0"/>
+        <EmitterLifetime>0</EmitterLifetime>
+        <EmitFrequency>0.20000000298023224</EmitFrequency>
+        <ParticlesPerEmit>2</ParticlesPerEmit>
+        <ParticleLiftime>5</ParticleLiftime>
+        <ParticleMortal>1</ParticleMortal>
+        <UseGeometryShader>1</UseGeometryShader>
+        <Movable>0</Movable>
+        <StartTime>0</StartTime>
+        <Velocity>5</Velocity>
+        <Physic>
+            <DirectionGravity>
+                <Gravity x="0" y="1" z="0" w="5"/>
+                <Speed>0.5</Speed>
+            </DirectionGravity>
+        </Physic>
+        <AreaEmitter on="0"/>
+        <Texture>
+            <Tex time="1">/ParticleSystem/fire/fire1_M.png</Tex>
+            <Tex time="0.69999999">/ParticleSystem/fire/fire3_M.png</Tex>
+            <Tex time="0.1">/ParticleSystem/smoke/smokeBlack/smokeBlack02.png</Tex>
+            <Scaling>
+                <UseTexture>1</UseTexture>
+                <ScalingSize>
+                    <Item>0.050000001</Item>
+                    <Item>0.5</Item>
+                    <Item>0.75</Item>
+                    <Item>1</Item>
+                </ScalingSize>
+                <ScalingMoment>
+                    <Item>0</Item>
+                    <Item>0.40000001</Item>
+                    <Item>0.75</Item>
+                    <Item>1</Item>
+                </ScalingMoment>
+                <BirthTime>0.5</BirthTime>
+                <DeathTime>4</DeathTime>
+                <BlendingTime>3</BlendingTime>
+                <RotateLeft>1</RotateLeft>
+                <RotationSpeed>0.30000001</RotationSpeed>
+            </Scaling>
+        </Texture>
+    </Emitter>
+    <Emitter>
+        <OutputType>0</OutputType>
+        <Position x="0" y="0.1" z="0"/>
+        <EmitterLifetime>0</EmitterLifetime>
+        <EmitFrequency>0.05000000074505806</EmitFrequency>
+        <ParticlesPerEmit>3</ParticlesPerEmit>
+        <ParticleLiftime>2.5</ParticleLiftime>
+        <ParticleMortal>1</ParticleMortal>
+        <UseGeometryShader>0</UseGeometryShader>
+        <Movable>0</Movable>
+        <StartTime>0</StartTime>
+        <Velocity>5</Velocity>
+        <Physic>
+            <DirectionGravity>
+                <Gravity x="0" y="1" z="0" w="0.80000001"/>
+                <Speed>0.5</Speed>
+            </DirectionGravity>
+        </Physic>
+        <AreaEmitter on="0"/>
+        <Texture>
+            <Tex time="1">/ParticleSystem/fire/fireSparkle1_S.png</Tex>
+            <Size>
+                <UseTexture>1</UseTexture>
+                <ParticleSize>0.050000001</ParticleSize>
+                <BirthTime>0.5</BirthTime>
+                <DeathTime>0.5</DeathTime>
+                <BlendingTime>0</BlendingTime>
+                <RotateLeft>0</RotateLeft>
+                <RotationSpeed>0</RotationSpeed>
+            </Size>
+        </Texture>
+    </Emitter>
+</Effect>
