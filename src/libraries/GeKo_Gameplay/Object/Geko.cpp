@@ -35,6 +35,10 @@ Geko::Geko(std::string gekoName, glm::vec3 spawnPoint){
 
 	m_speed = 0.01;
 	m_speedTurn = 0.1;
+
+	m_levelThreshold = 100.0;
+	m_exp = 0;
+	m_level = 0;
 }
 
 Geko::Geko(){}

@@ -38,8 +38,9 @@ Player::Player(std::string playerName, glm::vec3 spawnPoint)
 	m_speed = 0.007;
 	m_speedTurn = 0.03;
 	
+	m_levelThreshold = 100.0;
+	m_exp =  0;
 	m_level = 0;
-	m_levelThreshold = 100;
 }
 
 Player::Player(){
@@ -234,6 +235,7 @@ void Player::addExp(float exp)
 void Player::setExp(float exp)
 {
 	m_exp = exp;
+	//TODO: Fix: If Threshold 0 or not set yet, while will never end
 	while (m_exp >= m_levelThreshold)
 	{
 		levelUp();

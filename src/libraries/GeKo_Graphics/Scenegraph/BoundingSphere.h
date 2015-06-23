@@ -26,7 +26,9 @@ public:
 	bool getCollisionDetected();
 
 	bool m_collisionDetected;
+	//actuell center
 	glm::vec3 center;
+	//center from the beginning to use modelmatrix
 	glm::vec3 originalCenter;
 	double radius;
 

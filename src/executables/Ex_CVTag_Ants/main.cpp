@@ -98,9 +98,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int main()
 {
 	SoundFileHandler sfh = SoundFileHandler(1000);
-	sfh.generateSource("Lademusik", glm::vec3(0.0,0.0,0.0), RESOURCES_PATH "/Sound/jingle2.wav");
-	sfh.playSource("Lademusik");
+	sfh.generateSource("Lademusik", glm::vec3(0.0, 0.0, 0.0), RESOURCES_PATH "/Sound/jingle2.wav");
 	sfh.setGain("Lademusik", 0.4f);
+	sfh.playSource("Lademusik");
 	//===================================================================//
 	//==================Things you need to start with====================//
 	//==================================================================//
@@ -148,13 +148,11 @@ int main()
 	Rect screenFillingQuad;
 	screenFillingQuad.loadBufferData();
 
-	std::cout << "SUCCESS: Load Buffer and Shader" << std::endl;
-
 	//===================================================================//
-	//================== Particle System ================================ //
+	//================== PArticle System ================================ //
 	//===================================================================//
 
-	ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
+	/*ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
 	particle->m_type = ParticleType::FIGHT;
 	ParticleSystem* particle2 = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/SwarmOfFliesEffect.xml");
 	particle2->m_type = ParticleType::SWARMOFFLIES;
@@ -169,9 +167,7 @@ int main()
 	Node particleNodeFire("ParticleNodeFire");
 	particleNodeFire.addParticleSystem(particleFire);
 	particleNodeFire.setCamera(&cam);
-	particleNodeFire.setParticleActive(true);
-
-	std::cout << "SUCCESS: Load Particle System" << std::endl;
+	particleNodeFire.setParticleActive(true);*/
 
 	//===================================================================//
 	//==================Object declarations - Geometry, Texture, Node=== //
@@ -188,7 +184,6 @@ int main()
 	terrainNode2.addTexture(&terrainTex);
 	terrainNode2.setObject(&terrainObject);
 
-	std::cout << "SUCCESS: Load Terrain" << std::endl;
 
 	//===================================================================//
 	//==================Object declarations - Geometry, Texture, Node=== //
@@ -199,6 +194,11 @@ int main()
 	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geko.ply");
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
+	GekoMesh gekoMesh;
+	geko.setLevelThreshold(100.0);
+	geko.setExp(0.0);
+	geko.setLevel(0);
+
 	Node playerNode("Player");
 
 	playerNode.addGeometry(&gekoGeometry);
@@ -206,7 +206,7 @@ int main()
 	playerNode.addTexture(&texGeko);
 
 	geko.setPosition(glm::vec4(terrain2.getResolutionX() / 2.0f + 10.0f, 5.0f, terrain2.getResolutionY() / 2.0f + 10.0f, 1.0));
-	/*sfh.generateSource(glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/Rascheln.wav");*/
+	sfh.generateSource(glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/Rascheln.wav");
 	geko.setSoundHandler(&sfh);
 	geko.setSourceName(FIRESOUND, "Fire", RESOURCES_PATH "/Sound/Feuer_kurz.wav");
 	geko.setSourceName(MOVESOUND, "SpielerFootsteps", RESOURCES_PATH "/Sound/Rascheln.wav");
@@ -215,9 +215,12 @@ int main()
 	geko.setSourceName(EATSOUND, "Essen", RESOURCES_PATH "/Sound/Munching.wav");
 	geko.setSourceName(QUESTSOUND, "Quest", RESOURCES_PATH "/Sound/jingle.wav");
 	geko.setSourceName(ITEMSOUND, "Item", RESOURCES_PATH "/Sound/itempickup.wav");
+	geko.setSourceName(LEVELUP, "Levelup", RESOURCES_PATH "/Sound/Levelup.wav");
+	//sfh.playSource("Levelup");
 	geko.updateSourcesInMap();
 	sfh.setGain("Hintergrund", 0.15f);
 	sfh.disableLooping("Essen");
+	sfh.disableLooping("Levelup");
 	sfh.disableLooping("Quest");
 	sfh.disableLooping("Item");
 	sfh.setGain("Quest", 10.0);
@@ -227,8 +230,6 @@ int main()
 	sfh.updateSourcePosition("Lademusik", glm::vec3(geko.getPosition()));
 	//sfh.generateSource("Feuer",posFood, RESOURCES_PATH "/Sound/Feuer kurz.wav");
 	playerNode.setCamera(&cam);
-
-	std::cout << "SUCCESS: Load Player" << std::endl;
 
 	//===================================================================//
 	//==================Setting up the Level and Scene==================//
@@ -284,11 +285,9 @@ int main()
 	testScene.setSkyboxNode(&skyboxNode);
 
 	//================== Particles ========================//
-	testScene.getScenegraph()->addParticleSystem(particle);
+	/*testScene.getScenegraph()->addParticleSystem(particle);
 	testScene.getScenegraph()->addParticleSystem(particle2);
-	testScene.getScenegraph()->addParticleSystem(particleFire);
-
-	std::cout << "SUCCESS: Load Level" << std::endl;
+	testScene.getScenegraph()->addParticleSystem(particleFire);*/
 
 	//===================================================================//
 	//==================Setting up the Observers========================//
@@ -299,7 +298,6 @@ int main()
 	geko.addObserver(&playerObserver);
 	geko.addObserver(&soundPlayerObserver);
 
-	std::cout << "SUCCESS: Load some Observer" << std::endl;
 
 	// ==============================================================
 	// == Object (Forest) ==========================================
@@ -324,9 +322,7 @@ int main()
 		treeNode->setObject(treeStatic);
 		tmp.x = TreeData::forest1[i].x;
 		tmp.z = TreeData::forest1[i].z;
-		TreeData::forest1[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
-		tmp.y = TreeData::forest1[i].y;
-		//tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
 		treeNode->addTranslation(tmp);
 		treeNode->getStaticObject()->setPosition(tmp);
 		treeNode->getBoundingSphere()->radius = 2.5;
@@ -345,9 +341,7 @@ int main()
 		treeNode->setObject(treeStatic);
 		tmp.x = TreeData::forest2[i].x;
 		tmp.z = TreeData::forest2[i].z;
-		TreeData::forest2[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
-		tmp.y = TreeData::forest2[i].y;
-		//tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
 		treeNode->addTranslation(tmp);
 		treeNode->getStaticObject()->setPosition(tmp);
 		treeNode->getBoundingSphere()->radius = 2.5;
@@ -355,12 +349,10 @@ int main()
 		name.str("");
 	}
 
-	std::cout << "SUCCESS: Load Forest" << std::endl;
-
 	// ==============================================================
 	// == Object (Anthome) ==========================================
 	// ==============================================================
-	
+
 	Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
 
 	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
@@ -393,7 +385,8 @@ int main()
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
 	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, antAggressiveGraph, afraidDecisionTree, antAfraidGraph);
-	antHome.generateWorkers(1, testScene.getScenegraph()->getRootNode());
+	antHome.setAntScale(0.5);
+	antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
 	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
 
 
@@ -408,12 +401,11 @@ int main()
 
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
 
-	std::cout << "SUCCESS: Load AntHome" << std::endl;
 
 	//===================================================================//
 	//==================Setting up the Collision=========================//
 	//==================================================================//
-	
+
 	CollisionTest collision;
 	collision.collectNodes(testScene.getScenegraph()->getRootNode());
 
@@ -427,17 +419,15 @@ int main()
 	//===================================================================//
 	//==================Setting up the Gravity===========================//
 	//==================================================================//
-	
+
 	Gravity gravity;
 	playerNode.addGravity(&gravity);
-
-	std::cout << "SUCCESS: Load Collision and Gravity" << std::endl;
 
 	// ==============================================================
 	// == Questsystem ===============================================
 	// ==============================================================
 	QuestHandler questhandler;
-	
+
 	Quest questKillAnt(1);
 	Quest questEatAnt(2);
 	Quest questCollectBranch(3);
@@ -505,8 +495,7 @@ int main()
 	collectBranch.addObserver(&questObserver);
 
 	testLevel.getFightSystem()->addObserver(&questObserver);
-	
-	std::cout << "SUCCESS: Load Questsystem" << std::endl;
+
 
 	//===================================================================//
 	//================== Setting up the playerGUI ========================//
@@ -514,8 +503,6 @@ int main()
 
 	PlayerGUI playerGUI(HUD_WIDTH, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler());
 	testLevel.setGUI(&playerGUI);
-
-	std::cout << "SUCCESS: Load GUI" << std::endl;
 
 	//===================================================================//
 	//==================The Render-Loop==================================//
@@ -562,13 +549,14 @@ int main()
 		geko.update();
 		geko.setDeltaTime(currentTime);
 
+
 		tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
 
 		viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
 
 		//ToDo calculate Normal funktioniert evtl falsch
 		normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
-		rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up );
+		rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
 		lengthFromNormal = glm::length(normalFromTerrain);
 		lengthFromUp = glm::length(up);
 		up = glm::normalize(up);
@@ -577,7 +565,7 @@ int main()
 		phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
 		phi = phi * (180 / glm::pi<float>());
 		//std::cout << phi << std::endl;
-		
+
 		if (dot <0.99)
 			testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
 
@@ -593,7 +581,7 @@ int main()
 		renderer.renderScene(testScene, testWindow);
 		//renderer.renderGUI(*playerGUI.getHUD(), testWindow);
 
-	
+
 		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() - glm::vec4(normalFromTerrain * 0.2f, 1.0));
 		//std::cout << "FPS " << 1 / deltaTime << std::endl;
 
