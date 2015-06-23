@@ -1,6 +1,7 @@
 *.png
 *.bmp
 *.jpg
+*.tif
 *.obj
 *.max
 *.mtl
