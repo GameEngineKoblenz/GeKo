@@ -83,7 +83,7 @@ public:
 	//our physic possibilities
 	void usePhysicTrajectory(glm::vec4 gravity, float speed);
 	void usePhysicDirectionGravity(glm::vec4 gravity, float speed);
-	void usePhysicPointGravity(glm::vec3 point, float gravityImpact, float gravityRange, int gravityFunction, float speed, bool backToSource);
+	void usePhysicPointGravity(glm::vec3 point, float gravityImpact, float gravityRange, int gravityFunction, float speed, bool useLocalCoordinates);
 	void usePhysicSwarmCircleMotion(bool verticalMovement, bool horizontalXMovement, bool horizontalYMovement, float speed);
 
 	//texturing	
@@ -148,7 +148,7 @@ public:
 	bool getPhysicPointGravity();
 	bool getPhysicSwarmCircleMotion();
 	float getPhysicAttGravityImpact();
-	bool getPhysicAttBacktoSource();
+	bool getPhysicAttUseLocalCoordinates();
 	float getPhysicAttGravityRange();
 	int getPhysicAttGravityFunction();
 	float getPhysicAttSpeed();
@@ -196,6 +196,7 @@ private:
 	glm::vec3 m_localPosition;		//this is the position that gets added to the ParticleSystem position
 	bool m_emitterMortal;			//if the emitter stops working after emitLifetime
 	double m_emitLifetime;	//if mortal=true: how long the emitter is active
+	double emitterLifetime; //need this value for stopping the emitter
 	float m_emitFrequency;	//After this frequencytime we generate particle
 	double m_startTime;		//after the PS starts, it takes 'startTime' seconds until this emitter starts
 	bool m_isStarted;
@@ -244,7 +245,7 @@ private:
 	//physic attributes
 	//for point gravity
 	float m_gravityImpact;
-	bool m_backtoSource;
+	bool m_useLocalCoordinates;
 
 	float m_gravityRange;
 	int m_gravityFunction;

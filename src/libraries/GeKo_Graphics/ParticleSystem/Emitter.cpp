@@ -15,6 +15,7 @@ Emitter::Emitter(const int OUTPUT, glm::vec3 position, double emitterLifetime, d
 	setPosition(position);
 	setLocalPosition(position);
 	setEmitterLifetime(emitterLifetime);
+	this->emitterLifetime = emitterLifetime;
 	//setEmitterMortality(emitterLifetime);
 
 	//set properties for the emitting
@@ -53,6 +54,7 @@ void Emitter::start(){
 void Emitter::stop(){
 	m_isStarted = false;
 	setOutputMode(-1);
+	m_emitLifetime = emitterLifetime;
 }
 
 void Emitter::loadBuffer(){
@@ -100,10 +102,10 @@ void Emitter::update(ShaderProgram* compute, glm::vec3 playerPosition){
 	deltaTime = glfwGetTime() - updateTime; //time remain since last update
 	updateTime = glfwGetTime();
 
-	if (m_isStarted) {
+	if (m_isStarted && m_emitLifetime > 0) {
 		m_emitLifetime -= deltaTime;
 	}
-	if (m_emitLifetime < 0 && m_emitterMortal){ //it's only for dying emitters relevant
+	if (m_emitLifetime <= 0 && m_emitterMortal){ //it's only for dying emitters relevant
 		m_output = UNUSED;
 	}
 	compute->bind();
@@ -118,7 +120,7 @@ void Emitter::update(ShaderProgram* compute, glm::vec3 playerPosition){
 	compute->sendFloat("fullLifetime", m_particleLifetime);
 	compute->sendInt("particleMortal", m_particleMortal);
 
-	if (m_usePointGravity && m_backtoSource){
+	if (m_usePointGravity && m_useLocalCoordinates){
 		glm::vec3 newPosition(0,0,0);
 		newPosition.x = m_emitterPosition.x + m_gravity.x;
 		newPosition.y = m_emitterPosition.y + m_gravity.y;
@@ -433,14 +435,15 @@ void Emitter::usePhysicDirectionGravity(glm::vec4 gravity, float speed){
 
 	setSpeed(speed);
 }
-void Emitter::usePhysicPointGravity(glm::vec3 point, float gravityImpact, float gravityRange, int gravityFunction, float speed, bool backToSource){
+//gravityFunc: 1=constant 2=x^4 3=cosinus
+void Emitter::usePhysicPointGravity(glm::vec3 point, float gravityImpact, float gravityRange, int gravityFunction, float speed, bool useLocalCoordinates){
 	m_useTrajectory = false;
 	m_useDirectionGravity = false;
 	m_usePointGravity = true;
 	m_useChaoticSwarmMotion = false;
 
 	m_gravityImpact = gravityImpact;
-	m_backtoSource = backToSource;
+	m_useLocalCoordinates = useLocalCoordinates;
 	setGravity(glm::vec4(point, gravityImpact));
 	
 	setSpeed(speed);
@@ -655,7 +658,7 @@ glm::vec3 Emitter::useVelocitySemiSphere(){
 glm::vec3 Emitter::useVelocitySphere(){
 	return glm::vec3(((rand() % 200) / 100.0f) - 1.0f,
 					((rand() % 200) / 100.0f) - 1.0f,
-					((rand() % 200) / 100.0f) - -1.0f);
+					((rand() % 200) / 100.0f) - 1.0f);
 }
 void Emitter::setVelocity(int velocityType){
 	switch (velocityType)
@@ -792,8 +795,8 @@ bool Emitter::getPhysicSwarmCircleMotion(){
 float Emitter::getPhysicAttGravityImpact(){
 	return m_gravityImpact;
 }
-bool Emitter::getPhysicAttBacktoSource(){
-	return m_backtoSource;
+bool Emitter::getPhysicAttUseLocalCoordinates(){
+	return m_useLocalCoordinates;
 }
 float Emitter::getPhysicAttGravityRange(){
 	return m_gravityRange;
@@ -857,6 +860,7 @@ void Emitter::setAttributes(){
 	m_localPosition = glm::vec3(0.0, 0.0, 0.0);
 	m_emitterMortal = false;
 	m_emitLifetime = 0.0;
+	emitterLifetime = 0.0;
 	m_emitFrequency = 0.0;
 	m_startTime = 0.0;
 	m_isStarted = false;
