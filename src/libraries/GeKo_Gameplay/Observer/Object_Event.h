@@ -20,6 +20,8 @@ enum class Object_Event
 
 	PLAYER_SET_ON_FIRE,
 
-	PLAYER_DIED
+	PLAYER_DIED,
+
+	OBJECT_SET_GRAPH_ON_TERRAIN
 
 };

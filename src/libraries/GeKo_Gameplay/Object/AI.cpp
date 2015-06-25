@@ -4,6 +4,7 @@
 AI::AI(){
 	m_id = 0;
 	m_type = ObjectType::DEFAULTOBJECT;
+	m_antType = AntType::NOANT;
 	m_name = "defaultObject";
 
 	m_myNodeName = "NULL";
@@ -325,4 +326,8 @@ void AI::stopSourcesInMap(){
 bool AI::hasDied()
 {
 	return m_hasDied;
+}
+
+AntType AI::getAntType(){
+	return m_antType;
 }

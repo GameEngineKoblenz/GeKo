@@ -159,11 +159,11 @@ public:
 			 {
 				 int count = nodeB.getStaticObject()->getInventory()->countItem(ItemType::COOKIE);
 				 if (count >= 3)
-				 { 
-				 nodeA.getAI()->collectItem(ItemType::COOKIE, 2);
-				 nodeA.getAI()->eat();
+				 {
+					 nodeA.getAI()->collectItem(ItemType::COOKIE, 2);
+					 nodeA.getAI()->eat();
 				 }
-				 else 
+				 else
 				 {
 					 if (count == 1)
 					 {
@@ -180,7 +180,15 @@ public:
 				 nodeB.getStaticObject()->getInventory()->reduceItem(ItemType::COOKIE, 3);
 				 //TODO: Wahlweise aus ALLEN AI-FoodNodes
 				 if (nodeB.getStaticObject()->getInventory()->countItem(ItemType::COOKIE) == 0){
-					nodeA.getAI()->deleteFoodNode(glm::vec3(nodeB.getStaticObject()->getPosition()));
+					 nodeA.getAI()->deleteFoodNode(glm::vec3(nodeB.getStaticObject()->getPosition()));
+				 }
+			 }
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::HOUSE && nodeA.getAI()->getAntType() == AntType::GUARD)
+			 {
+				 int count = nodeB.getStaticObject()->getInventory()->countItem(ItemType::COOKIE);
+				 if (count > 0)
+				 {
+					 nodeA.getAI()->eat();
 				 }
 			 }
 			 break;

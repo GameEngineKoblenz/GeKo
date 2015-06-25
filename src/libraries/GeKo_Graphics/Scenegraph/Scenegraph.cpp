@@ -53,7 +53,7 @@ void Scenegraph::setActiveCamera(std::string cameraName)
 
 	if (success)
 	{
-		std::cout << "SUCCESS: The Camera with the name " << cameraName << " is now active!" << std::endl;
+		//std::cout << "SUCCESS: The Camera with the name " << cameraName << " is now active!" << std::endl;
 	}
 	else
 	{

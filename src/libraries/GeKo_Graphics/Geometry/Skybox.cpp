@@ -142,7 +142,7 @@ bool Skybox::load(const char **fileNames)
 
 		stbi_image_free(data);
 
-		printf("SUCCESS: Texture image %s loaded\n", fileName);
+		//printf("SUCCESS: Texture image %s loaded\n", fileName);
 	}
 	return true;
 }

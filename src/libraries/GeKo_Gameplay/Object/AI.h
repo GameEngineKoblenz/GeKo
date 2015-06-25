@@ -16,6 +16,7 @@
 
 #include "Object.h"
 #include "States.h"
+#include "AntType.h"
 
 enum SoundtypeAI{
 	MOVESOUND_AI, EATSOUND_AI, DEATHSOUND_AI, DEATHSOUND_FLIES_AI
@@ -70,6 +71,8 @@ public:
 
 	bool hasDied();
 
+	AntType getAntType();
+
 protected:
 	float m_epsilon;
 
@@ -95,4 +98,5 @@ protected:
 	std::map<SoundtypeAI, std::string> m_soundMap;
 	bool m_hasDied;
 
+	AntType m_antType;
 };

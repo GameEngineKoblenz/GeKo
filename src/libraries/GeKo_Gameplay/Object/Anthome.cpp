@@ -4,13 +4,16 @@ AntHome::AntHome(){
 
 }
 
-AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, DecisionTree *aggressiveDecisionTree, Graph<AStarNode, AStarAlgorithm> *aggressiveGraph, DecisionTree *afraidDecisionTree, Graph<AStarNode, AStarAlgorithm> *afraidGraph){
+AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, DecisionTree *aggressiveDecisionTree, DecisionTree *afraidDecisionTree, Graph<AStarNode, AStarAlgorithm> *afraidGraph){
 	m_position = position;
 	m_antMesh = antMesh;
 	//Texture texCV((char*)RESOURCES_PATH "/cv_logo.bmp");
 	m_guardTexture = guardTex;
 	m_workerTexture = workerTex;
-	m_aggressiveGraph = aggressiveGraph;
+
+	m_guardsDistanceToHome = 6;
+	setGraphGuards();
+
 	m_aggressiveDecisionTree = aggressiveDecisionTree;
 	m_afraidGraph = afraidGraph;
 	m_afraidDecisionTree = afraidDecisionTree;
@@ -22,6 +25,13 @@ AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, So
 	m_gravity = new Gravity();
 	m_sfh = sfh;
 	m_antScale = 1.0;
+
+	m_type = ObjectType::HOUSE;
+	
+	Item cookie(1);
+	cookie.setName("Cookie");
+	cookie.setTypeId(ItemType::COOKIE);
+	m_inventory->addItem(&cookie, 100);
 }
 
 AntHome::~AntHome(){
@@ -38,19 +48,20 @@ void AntHome::generateGuards(int i, Node *root){
 	std::stringstream name;
 	while (i > 0){
 		name << "Guard" << m_numberOfGuards++ + 1;
-		//m_numberOfGuards++;
 		Node *aiGuardNode = new Node(name.str());
+		//Node (scenegraph)
 		aiGuardNode->addScale(m_antScale, m_antScale, m_antScale);
 		aiGuardNode->addGeometry(&m_antMesh);
 		aiGuardNode->addTexture(m_guardTexture);
 		aiGuardNode->addGravity(m_gravity);
+		//Position
 		position.x = rand() * 3 / 32767.0;
 		position.z = rand() * 3 / 32767.0;
 		position.y = 0.0;
 		position.w = 0.0;
-		Ant *antAI = new Ant(glm::vec4(m_position, 1.0) + position);
-		//antAI.setAntAggressiv();
-		antAI->setAntAggressiv(name.str(), m_aggressiveDecisionTree, m_aggressiveGraph);
+		//Ant (AI)
+		Ant_Guardian *antAI = new Ant_Guardian();
+		antAI->setAntAggressiv(name.str(), m_aggressiveDecisionTree, m_guardGraph);
 		aiGuardNode->setObject(antAI);
 		antAI->addObserver(m_objectObserver);
 		antAI->setSoundHandler(m_sfh);
@@ -169,4 +180,17 @@ float AntHome::getAntScale(){
 	return m_antScale;
 }
 
+void AntHome::setGraphGuards(){
+	//TODO: Anpassen der Höhenwerte (mGuardGraph.y) an die Höhenwerte vom Terrain anpassen! Sonst erkennt die Ant nicht, dass sie am Ziel angekommen ist
+	Graph<AStarNode, AStarAlgorithm>* antAggressiveGraph = new Graph<AStarNode, AStarAlgorithm>();
+	antAggressiveGraph->setExampleAntAggressiv(m_position, m_guardsDistanceToHome);
+	m_guardGraph = antAggressiveGraph;
+}
 
+void AntHome::setGrapHighOnTerrain(Terrain* t){
+	for (int i = 0; i < m_guardGraph->getGraph()->size(); i++){
+		AStarNode* node = m_guardGraph->getGraph()->at(i);
+		glm::vec3 pos = node->getPosition();
+		node->setPosition(glm::vec3(pos.x, t->getHeight(glm::vec2(pos.x, pos.z))+1, pos.z));
+	}
+}

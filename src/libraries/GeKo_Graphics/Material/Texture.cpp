@@ -92,7 +92,7 @@ bool Texture::load(char* fileName)
 	stbi_image_free(data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	printf("SUCCESS: Texture image %s loaded\n", filepath);
+	//printf("SUCCESS: Texture image %s loaded\n", filepath);
 
 	unUse();
 

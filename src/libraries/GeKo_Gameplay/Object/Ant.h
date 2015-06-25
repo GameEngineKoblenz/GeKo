@@ -15,18 +15,18 @@ public:
 	Ant(glm::vec4 position);
 	~Ant();
 
-	void decide();
+	virtual void decide();
 
-	void updatePath();
+	virtual void updatePath();
 	void updatePathPlayer();
-	void updatePathPatrol();
+	virtual void updatePathPatrol();
 
 	AStarNode* nextNodeOnPatrol();
 
 	void setAntAfraid();
 	void setAntAfraid(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph);
-	void setAntAggressiv();
-	void setAntAggressiv(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph);
+	//void setAntAggressiv();
+	//void setAntAggressiv(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph);
 
 protected:
 	std::vector<AStarNode*> m_pathPatrol;

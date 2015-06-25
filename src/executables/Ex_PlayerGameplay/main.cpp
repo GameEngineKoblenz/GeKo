@@ -290,9 +290,6 @@ int main()
 	DecisionTree *afraidDecisionTree = new DecisionTree();
 	afraidDecisionTree->setAntTreeAfraid();
 
-	Graph<AStarNode, AStarAlgorithm>* antAggressiveGraph = new Graph<AStarNode, AStarAlgorithm>();
-	antAggressiveGraph->setExampleAntAfraid(posSpawn, posFood2, posDefaultPlayer);
-
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	antAfraidGraph->setExampleAntAfraid(posSpawn, posFood, posDefaultPlayer);
 
@@ -300,10 +297,11 @@ int main()
 	////antHome.generateGuards(5, &aiObserver);
 	//antHome.generateWorkers(1, &aiObserver);
 	SoundFileHandler sfh(1000);
-	AntHome antHome(posSpawn, &sfh, antMesh, &soundObserver, &playerObserver, &texCV, &texCV, aggressivedecisionTree, antAggressiveGraph, afraidDecisionTree, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antMesh, &soundObserver, &playerObserver, &texCV, &texCV, aggressivedecisionTree, afraidDecisionTree, antAfraidGraph);
 	antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
 	antHome.addAntsToSceneGraph(testScene.getScenegraph()->getRootNode());
 
+	//antHome.setGrapHighOnTerrain(&terrain);
 
 	collision.collectNodes(testScene.getScenegraph()->getRootNode());
 	float lastTime = glfwGetTime();

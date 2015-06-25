@@ -57,11 +57,6 @@ public:
 
 	virtual void heal();
 
-	
-
-	
-
-	
 
 	///Returns the m_sfh
 	/**This Handler manages all the sounds of an object like the movement of a Player etc.*/

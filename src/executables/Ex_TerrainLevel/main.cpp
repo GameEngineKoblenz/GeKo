@@ -378,21 +378,21 @@ int main()
 	DecisionTree *afraidDecisionTree = new DecisionTree();
 	afraidDecisionTree->setAntTreeAfraid();
 
-	Graph<AStarNode, AStarAlgorithm>* antAggressiveGraph = new Graph<AStarNode, AStarAlgorithm>();
-	antAggressiveGraph->setExampleAntAggressiv(posSpawn, posFood2, posDefaultPlayer);
-
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
 	possFoods.push_back(TreeData::forest1);
 	possFoods.push_back(TreeData::forest2);
-	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods, posDefaultPlayer);
+	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
 
 	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
 	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, antAggressiveGraph, afraidDecisionTree, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, afraidDecisionTree, antAfraidGraph);
+	
+	antHome.setGrapHighOnTerrain(&terrain2);
+
 	antHome.generateWorkers(1, testScene.getScenegraph()->getRootNode());
 	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
 

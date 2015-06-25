@@ -97,6 +97,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 //==================================================================//
 int main()
 {
+
+	std::cout << "STARTING DEMO: CVTag_Ants" << std::endl;
+
 	SoundFileHandler sfh = SoundFileHandler(1000);
 	sfh.generateSource("Lademusik", glm::vec3(0.0, 0.0, 0.0), RESOURCES_PATH "/Sound/jingle2.wav");
 	sfh.setGain("Lademusik", 0.4f);
@@ -148,6 +151,8 @@ int main()
 	Rect screenFillingQuad;
 	screenFillingQuad.loadBufferData();
 
+	std::cout << "SUCCESS: Load Shader & Buffer" << std::endl;
+
 	//===================================================================//
 	//================== PArticle System ================================ //
 	//===================================================================//
@@ -169,6 +174,8 @@ int main()
 	particleNodeFire.setCamera(&cam);
 	particleNodeFire.setParticleActive(true);*/
 
+	//	std::cout << "SUCCESS: Load Particle" << std::endl;
+
 	//===================================================================//
 	//==================Object declarations - Geometry, Texture, Node=== //
 	//==========================Object: Terrain===========================//
@@ -184,6 +191,7 @@ int main()
 	terrainNode2.addTexture(&terrainTex);
 	terrainNode2.setObject(&terrainObject);
 
+	std::cout << "SUCCESS: Load Terrain" << std::endl;
 
 	//===================================================================//
 	//==================Object declarations - Geometry, Texture, Node=== //
@@ -195,9 +203,6 @@ int main()
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
 	GekoMesh gekoMesh;
-	geko.setLevelThreshold(100.0);
-	geko.setExp(0.0);
-	geko.setLevel(0);
 
 	Node playerNode("Player");
 
@@ -230,6 +235,8 @@ int main()
 	sfh.updateSourcePosition("Lademusik", glm::vec3(geko.getPosition()));
 	//sfh.generateSource("Feuer",posFood, RESOURCES_PATH "/Sound/Feuer kurz.wav");
 	playerNode.setCamera(&cam);
+
+	std::cout << "SUCCESS: Load Player" << std::endl;
 
 	//===================================================================//
 	//==================Setting up the Level and Scene==================//
@@ -289,6 +296,8 @@ int main()
 	testScene.getScenegraph()->addParticleSystem(particle2);
 	testScene.getScenegraph()->addParticleSystem(particleFire);*/
 
+	std::cout << "SUCCESS: Load Scene" << std::endl;
+
 	//===================================================================//
 	//==================Setting up the Observers========================//
 	//==================================================================//
@@ -298,6 +307,7 @@ int main()
 	geko.addObserver(&playerObserver);
 	geko.addObserver(&soundPlayerObserver);
 
+	std::cout << "SUCCESS: Load Observer" << std::endl;
 
 	// ==============================================================
 	// == Object (Forest) ==========================================
@@ -322,7 +332,8 @@ int main()
 		treeNode->setObject(treeStatic);
 		tmp.x = TreeData::forest1[i].x;
 		tmp.z = TreeData::forest1[i].z;
-		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		TreeData::forest1[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = TreeData::forest1[i].y;
 		treeNode->addTranslation(tmp);
 		treeNode->getStaticObject()->setPosition(tmp);
 		treeNode->getBoundingSphere()->radius = 2.5;
@@ -341,13 +352,16 @@ int main()
 		treeNode->setObject(treeStatic);
 		tmp.x = TreeData::forest2[i].x;
 		tmp.z = TreeData::forest2[i].z;
-		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		TreeData::forest2[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = TreeData::forest2[i].y;
 		treeNode->addTranslation(tmp);
 		treeNode->getStaticObject()->setPosition(tmp);
 		treeNode->getBoundingSphere()->radius = 2.5;
 		testScene.getScenegraph()->getRootNode()->addChildrenNode(treeNode);
 		name.str("");
 	}
+
+	std::cout << "SUCCESS: Load ForestData" << std::endl;
 
 	// ==============================================================
 	// == Object (Anthome) ==========================================
@@ -359,9 +373,7 @@ int main()
 	auto antHomeGeometry = antHomeHandler.get().toGeometry();
 
 	glm::vec3 posFood(10.0, 0.0, -5.0);
-	glm::vec3 posFood2((terrain2.getResolutionX() / 2.0f) + 10.0, 0.0, (terrain2.getResolutionY() / 2.0f) - 5.0);
 	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
-	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
 	AntMesh antMesh;
 
 	DecisionTree *aggressivedecisionTree = new DecisionTree();
@@ -370,29 +382,26 @@ int main()
 	DecisionTree *afraidDecisionTree = new DecisionTree();
 	afraidDecisionTree->setAntTreeAfraid();
 
-	Graph<AStarNode, AStarAlgorithm>* antAggressiveGraph = new Graph<AStarNode, AStarAlgorithm>();
-	antAggressiveGraph->setExampleAntAggressiv(posSpawn, posFood2, posDefaultPlayer);
-
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
 	possFoods.push_back(TreeData::forest1);
 	possFoods.push_back(TreeData::forest2);
-	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods, posDefaultPlayer);
+	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
 
 	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
 	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, antAggressiveGraph, afraidDecisionTree, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, afraidDecisionTree, antAfraidGraph);
+	antHome.setGrapHighOnTerrain(&terrain2);
+
 	antHome.setAntScale(0.5);
-	antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
+	antHome.generateWorkers(0, testScene.getScenegraph()->getRootNode());
 	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
 
-
 	Node homeNode("AntHome");
-
-
+	
 	homeNode.setObject(&antHome);
 	homeNode.addTexture(&texAntHome);
 	homeNode.addGeometry(&antHomeGeometry);
@@ -401,6 +410,7 @@ int main()
 
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
 
+	std::cout << "SUCCESS: Load AntHome" << std::endl;
 
 	//===================================================================//
 	//==================Setting up the Collision=========================//
@@ -423,79 +433,11 @@ int main()
 	Gravity gravity;
 	playerNode.addGravity(&gravity);
 
+	std::cout << "SUCCESS: Load Physic (Collision & Gravity)" << std::endl;
+
 	// ==============================================================
 	// == Questsystem ===============================================
 	// ==============================================================
-	QuestHandler questhandler;
-
-	Quest questKillAnt(1);
-	Quest questEatAnt(2);
-	Quest questCollectBranch(3);
-
-	questKillAnt.setDescription("Kill one worker ant.");
-	questEatAnt.setDescription("Eat two ants.");
-	questCollectBranch.setDescription("Collect ten branches.");
-
-	Goal_Kill killAnt(1);
-	Goal_Eaten eatAnt(2);
-	Goal_Collect collectBranch(3);
-
-	questKillAnt.addGoal(&killAnt);
-	questEatAnt.addGoal(&eatAnt);
-	questCollectBranch.addGoal(&collectBranch);
-
-	killAnt.setGoalCount(2);
-	eatAnt.setGoalCount(2);
-	collectBranch.setGoalCount(10);
-
-	collectBranch.setItemType(ItemType::BRANCH);
-
-	ExpReward expReward(1);
-	expReward.setExp(100);
-
-	questKillAnt.addReward(&expReward);
-	questEatAnt.addReward(&expReward);
-	questCollectBranch.addReward(&expReward);
-
-	QuestGraph questGraph;
-	QuestGraphNode nodeStart;
-	nodeStart.setQuest(&questKillAnt);
-	questGraph.addNode(&nodeStart);
-	questKillAnt.setActive(true);
-
-	QuestGraphNode nodeSecond;
-	nodeSecond.setQuest(&questEatAnt);
-	nodeSecond.setParent(&nodeStart);
-	questGraph.addNode(&nodeSecond);
-
-	QuestGraphNode nodeThird;
-	nodeThird.setQuest(&questCollectBranch);
-	nodeThird.setParent(&nodeSecond);
-	questGraph.addNode(&nodeThird);
-	questCollectBranch.setActive(true);
-
-	testLevel.getQuestHandler()->addQuest(&questKillAnt);
-	testLevel.getQuestHandler()->addQuest(&questEatAnt);
-	testLevel.getQuestHandler()->addQuest(&questCollectBranch);
-
-	testLevel.getQuestHandler()->setGraph(&questGraph);
-
-	QuestObserver questObserver(&testLevel);
-
-	questKillAnt.addObserver(&questObserver);
-	questKillAnt.addObserver(&soundPlayerObserver);
-	questEatAnt.addObserver(&questObserver);
-	questEatAnt.addObserver(&soundPlayerObserver);
-
-	questCollectBranch.addObserver(&questObserver);
-	questCollectBranch.addObserver(&soundPlayerObserver);
-
-	killAnt.addObserver(&questObserver);
-	eatAnt.addObserver(&questObserver);
-	collectBranch.addObserver(&questObserver);
-
-	testLevel.getFightSystem()->addObserver(&questObserver);
-
 
 	//===================================================================//
 	//================== Setting up the playerGUI ========================//
@@ -503,6 +445,8 @@ int main()
 
 	PlayerGUI playerGUI(HUD_WIDTH, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler());
 	testLevel.setGUI(&playerGUI);
+
+	std::cout << "SUCCESS: Load GUI" << std::endl;
 
 	//===================================================================//
 	//==================The Render-Loop==================================//

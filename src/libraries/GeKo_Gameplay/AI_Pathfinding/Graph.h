@@ -265,18 +265,11 @@ public:
 
 	 ///Another Example-Graph for a AI which will react afraid while the player is nearby
 	 /***/
-	 void setExampleAntAfraid2(glm::vec3 posSpawn, std::vector<std::vector<glm::vec3>> possFoods, glm::vec3 posPlayer)
+	 void setExampleAntAfraid2(glm::vec3 posSpawn, std::vector<std::vector<glm::vec3>> possFoods)
 	 {
 		 AStarNode* defaultNode = new AStarNode();
 
 		 AStarNode* nodeSpawn = new AStarNode("Spawn", defaultNode, posSpawn, GraphNodeType::HOME);
-
-		 //std::vector<glm::vec3> trees;
-		 //trees.push_back(glm::vec3(16.0, 0.0, 76.0));
-		 //trees.push_back(glm::vec3(23.0, 0.0, 74.0));
-		 //trees.push_back(glm::vec3(21.5, 0.0, 78.5));
-		 //trees.push_back(glm::vec3(15.0, 0.0, 81.5));
-		 //trees.push_back(glm::vec3(27.5, 0.0, 88.5));
 
 		 for (int i = 0; i < possFoods.size(); i++){
 			 generateForest(possFoods.at(i), nodeSpawn, defaultNode);
@@ -292,7 +285,7 @@ public:
 
 	 ///An Example-Graph for a AI which will react aggresive while the player is nearby
 	 /***/
-	 void setExampleAntAggressiv(glm::vec3 posSpawn, glm::vec3 posFood, glm::vec3 posPlayer)
+	 void setExampleAntAggressiv(glm::vec3 posSpawn, int distance)
 	 {
 		//This example just contains the FoodNode on the position of the anthome and four nodes, which let the ant patrol around the anthome
 		 AStarNode* defaultNode = new AStarNode();
@@ -303,11 +296,11 @@ public:
 		 AStarNode* nodeRU = new AStarNode("RU", defaultNode);
 		 AStarNode* nodeFood = new AStarNode("Food", defaultNode);
 
-		 nodeLO->setPosition(glm::vec3(1.0, 0.0, 5.0));
-		 nodeLU->setPosition(glm::vec3(1.0, 0.0, 1.0));
-		 nodeRO->setPosition(glm::vec3(5.0, 0.0, 5.0));
-		 nodeRU->setPosition(glm::vec3(5.0, 0.0, 1.0));
-		 nodeFood->setPosition(posFood);
+		 nodeLO->setPosition(glm::vec3(posSpawn.x - distance, 0.0, posSpawn.z + distance));
+		 nodeLU->setPosition(glm::vec3(posSpawn.x - distance, 0.0, posSpawn.z - distance));
+		 nodeRO->setPosition(glm::vec3(posSpawn.x + distance, 0.0, posSpawn.z + distance));
+		 nodeRU->setPosition(glm::vec3(posSpawn.x + distance, 0.0, posSpawn.z - distance));
+		 nodeFood->setPosition(posSpawn);
 
 		 nodeFood->setNodeType(GraphNodeType::FOOD);
 		 nodeLU->setNodeType(GraphNodeType::OTHER);

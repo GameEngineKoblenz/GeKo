@@ -4,6 +4,7 @@
 Ant::Ant(){
 	m_id = 0;
 	m_type = ObjectType::DEFAULTOBJECT;
+	m_antType = AntType::DEFAULTANT;
 	m_name = "defaultObject";
 
 	m_myNodeName = "NULL";
@@ -55,6 +56,7 @@ Ant::Ant(){
 Ant::Ant(glm::vec4 position){
 	m_id = 0;
 	m_type = ObjectType::DEFAULTOBJECT;
+	m_antType = AntType::DEFAULTANT;
 	m_name = "defaultObject";
 
 	m_myNodeName = "NULL";
@@ -259,70 +261,70 @@ void Ant::setAntAfraid(std::string name, DecisionTree *tree, Graph<AStarNode, AS
 	addFoodNodes();
 }
 
-void Ant::setAntAggressiv(){
-	m_type = ObjectType::ANT;
-	m_name = "Flack";
-
-	DecisionTree* tree = new DecisionTree();
-	tree->setAntTreeAggressiv();
-	m_decisionTree = tree;
-
-	m_speed = 0.1;
-	m_strength = 10;
-
-	glm::vec3 posFood(10.0, 0.0, -5.0);
-	glm::vec3 posSpawn(3.0, 0.0, 3.0);
-	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
-	Graph<AStarNode, AStarAlgorithm>* antGraph = new Graph<AStarNode, AStarAlgorithm>();
-	antGraph->setExampleAntAggressiv(posSpawn, posSpawn, posDefaultPlayer);
-	m_graph = antGraph;
-	for (int i = 0; i < m_graph->getGraph()->size(); i++){
-		if (m_graph->getGraph()->at(i)->getNodeType() == GraphNodeType::OTHER){
-			m_pathPatrol.push_back(m_graph->getGraph()->at(i));
-		}
-	}
-
-	m_lastTarget = antGraph->searchNode(GraphNodeType::FOOD);
-	m_target = m_lastTarget;
-	m_nextTarget = m_lastTarget;
-	m_lastTargetOnGraph = m_lastTarget;
-
-	m_position = glm::vec4(posSpawn, 1.0);
-	m_homeNode = m_lastTarget;
-	m_foodNodes.pop_back(); //Delete DefaultNode
-	m_foodNodes.push_back(antGraph->searchNode(GraphNodeType::FOOD));
-}
-
-void Ant::setAntAggressiv(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph){
-	m_type = ObjectType::ANT;
-	m_name = name;
-
-	/*DecisionTree* tree = new DecisionTree();
-	tree->setAntTreeAggressiv();*/
-	m_decisionTree = tree;
-
-	m_speed = 0.1;
-	m_strength = 10;
-
-	//glm::vec3 posFood(10.0, 0.0, -5.0);
-	//glm::vec3 posSpawn(3.0, 0.0, 3.0);
-	//glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
-	/*Graph<AStarNode, AStarAlgorithm>* antGraph = new Graph<AStarNode, AStarAlgorithm>();
-	antGraph->setExampleAntAggressiv(posSpawn, posSpawn, posDefaultPlayer);*/
-	m_graph = antGraph;
-	for (int i = 0; i < m_graph->getGraph()->size(); i++){
-		if (m_graph->getGraph()->at(i)->getNodeType() == GraphNodeType::OTHER){
-			m_pathPatrol.push_back(m_graph->getGraph()->at(i));
-		}
-	}
-
-	m_lastTarget = antGraph->searchNode(GraphNodeType::FOOD);
-	m_target = m_lastTarget;
-	m_nextTarget = m_lastTarget;
-	m_lastTargetOnGraph = m_lastTarget;
-
-	//m_position = glm::vec4(posSpawn, 1.0);
-	m_homeNode = m_lastTarget;
-	m_foodNodes.clear(); //Delete DefaultNode
-	m_foodNodes.push_back(m_lastTarget);
-}
+//void Ant::setAntAggressiv(){
+//	m_type = ObjectType::ANT;
+//	m_name = "Flack";
+//
+//	DecisionTree* tree = new DecisionTree();
+//	tree->setAntTreeAggressiv();
+//	m_decisionTree = tree;
+//
+//	m_speed = 0.1;
+//	m_strength = 10;
+//
+//	glm::vec3 posFood(10.0, 0.0, -5.0);
+//	glm::vec3 posSpawn(3.0, 0.0, 3.0);
+//	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
+//	Graph<AStarNode, AStarAlgorithm>* antGraph = new Graph<AStarNode, AStarAlgorithm>();
+//	antGraph->setExampleAntAggressiv(posSpawn, posSpawn, posDefaultPlayer);
+//	m_graph = antGraph;
+//	for (int i = 0; i < m_graph->getGraph()->size(); i++){
+//		if (m_graph->getGraph()->at(i)->getNodeType() == GraphNodeType::OTHER){
+//			m_pathPatrol.push_back(m_graph->getGraph()->at(i));
+//		}
+//	}
+//
+//	m_lastTarget = antGraph->searchNode(GraphNodeType::FOOD);
+//	m_target = m_lastTarget;
+//	m_nextTarget = m_lastTarget;
+//	m_lastTargetOnGraph = m_lastTarget;
+//
+//	m_position = glm::vec4(posSpawn, 1.0);
+//	m_homeNode = m_lastTarget;
+//	m_foodNodes.pop_back(); //Delete DefaultNode
+//	m_foodNodes.push_back(antGraph->searchNode(GraphNodeType::FOOD));
+//}
+//
+//void Ant::setAntAggressiv(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph){
+//	m_type = ObjectType::ANT;
+//	m_name = name;
+//
+//	/*DecisionTree* tree = new DecisionTree();
+//	tree->setAntTreeAggressiv();*/
+//	m_decisionTree = tree;
+//
+//	m_speed = 0.1;
+//	m_strength = 10;
+//
+//	//glm::vec3 posFood(10.0, 0.0, -5.0);
+//	//glm::vec3 posSpawn(3.0, 0.0, 3.0);
+//	//glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
+//	/*Graph<AStarNode, AStarAlgorithm>* antGraph = new Graph<AStarNode, AStarAlgorithm>();
+//	antGraph->setExampleAntAggressiv(posSpawn, posSpawn, posDefaultPlayer);*/
+//	m_graph = antGraph;
+//	for (int i = 0; i < m_graph->getGraph()->size(); i++){
+//		if (m_graph->getGraph()->at(i)->getNodeType() == GraphNodeType::OTHER){
+//			m_pathPatrol.push_back(m_graph->getGraph()->at(i));
+//		}
+//	}
+//
+//	m_lastTarget = antGraph->searchNode(GraphNodeType::FOOD);
+//	m_target = m_lastTarget;
+//	m_nextTarget = m_lastTarget;
+//	m_lastTargetOnGraph = m_lastTarget;
+//
+//	//m_position = glm::vec4(posSpawn, 1.0);
+//	m_homeNode = m_lastTarget;
+//	m_foodNodes.clear(); //Delete DefaultNode
+//	m_foodNodes.push_back(m_lastTarget);
+//}
