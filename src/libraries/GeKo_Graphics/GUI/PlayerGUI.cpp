@@ -1,6 +1,6 @@
 #include "PlayerGUI.h"
 
-PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWidth, const int windowHeight, const int questHeight, const int questWidth, Player* player, QuestHandler* qH)
+PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWidth, const int windowHeight, const int questHeight, const int questWidth, Player* player, QuestHandler* qH, Highscore* score)
 {
 	m_HUD_WIDTH = hudWidth;
 	m_HUD_HEIGHT = hudHeight;
@@ -8,6 +8,7 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	m_WINDOW_WIDTH = windowWidth;
 	m_QUEST_WIDTH = questWidth;
 	m_QUEST_HEIGHT = questHeight;
+	m_highscore = 0;
 
 	Texture bricks((char*)RESOURCES_PATH "/Texture/bricks.bmp");
 	m_hud = new GUI("testGUI", m_HUD_WIDTH, m_HUD_HEIGHT);
@@ -19,9 +20,20 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	m_hud->setUseScrollbar(false);
 	m_hud->setMoveable(false);
 
+	//m_scoreHUD = new GUI("testScore", 30, 10);
+	//m_scoreHUD->setPosition(100, 100);
+	//m_scoreHUD->setCollapsable(false);
+	//m_scoreHUD->setTitleBarVisible(false);
+	//m_scoreHUD->setBackgroundAlpha(0.5f);
+	//m_scoreHUD->setResizable(false);
+	//m_scoreHUD->setUseScrollbar(false);
+	//m_scoreHUD->setMoveable(false);
+	//m_scoreHUD->addElement(new GuiElement::Text("Score"));
+
 	//Generate GUI for EXP, LVL, HP
 	m_player = player;
 	m_questhandler = qH;
+	m_highscoreInstance = score;
 	hp = m_player->getHealth();
 	hpMax = m_player->getHealth();
 	exp = m_player->getExp();
@@ -54,6 +66,12 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	m_hud->addElement(new GuiElement::SameLine());
 	questButton = new GuiElement::PushButton("Quests");
 	m_hud->addElement(questButton);
+	m_hud->addElement(new GuiElement::SameLine());
+
+	m_hud->addElement(new GuiElement::Text("   Score"));
+	m_hud->addElement(new GuiElement::SameLine());
+	GuiElement::IntBox *scoreBox = new GuiElement::IntBox(&m_highscore, glm::fvec4(1.0f, 1.0f, 1.0f, 1.0f), glm::fvec4(0.7f, 0.7f, 0.7f, 1.0f));
+	m_hud->addElement(scoreBox);
 
 	m_questWindow = new GuiElement::NestedWindow();
 	m_questWindow->setPosition(560, 300);
@@ -65,7 +83,7 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	for (int i = 0; i < activeQuests.size(); i++){
 		actQuests->addElement(new GuiElement::Text(activeQuests.at(i)->getDescription()));
 	}
-	
+
 	finQuests = new GuiElement::Header("Finished quests");
 	finishedQuests = m_questhandler->getFinished();
 	if (finishedQuests.size() == 0){
@@ -125,6 +143,7 @@ GUI* PlayerGUI::getHUD()
 	return m_hud;
 }
 
+
 void PlayerGUI::update()
 {
 	hp = m_player->getHealth();
@@ -132,6 +151,7 @@ void PlayerGUI::update()
 	exp = m_player->getExp();
 	expMax = m_player->getLevelThreshold();
 	level = m_player->getLvl();
+	m_highscore = m_highscoreInstance->getScore();
 
 	activeQuests = m_questhandler->getActiveAndNotFinished();
 	actQuests->clearElements();

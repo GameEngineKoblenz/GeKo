@@ -7,7 +7,7 @@ Level::Level(const char* levelName)
 	m_questHandler = new QuestHandler();
 	m_fightSystem = new FightSystem();
 	m_hasTerrain = false;
-
+	m_highscore = new Highscore();
 }
 
 Level::~Level()
@@ -130,4 +130,8 @@ void Level::setGUI(PlayerGUI* playerGUI)
 PlayerGUI* Level::getPlayerGUI()
 {
 	return m_playerGui;
+}
+
+Highscore* Level::getHighscore(){
+	return m_highscore;
 }

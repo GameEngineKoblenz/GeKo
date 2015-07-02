@@ -8,7 +8,7 @@ The Player class is a Basic class to provide a playable character. It is just an
 It provides a spawnpoint location, a  name, a current, a speed and can be visualized by a Geometry. The Geometry has to be bound to a Node (see Scenegraph for details!).
 */
 enum Soundtype{
-	MOVESOUND, BACKGROUNDMUSIC, FIGHTSOUND, EATSOUND, QUESTSOUND, ITEMSOUND, FIRESOUND, LEVELUP
+	MOVESOUND, BACKGROUNDMUSIC, FIGHTSOUND, EATSOUND, QUESTSOUND, ITEMSOUND, FIRESOUND, LEVELUP, RAIN
 };
 
 class Player : public Object, public Subject<Player, Object_Event>

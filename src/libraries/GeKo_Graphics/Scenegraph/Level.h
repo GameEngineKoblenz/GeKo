@@ -6,6 +6,7 @@
 #include <iostream>
 #include <GeKo_Graphics/Geometry/Terrain.h>
 #include <GeKo_Graphics/GUI/PlayerGUI.h>
+#include <GeKo_Gameplay/Questsystem/Highscore.h>
 
 ///A Level is the necessary unit to create a game
 /**
@@ -68,7 +69,7 @@ public:
 	void setGUI(PlayerGUI* playerGUI);
 	PlayerGUI* getPlayerGUI();
 
-
+	Highscore* getHighscore();
 
 protected:
 	const char* m_levelName;
@@ -87,4 +88,5 @@ protected:
 
 	PlayerGUI* m_playerGui;
 
+	Highscore* m_highscore;
 };

@@ -3,11 +3,13 @@
 #include "GUI.h"
 #include <GeKo_Gameplay/Object/Player.h>
 #include <GeKo_Gameplay/Questsystem/QuestHandler.h>
+#include "GeKo_Gameplay/Questsystem/Highscore.h"
+
 
 /** A class which provides a GUI for the player. It will provide all informations like exp, level and health.*/
 class PlayerGUI{
 public:
-	PlayerGUI(const int hudWidth, const int hudHeight, const int windowHeight, const int windowWidth, const int questHeight, const int questWidth, Player* player, QuestHandler* qH);
+	PlayerGUI(const int hudWidth, const int hudHeight, const int windowHeight, const int windowWidth, const int questHeight, const int questWidth, Player* player, QuestHandler* qH, Highscore* score);
 	~PlayerGUI();
 
 	GUI* getHUD();
@@ -31,6 +33,7 @@ protected:
 
 	int hp, hpMax, exp, expMax, level;
 	Player* m_player;
+	Highscore* m_highscoreInstance;
 
 	std::vector<Quest*> activeQuests, finishedQuests;
 	QuestHandler* m_questhandler;
@@ -42,4 +45,5 @@ protected:
 	std::map<std::string, Texture*> *m_inventoryItems;
 	GuiElement::Inventory *m_inventory;
 	std::vector<Texture*> m_textures;
+	int m_highscore;
 };

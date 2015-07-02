@@ -204,9 +204,13 @@ public:
 				 if (count != 0){
 					 m_level->getPlayerGUI()->setTexture((char*)RESOURCES_PATH "/Texture/Branch_cookie.png");
 					 m_level->getPlayerGUI()->getInventory()->insert(std::pair<std::string, Texture*>(std::string("Branch"), m_level->getPlayerGUI()->getTextures()->back()));
+					 m_level->getHighscore()->addScore(1);
 				 }
 
 				 nodeB.getStaticObject()->getInventory()->clearInventory();
+				 if (!nodeB.getChildrenSet()->empty()){
+					 nodeB.deleteChildrenNode(nodeB.getChildrenSet()->at(0)->getNodeName());
+				 }
 				 std::vector<Goal*> tmp = m_level->getQuestHandler()->getQuests(GoalType::COLLECT);
 				 for (int i = 0; i < tmp.size(); i++)
 				 {
