@@ -36,4 +36,9 @@ std::vector<glm::vec3> foodTrees{
     glm::vec3(76.1, 0.0, 57.3), glm::vec3(65.0, 0.0, 83.5),
 	glm::vec3(88.2, 0.0, 73.2), glm::vec3(82.8, 0.0, 92.0)
 };
+
+std::vector<glm::vec3>Flower{
+	glm::vec3(100.0, 0.0, 100.0), glm::vec3(160, 0.0, 155), glm::vec3(157, 0.0, 157),
+	glm::vec3(95.0, 0.0, 160), glm::vec3(155, 0.0, 155)
+};
 }
