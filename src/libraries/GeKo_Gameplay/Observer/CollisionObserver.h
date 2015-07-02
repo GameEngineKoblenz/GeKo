@@ -89,7 +89,17 @@ public:
 				 std::vector<Goal*> tmp = m_level->getQuestHandler()->getQuests(GoalType::EATEN);
 				 for (int i = 0; i < tmp.size(); i++)
 				 {
-					 tmp.at(i)->increase();
+					 if (tmp.at(i)->getAiTypeId() == nodeA.getAI()->getObjectType()){
+						 if (nodeA.getAI()->getAntType() == AntType::WORKER & tmp.at(i)->getId() == 4){
+							tmp.at(i)->increase();
+						 }
+						 if (nodeA.getAI()->getAntType() == AntType::GUARD & tmp.at(i)->getId() == 5){
+							 tmp.at(i)->increase();
+						 }
+						 if (nodeA.getAI()->getAntType() == AntType::QUEEN & tmp.at(i)->getId() == 6){
+							 tmp.at(i)->increase();
+						 }
+					 }
 				 }
 				
 				m_level->getActiveScene()->getScenegraph()->searchNode("AntHome")->getStaticObject()->resetDeadAnt(nodeA.getAI()->getAntType());
@@ -129,7 +139,9 @@ public:
 							 std::vector<Goal*> tmp = m_level->getQuestHandler()->getQuests(GoalType::KILL);
 							 for (int i = 0; i < tmp.size(); i++)
 							 {
-								 tmp.at(i)->increase();
+								 if (tmp.at(i)->getAiTypeId() == nodeA.getAI()->getObjectType()){
+									 tmp.at(i)->increase();
+								 }
 							 }
 						 }
 						 m_counter->setTime(0);
@@ -182,7 +194,20 @@ public:
 				 //TODO: Wahlweise aus ALLEN AI-FoodNodes
 				 if (nodeB.getStaticObject()->getInventory()->countItem(ItemType::COOKIE) == 0){
 					 nodeA.getAI()->deleteFoodNode(glm::vec3(nodeB.getStaticObject()->getPosition()));
+					//TODO: Die Ant sollte wenn der Baum gelöscht wird ein neues Ziel suchen
 				 }
+			 }
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::COIN)
+			 {
+				 m_level->getHighscore()->addScore(5);
+				 glm::vec3 temp;
+				 temp.x = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
+				 temp.z = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
+				 temp.y = m_level->getTerrain()->getHeight(glm::vec2(temp.x, temp.z)) + 2.0;
+				 nodeB.addTranslation(temp);
+				 nodeB.getStaticObject()->setPosition(temp);
+				 std::cout << "Coin Pos :" << temp.x << " " << temp.y << " " << temp.z << std::endl;
+
 			 }
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::HOUSE && nodeA.getAI()->getAntType() == AntType::GUARD)
 			 {

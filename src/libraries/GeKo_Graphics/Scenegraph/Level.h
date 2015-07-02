@@ -50,6 +50,7 @@ public:
 	///Return the m_questHandler
 	/**The Quest-Handler is managing all the Quests of one level and is unique for every level*/
 	QuestHandler* getQuestHandler();
+	void setQuestHandler(QuestHandler* qH);
 
 	///Returns the m_fightSystem
 	/**The FightSystem is unique for every level and handles all the fights of KI and Player*/

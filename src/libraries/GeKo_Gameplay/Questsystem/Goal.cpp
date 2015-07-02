@@ -39,24 +39,9 @@ void Goal::setGoalCount(int goaldC){
 	 return ItemType::DEFAULTITEM;
 }
 
-void Goal::setItemType(ItemType iType){
-
-}
-
-void Goal::increase(){
-
-}
-
-
-void Goal::setAiTypeId(ObjectType id){
-
-}
-
-
-void Goal::setAiID(int id){
-
-}
-
-void Goal::setPosition(glm::vec3 m_position){
-
-}
+void Goal::setItemType(ItemType iType){}
+void Goal::increase(){}
+void Goal::setAiTypeId(ObjectType id){}
+ObjectType Goal::getAiTypeId(){ return ObjectType::DEFAULTOBJECT; }
+void Goal::setAiID(int id){}
+void Goal::setPosition(glm::vec3 m_position){}

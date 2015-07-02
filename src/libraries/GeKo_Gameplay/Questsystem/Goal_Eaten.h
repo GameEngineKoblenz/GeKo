@@ -24,6 +24,7 @@ public:
 
 	///Sets the type of object which has to be eaten
 	void setAiTypeId(ObjectType id);
+	ObjectType getAiTypeId();
 	///Increases the counter
 	void increase();
 

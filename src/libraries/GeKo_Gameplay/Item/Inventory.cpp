@@ -72,7 +72,8 @@ void Inventory::deleteItem(int position){
 	//TODO: Fix
 	//This method deletes the content of the position, but don´t delete the position... Or so...
 	//So that there comes an error, if you delete the item and after that add the same item again!
-	m_content.erase(m_content.begin() + position);
+	//m_content.erase(m_content.begin() + position);
+	m_content.at(position).first = 0;
 }
 
 /// Attention: Deletes all the items with the typeId!!!
@@ -90,8 +91,7 @@ void Inventory::reduceItem(int position, int count){
 		m_content.at(position).first--;
 	}
 	if (m_content.at(position).first <= 0){
-		m_content.at(position).first = 0;
-		//deleteItem(position);
+		deleteItem(position);
 	}
 }
 
@@ -104,7 +104,10 @@ void Inventory::reduceItem(ItemType typeId, int count){
 }
 
 void Inventory::clearInventory(){
-	m_content.clear();
+	//m_content.clear();
+	for (int i = 0; i < m_content.size(); i++){
+		deleteItem(i);
+	}
 }
 
 int Inventory::countItem(ItemType typeId){

@@ -81,6 +81,10 @@ QuestHandler* Level::getQuestHandler()
 	return m_questHandler;
 }
 
+void Level::setQuestHandler(QuestHandler* qh){
+	m_questHandler = qh;
+}
+
 FightSystem* Level::getFightSystem()
 {
 	return m_fightSystem;

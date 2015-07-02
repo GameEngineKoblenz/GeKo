@@ -26,7 +26,7 @@ void StaticObject::setTree(){
 	branch.setName("Branch");
 	branch.setTypeId(ItemType::BRANCH);
 	m_inventory->addItem(&cookie, 25);
-	m_inventory->addItem(&branch, 50);
+	m_inventory->addItem(&branch, 2);
 }
 
 void StaticObject::setTree(int i){

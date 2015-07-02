@@ -219,6 +219,7 @@ void AntHome::resetDeadGuard(int i){
 		m_guards.at(i)->getAI()->setName(name.str());
 		m_guards.at(i)->getAI()->getInventory()->clearInventory();
 
+		m_guards.at(i)->getAI()->setStates(States::HEALTH, true);
 		m_guards.at(i)->getAI()->setHasDied(false);
 	}
 }
@@ -236,15 +237,17 @@ void AntHome::resetDeadWorker(int i){
 		m_workers.at(i)->getAI()->setName(name.str());
 		m_workers.at(i)->getAI()->getInventory()->clearInventory();
 
+		m_workers.at(i)->getAI()->setStates(States::HEALTH, true);
 		m_workers.at(i)->getAI()->setHasDied(false);
 	}
 }
 
 void AntHome::resetDeadAnt(AntType type){
+	//TODO: Bisher wird nur die erste Ant wieder respawnt, weil 0 übergeben wird!
 	if (type == AntType::GUARD){
 		resetDeadGuard(0);
 	}
-	if (type == AntType::QUEEN){
+	if (type == AntType::WORKER){
 		resetDeadWorker(0);
 	}
 }

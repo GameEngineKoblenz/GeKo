@@ -100,17 +100,17 @@ void CollisionTest::update()
 						{
 						}
 
-						else if (collisionBefore & collisionAfter)
+						/*else if (collisionBefore & collisionAfter)
 						{
 							if (objects.at(j)->getType() == ClassType::TERRAIN)
 							{
 								notify(*objects.at(i), Collision_Event::PLANE_COLLISION);
 							}
 							collisionDetected = true;
-						}
+						}*/
 
 						//Sometimes before there was a collision and untill now there was no new collision.
-						else if (collisionBefore & !collisionAfter & !collisionDetected)
+						else if ( collisionBefore & !collisionAfter)
 						{
 							if (objects.at(i)->getType() == ClassType::AI & objects.at(j)->getType() == ClassType::PLAYER)
 							{

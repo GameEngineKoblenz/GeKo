@@ -26,6 +26,10 @@ void Goal_Kill::setAiTypeId(ObjectType id){
 	m_AiTypeId = id;
 }
 
+ObjectType Goal_Kill::getAiTypeId(){
+	return m_AiTypeId;
+}
+
 void Goal_Kill::increase(){
 	m_actualCount++;
 	if (m_actualCount >= m_goalCount){

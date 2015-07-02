@@ -26,6 +26,10 @@ void Goal_Eaten::setAiTypeId(ObjectType id){
 	m_AiTypeId = id;
 }
 
+ObjectType Goal_Eaten::getAiTypeId(){
+	return m_AiTypeId;
+}
+
 void Goal_Eaten::increase(){
 	m_actualCount++;
 	if (m_actualCount >= m_goalCount){

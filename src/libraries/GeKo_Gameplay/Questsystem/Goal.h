@@ -40,6 +40,7 @@ public:
 	virtual void increase();
 
 	virtual void setAiTypeId(ObjectType id);
+	virtual ObjectType getAiTypeId();
 
 	virtual void setAiID(int id);
 	virtual void setPosition(glm::vec3 m_position);

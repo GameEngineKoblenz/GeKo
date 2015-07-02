@@ -24,6 +24,7 @@ public:
 	void setGoalCount(int goalC);
 	///Sets the type of object which has to be killed
 	void setAiTypeId(ObjectType id);
+	ObjectType getAiTypeId();
 
 	///Increases the counter
 	void increase();
