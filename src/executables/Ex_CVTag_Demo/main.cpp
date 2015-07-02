@@ -149,6 +149,9 @@ int main()
 	auto flowerHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Flower.ply");
 	auto flowerGeometry = flowerHandler.get().toGeometry();
 
+	auto fireHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/fireplace.obj");
+	auto fireGeometry = fireHandler.get().toGeometry();
+
 	Texture terrainTex((char*)RESOURCES_PATH "/Texture/Grass2.jpg");
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
 	Texture texTree((char*)RESOURCES_PATH "/Texture/cookie.jpg");
@@ -158,6 +161,8 @@ int main()
 	Texture texStamm((char*)RESOURCES_PATH "/Texture/bark_loo.jpg");
 	Texture texLeaf((char*)RESOURCES_PATH "/Texture/Grass.jpg");
 	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
+	Texture texFire((char*)RESOURCES_PATH "/Texture/fireplace.png");
+
 
 	//===================================================================//
 	//==================Shaders for your program========================//
@@ -377,11 +382,19 @@ int main()
 		name.str("");
 	}
 
-	/*Node *flowerNode = new Node("Flower");
-	flowerNode->addGeometry(&flowerGeometry);
-	flowerNode->addTranslation(glm::vec3(geko.getPosition().x, terrain2.getHeight(glm::vec2(geko.getPosition().x, geko.getPosition().z)), geko.getPosition().z));
-	flowerNode->addScale(0.4, 0.4, 0.4);
-	testLevel.getActiveScene()->getScenegraph()->getRootNode()->addChildrenNode(flowerNode);*/
+	// ==============================================================
+	// == Object (Fireplace) ==========================================
+	// ==============================================================
+	StaticObject* fireplace = new StaticObject();
+	Node *fireNode = new Node("Flower");
+	fireNode->addGeometry(&fireGeometry);
+	fireNode->addScale(0.3, 0.3, 0.3);
+	fireNode->addTexture(&texFire);
+	fireNode->setObject(fireplace);	
+	fireNode->getBoundingSphere()->radius = 1.0;
+	fireNode->addTranslation(glm::vec3(143, terrain2.getHeight(glm::vec2(143, 63)), 63));
+	fireplace->setPosition(glm::vec3(143, terrain2.getHeight(glm::vec2(143, 63)), 63));
+	testLevel.getActiveScene()->getScenegraph()->getRootNode()->addChildrenNode(fireNode);
 	
 	// ==============================================================
 	// == Object (Coin) =============================================

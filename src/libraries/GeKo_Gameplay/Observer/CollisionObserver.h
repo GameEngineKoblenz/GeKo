@@ -197,18 +197,7 @@ public:
 					//TODO: Die Ant sollte wenn der Baum gelöscht wird ein neues Ziel suchen
 				 }
 			 }
-			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::COIN)
-			 {
-				 m_level->getHighscore()->addScore(5);
-				 glm::vec3 temp;
-				 temp.x = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
-				 temp.z = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
-				 temp.y = m_level->getTerrain()->getHeight(glm::vec2(temp.x, temp.z)) + 2.0;
-				 nodeB.addTranslation(temp);
-				 nodeB.getStaticObject()->setPosition(temp);
-				 std::cout << "Coin Pos :" << temp.x << " " << temp.y << " " << temp.z << std::endl;
-
-			 }
+			
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::HOUSE && nodeA.getAI()->getAntType() == AntType::GUARD)
 			 {
 				 int count = nodeB.getStaticObject()->getInventory()->countItem(ItemType::COOKIE);
@@ -248,6 +237,23 @@ public:
 					 }
 				 }
 			 }
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::COIN)
+			 {
+				 m_level->getHighscore()->addScore(5);
+				 glm::vec3 temp;
+				 temp.x = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
+				 temp.z = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
+				 temp.y = m_level->getTerrain()->getHeight(glm::vec2(temp.x, temp.z)) + 2.0;
+				 nodeB.addTranslation(temp);
+				 nodeB.getStaticObject()->setPosition(temp);
+				 std::cout << "Coin Pos :" << temp.x << " " << temp.y << " " << temp.z << std::endl;
+
+			 }
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::FIREPLACE)
+			 {
+				 m_level->getHighscore()->addScore(10);
+			 }
+
 		 }
 	 }
 
