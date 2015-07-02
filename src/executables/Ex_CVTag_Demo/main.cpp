@@ -13,6 +13,7 @@
 #include "GeKo_Gameplay/AI_Decisiontree/DecisionTree.h"
 #include <GeKo_Gameplay/Object/Geko.h>
 #include <GeKo_Gameplay/Object/AI.h>
+#include "GeKo_Gameplay/Object/Coin.h"
 
 #include <GeKo_Graphics/Geometry/AntMesh.h>
 #include <GeKo_Graphics/Geometry/AntHomeMesh.h>
@@ -127,21 +128,26 @@ int main()
 	//==================================================================//
 	ResourceManager manager;
 
-	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geko.ply");
+	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Geko.ply");
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
-	auto treeHandle = manager.loadStaticMesh(RESOURCES_PATH "/Tree.ply");
+	auto treeHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Tree.ply");
 	auto treeGeometry = treeHandle.get().toGeometry();
 
-	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
+	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/AntHome.ply");
 	auto antHomeGeometry = antHomeHandler.get().toGeometry();
 
-	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
+	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 
-	auto bushHandler = manager.loadStaticMesh(RESOURCES_PATH "/Bush2.obj");
+	auto bushHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Bush2.obj");
 	auto bushGeometry = bushHandler.get().toGeometry();
 
+	auto coinHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Goldcoin.obj");
+	auto coinGeometry = coinHandler.get().toGeometry();
+
+	auto flowerHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Flower.ply");
+	auto flowerGeometry = flowerHandler.get().toGeometry();
 
 	Texture terrainTex((char*)RESOURCES_PATH "/Texture/Grass2.jpg");
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
@@ -151,6 +157,7 @@ int main()
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
 	Texture texStamm((char*)RESOURCES_PATH "/Texture/bark_loo.jpg");
 	Texture texLeaf((char*)RESOURCES_PATH "/Texture/Grass.jpg");
+	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
 
 	//===================================================================//
 	//==================Shaders for your program========================//
@@ -189,7 +196,7 @@ int main()
 	StaticObject terrainObject;
 	terrainObject.setClassType(ClassType::TERRAIN);
 
-	Terrain terrain2((char*)RESOURCES_PATH "/heightmap.jpg", 0.0f, 0.0f);
+	Terrain terrain2((char*)RESOURCES_PATH "/Texture/heightmap.jpg", 0.0f, 0.0f);
 	Node terrainNode2("Terrain");
 	terrainNode2.addGeometry(&terrain2);
 	terrainNode2.addTexture(&terrainTex);
@@ -201,7 +208,7 @@ int main()
 	//==================Object declarations - Geometry, Texture, Node=== //
 	//==========================Object: Player===========================//
 
-	GekoMesh gekoMesh;
+	//GekoMesh gekoMesh;
 	geko.setLevelThreshold(100.0);
 	geko.setExp(0.0);
 	geko.setLevel(0);
@@ -346,13 +353,57 @@ int main()
 	}
 
 	// ==============================================================
+	// == Object (Flower) ==========================================
+	// ==============================================================
+
+	for (int i = 0; i<TreeData::Flower.size(); i++)
+	{
+		name << "Flower2Wiese" << i;
+		stringname = name.str();
+		StaticObject *flowerStatic = new StaticObject();
+		flowerStatic->setTree(50 / TreeData::Flower.size());
+		Node *flowerNode = new Node(stringname);
+		flowerNode->addGeometry(&flowerGeometry);
+		flowerNode->addTexture(&texLeaf);
+		flowerNode->setObject(flowerStatic);
+		name.str("");
+		tmp.x = TreeData::Flower[i].x;
+		tmp.z = TreeData::Flower[i].z;
+		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		flowerNode->addTranslation(tmp);
+		flowerNode->getStaticObject()->setPosition(tmp);
+		flowerNode->getBoundingSphere()->radius = 0.5;
+		testScene.getScenegraph()->getRootNode()->addChildrenNode(flowerNode);
+		name.str("");
+	}
+
+	/*Node *flowerNode = new Node("Flower");
+	flowerNode->addGeometry(&flowerGeometry);
+	flowerNode->addTranslation(glm::vec3(geko.getPosition().x, terrain2.getHeight(glm::vec2(geko.getPosition().x, geko.getPosition().z)), geko.getPosition().z));
+	flowerNode->addScale(0.4, 0.4, 0.4);
+	testLevel.getActiveScene()->getScenegraph()->getRootNode()->addChildrenNode(flowerNode);*/
+	
+	// ==============================================================
+	// == Object (Coin) =============================================
+	// ==============================================================
+
+
+	Coin *coinFactory = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory2 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory3 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory4 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory5 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory6 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+
+
+	// ==============================================================
 	// == Object (Anthome) ==========================================
 	// ==============================================================
 
 	glm::vec3 posFood2((terrain2.getResolutionX() / 2.0f) + 10.0, 0.0, (terrain2.getResolutionY() / 2.0f) - 5.0);
 	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
-	AntMesh antMesh;
+	//AntMesh antMesh;
 
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
@@ -534,6 +585,7 @@ int main()
 		//==================Update your Objects per Frame here =============//
 		//==================================================================//
 		collision.update();
+		coinFactory->update();
 
 		//===================================================================//
 		//==================Input and update for the Player==================//
@@ -578,7 +630,7 @@ int main()
 
 		glfwSwapBuffers(testWindow.getWindow());
 		glfwPollEvents();
-		std::cout << "R" << slight.m_radius << ", Angle " << slight.m_angle << ", Expo" << slight.m_exponent << std::endl;
+		//std::cout << "R" << slight.m_radius << ", Angle " << slight.m_angle << ", Expo" << slight.m_exponent << std::endl;
 	}
 
 
