@@ -366,12 +366,6 @@ int main()
 	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
 	AntMesh antMesh;
 
-	DecisionTree *aggressivedecisionTree = new DecisionTree();
-	aggressivedecisionTree->setAntTreeAggressiv();
-
-	DecisionTree *afraidDecisionTree = new DecisionTree();
-	afraidDecisionTree->setAntTreeAfraid();
-
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
 	possFoods.push_back(TreeData::forest1);
@@ -383,7 +377,8 @@ int main()
 	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, afraidDecisionTree, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);
+	antHome.setGrapHighOnTerrain(&terrain2);
 	
 	antHome.setGrapHighOnTerrain(&terrain2);
 	antHome.setAntScale(0.5);

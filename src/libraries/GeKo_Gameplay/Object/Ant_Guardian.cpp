@@ -5,7 +5,7 @@ Ant_Guardian::Ant_Guardian(){
 	m_id = 0;
 	m_type = ObjectType::ANT;
 	m_antType = AntType::GUARD;
-	m_name = "defaultObject";
+	m_name = "defaultGuard";
 
 	m_myNodeName = "NULL";
 
@@ -19,6 +19,7 @@ Ant_Guardian::Ant_Guardian(){
 
 	m_decisionTree = new DecisionTree();
 
+	m_states.clear();
 	std::pair<States, bool> s(States::HUNGER, false);
 	m_states.push_back(s);
 	s.first = States::VIEW;
@@ -68,6 +69,7 @@ void Ant_Guardian::decide(){
 		}
 		break;
 	case TreeOutput::PLAYER:
+		//TODO Nach dem Player läuft die Ant nicht mehr zu anderen Zielen
 		if (lastOutput != m_targetType){
 			m_target = m_playerNode;
 			updatePath();
@@ -128,7 +130,8 @@ void Ant_Guardian::updatePath(){
 //	//std::cout << "Laufe auf Patrouille!!!" << " Next target at path: " << m_nextTarget->getName() << std::endl;
 //}
 
-void Ant_Guardian::setAntAggressiv(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph){
+void Ant_Guardian::setAntAggressiv(int id, std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph){
+	m_id = id;
 	m_name = name;
 	m_decisionTree = tree;
 

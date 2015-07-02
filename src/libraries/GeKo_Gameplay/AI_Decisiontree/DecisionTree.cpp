@@ -110,11 +110,11 @@ void DecisionTree::setAntTreeAfraid(){
 
 void DecisionTree::setAntTreeAggressiv(){
 	DecisionTreeNode defaultNode;
-	m_rootNode = new DecisionTreeNode(1, &defaultNode);
-	DecisionTreeNode* lView = new DecisionTreeNode(2, &defaultNode);
-	DecisionTreeNode* rView = new DecisionTreeNode(3, &defaultNode);
-	DecisionTreeNode* lHunger = new DecisionTreeNode(4, &defaultNode);
-	DecisionTreeNode* rHunger = new DecisionTreeNode(5, &defaultNode);
+	m_rootNode = new DecisionTreeNode(1, &defaultNode, "root");
+	DecisionTreeNode* lView = new DecisionTreeNode(2, &defaultNode, "lView");
+	DecisionTreeNode* rView = new DecisionTreeNode(3, &defaultNode, "rView");
+	DecisionTreeNode* lHunger = new DecisionTreeNode(4, &defaultNode, "lHunger");
+	DecisionTreeNode* rHunger = new DecisionTreeNode(5, &defaultNode, "rHunger");
 
 	m_rootNode->setStateID(States::VIEW);
 

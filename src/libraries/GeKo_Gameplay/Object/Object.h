@@ -19,6 +19,9 @@ public:
 	Object();
 	~Object();
 
+	void setName(std::string newName);
+	std::string getName();
+
 	void setPosition(glm::vec4 pos);
 	void setPosition(glm::vec3 pos);
 	glm::vec4 getPosition();
@@ -28,6 +31,10 @@ public:
 	void setHealth(float newHealth);
 	float getHealth();
 	float getHealthMax();
+
+	void setHunger(float newHunger);
+	float getHunger();
+	float getHungerMax();
 
 	void setNodeName(std::string nodeName);
 	std::string getNodeName();

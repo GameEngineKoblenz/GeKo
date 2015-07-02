@@ -404,6 +404,7 @@ void Renderer::useShadowMapping(bool useShadowMapping, int *pcf, ConeLight *cone
 
   if (!m_smCam)
     m_smCam = new Pilotview("smCam");
+  m_smCam->setNearFar(m_smCam->getNear(), 1000.0f);
 
   if (m_pcf != pcf)
 	  m_pcf = pcf;

@@ -21,6 +21,7 @@ Geko::Geko(std::string gekoName, glm::vec3 spawnPoint){
 
 	m_inventory = new Inventory();
 
+	m_states.clear();
 	std::pair<States, bool> s(States::HUNGER, false);
 	m_states.push_back(s);
 	s.first = States::HEALTH;

@@ -7,6 +7,8 @@
 
 #include "Object.h"
 
+#include "AntType.h"
+
 ///This class represents objects like trees, which are not controlled by the player or by a AI
 class StaticObject : public Object
 {
@@ -17,5 +19,7 @@ public:
 	void setTree();
 	void setTree(int i);
 	void setExampleAntHome();
+
+	virtual void resetDeadAnt(AntType type);
 
 };

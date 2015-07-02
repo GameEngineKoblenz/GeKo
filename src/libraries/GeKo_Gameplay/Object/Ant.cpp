@@ -70,6 +70,7 @@ Ant::Ant(glm::vec4 position){
 
 	m_decisionTree = new DecisionTree();
 
+	m_states.clear();
 	std::pair<States, bool> s(States::HUNGER, false);
 	m_states.push_back(s);
 	s.first = States::VIEW;

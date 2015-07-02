@@ -47,3 +47,5 @@ void StaticObject::setExampleAntHome(){
 	m_type = ObjectType::HOUSE;
 	m_name = "AntHome";
 }
+
+void StaticObject::resetDeadAnt(AntType type){}

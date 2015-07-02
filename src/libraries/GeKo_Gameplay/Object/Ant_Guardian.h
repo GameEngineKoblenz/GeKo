@@ -23,7 +23,7 @@ public:
 	//Updates/rotates path to walk on patrol
 	//void rotatePathPatrol();
 
-	void setAntAggressiv(std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph);
+	void setAntAggressiv(int id, std::string name, DecisionTree *tree, Graph<AStarNode, AStarAlgorithm> *antGraph);
 
 protected:
 	std::vector<AStarNode*> m_pathPatrol;

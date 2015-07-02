@@ -284,12 +284,6 @@ int main()
 	glm::vec3 posSpawn(3.0, 0.0, 3.0);
 	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
 
-	DecisionTree *aggressivedecisionTree = new DecisionTree();
-	aggressivedecisionTree->setAntTreeAggressiv();
-
-	DecisionTree *afraidDecisionTree = new DecisionTree();
-	afraidDecisionTree->setAntTreeAfraid();
-
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	antAfraidGraph->setExampleAntAfraid(posSpawn, posFood, posDefaultPlayer);
 
@@ -297,7 +291,7 @@ int main()
 	////antHome.generateGuards(5, &aiObserver);
 	//antHome.generateWorkers(1, &aiObserver);
 	SoundFileHandler sfh(1000);
-	AntHome antHome(posSpawn, &sfh, antMesh, &soundObserver, &playerObserver, &texCV, &texCV, aggressivedecisionTree, afraidDecisionTree, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antMesh, &soundObserver, &playerObserver, &texCV, &texCV, antAfraidGraph);
 	antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
 	antHome.addAntsToSceneGraph(testScene.getScenegraph()->getRootNode());
 

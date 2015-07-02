@@ -43,7 +43,7 @@ public:
 				 else if (node.getType() == ClassType::AI)
 				 {
 					 float height = tmp->getHeight(glm::vec2(node.getAI()->getPosition().x, node.getAI()->getPosition().z));
-					 if (node.getBoundingSphere()->center.y - node.getBoundingSphere()->radius <= height + 1.5){
+					 if (node.getBoundingSphere()->center.y-node.getBoundingSphere()->radius <= height + 1.5f){
 						 node.setGravity(false);
 						 node.getAI()->setPosition(glm::vec4(node.getAI()->getPosition().x, height + 1.5f, node.getAI()->getPosition().z, 1.0));
 					 }
@@ -77,7 +77,7 @@ public:
 				 else if (node.getType() == ClassType::AI)
 				 {
 					 float height = 0.5;
-					if (node.getBoundingSphere()->center.y - node.getBoundingSphere()->radius <= height + 0.5){
+					 if (node.getBoundingSphere()->center.y - node.getBoundingSphere()->radius <= height + 0.5f){
 						 node.setGravity(false);
 						 node.getAI()->setPosition(glm::vec4(node.getAI()->getPosition().x, height, node.getAI()->getPosition().z, 1.0));
 					 }

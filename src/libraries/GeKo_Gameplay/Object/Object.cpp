@@ -31,6 +31,14 @@ Object::Object()
 
 Object::~Object(){}
 
+void Object::setName(std::string newName){
+	m_name = newName;
+}
+
+std::string Object::getName(){
+	return m_name;
+}
+
 void Object::setPosition(glm::vec4 pos){
 	m_position = pos;
 }
@@ -58,6 +66,18 @@ float Object::getHealth(){
 
 float Object::getHealthMax(){
 	return m_healthMax;
+}
+
+void Object::setHunger(float newHunger){
+	m_hunger = newHunger;
+}
+
+float Object::getHunger(){
+	return m_hunger;
+}
+
+float Object::getHungerMax(){
+	return m_hungerMax;
 }
 
 void Object::setNodeName(std::string nodeName)

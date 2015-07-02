@@ -63,7 +63,7 @@ void Level::changeScene(std::string sceneName)
 
 	if (success)
 	{
-		std::cout << "SUCCESS: The scene was successfully changed!" << std::endl;
+		//std::cout << "SUCCESS: The scene was successfully changed!" << std::endl;
 	}
 	else
 	{

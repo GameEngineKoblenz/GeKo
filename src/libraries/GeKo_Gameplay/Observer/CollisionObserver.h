@@ -56,16 +56,16 @@ public:
 			 break;
 
 		 case Collision_Event::COLLISION_KI_PLAYER:
-			 tp = nodeA.getAI()->getInventory()->countItem(ItemType::COOKIE);
+			//AI is dead; Otherwise Collision_Event::COLLISION_AI_FIGHT_PLAYER
 			 nodeA.getBoundingSphere()->setCollisionDetected(true);
 			 nodeA.getAI()->getGraph()->searchNode(GraphNodeType::OBJECT)->setPosition(glm::vec3(nodeB.getPlayer()->getPosition()));
 			 nodeA.getAI()->viewArea(true);
 
-			
 			 if (!nodeA.getAI()->getStates(States::HEALTH))
 			 {
 				 nodeB.getPlayer()->eat();
 
+				 tp = nodeA.getAI()->getInventory()->countItem(ItemType::COOKIE);
 				 if (tp > 0){
 					nodeB.getPlayer()->collectItem(ItemType::COOKIE, nodeA.getAI()->getInventory()->countItem(ItemType::COOKIE));
 					m_level->getPlayerGUI()->setTexture((char*)RESOURCES_PATH "/Texture/Cookie_02.png");
@@ -74,7 +74,7 @@ public:
 				 }
 				 
 
-				 m_level->getActiveScene()->getScenegraph()->getRootNode()->deleteChildrenNode(nodeA.getNodeName());
+				 //m_level->getActiveScene()->getScenegraph()->getRootNode()->deleteChildrenNode(nodeA.getNodeName());
 
 				 //std::vector<ParticleSystem*>* ps = m_level->getActiveScene()->getScenegraph()->getParticleSet();
 				 for (auto particle : *ps)
@@ -87,11 +87,12 @@ public:
 				 }
 
 				 std::vector<Goal*> tmp = m_level->getQuestHandler()->getQuests(GoalType::EATEN);
-
 				 for (int i = 0; i < tmp.size(); i++)
 				 {
 					 tmp.at(i)->increase();
 				 }
+				
+				m_level->getActiveScene()->getScenegraph()->searchNode("AntHome")->getStaticObject()->resetDeadAnt(nodeA.getAI()->getAntType());
 			 }
 			 
 			 break;

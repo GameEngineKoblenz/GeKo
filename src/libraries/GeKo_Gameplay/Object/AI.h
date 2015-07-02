@@ -31,6 +31,9 @@ public:
 	AI(glm::vec4 position);
 	~AI();
 
+	void setPosition(glm::vec4);
+	void setPosition(glm::vec3);
+
 	AStarNode* getPosHome();
 	void setPosHome(AStarNode* pos);
 
@@ -69,7 +72,11 @@ public:
 	void updateSourcesInMap();
 	void stopSourcesInMap();
 
+	void setHasDied(bool b);
 	bool hasDied();
+
+	//Angle between viewDirection and next target
+	float getPhi();
 
 	AntType getAntType();
 
@@ -97,6 +104,8 @@ protected:
 
 	std::map<SoundtypeAI, std::string> m_soundMap;
 	bool m_hasDied;
+
+	float m_phi;
 
 	AntType m_antType;
 };

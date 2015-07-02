@@ -372,15 +372,8 @@ int main()
 	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
 	auto antHomeGeometry = antHomeHandler.get().toGeometry();
 
-	glm::vec3 posFood(10.0, 0.0, -5.0);
 	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 	AntMesh antMesh;
-
-	DecisionTree *aggressivedecisionTree = new DecisionTree();
-	aggressivedecisionTree->setAntTreeAggressiv();
-
-	DecisionTree *afraidDecisionTree = new DecisionTree();
-	afraidDecisionTree->setAntTreeAfraid();
 
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
@@ -393,11 +386,11 @@ int main()
 	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, aggressivedecisionTree, afraidDecisionTree, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);
 	antHome.setGrapHighOnTerrain(&terrain2);
 
 	antHome.setAntScale(0.5);
-	antHome.generateWorkers(0, testScene.getScenegraph()->getRootNode());
+	antHome.generateWorkers(1, testScene.getScenegraph()->getRootNode());
 	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
 
 	Node homeNode("AntHome");

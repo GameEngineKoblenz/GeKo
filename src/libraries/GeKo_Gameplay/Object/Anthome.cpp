@@ -4,7 +4,9 @@ AntHome::AntHome(){
 
 }
 
-AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, DecisionTree *aggressiveDecisionTree, DecisionTree *afraidDecisionTree, Graph<AStarNode, AStarAlgorithm> *afraidGraph){
+AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, Graph<AStarNode, AStarAlgorithm> *afraidGraph){
+	m_myNodeName = "Anthome";
+	
 	m_position = position;
 	m_antMesh = antMesh;
 	//Texture texCV((char*)RESOURCES_PATH "/cv_logo.bmp");
@@ -13,13 +15,20 @@ AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, So
 
 	m_guardsDistanceToHome = 6;
 	setGraphGuards();
-
-	m_aggressiveDecisionTree = aggressiveDecisionTree;
 	m_afraidGraph = afraidGraph;
-	m_afraidDecisionTree = afraidDecisionTree;
-	m_numberOfGuards = 0;
-	m_numberOfWorkers = 0;
+
+	DecisionTree *aggressivedecisionTree = new DecisionTree();
+	aggressivedecisionTree->setAntTreeAggressiv();
+	m_guardDecisionTree = aggressivedecisionTree;
+	DecisionTree *afraidDecisionTree = new DecisionTree();
+	afraidDecisionTree->setAntTreeAfraid();
+	m_workerDecisionTree = afraidDecisionTree;
+
 	m_numberOfAnts = 0;
+	m_numberOfGuards = 0;
+	m_numerOfDeadGuards = m_numberOfGuards;
+	m_numberOfWorkers = 0;
+	m_numberOfDeadWorkers = m_numberOfWorkers;
 	m_objectObserver = objectObserver;
 	m_soundObserver = soundObserver;
 	m_gravity = new Gravity();
@@ -61,7 +70,7 @@ void AntHome::generateGuards(int i, Node *root){
 		position.w = 0.0;
 		//Ant (AI)
 		Ant_Guardian *antAI = new Ant_Guardian();
-		antAI->setAntAggressiv(name.str(), m_aggressiveDecisionTree, m_guardGraph);
+		antAI->setAntAggressiv(m_numberOfAnts, name.str(), m_guardDecisionTree, m_guardGraph);
 		aiGuardNode->setObject(antAI);
 		antAI->addObserver(m_objectObserver);
 		antAI->setSoundHandler(m_sfh);
@@ -70,6 +79,7 @@ void AntHome::generateGuards(int i, Node *root){
 		name.str("");
 		root->addChildrenNode(aiGuardNode);
 		m_guards.push_back(aiGuardNode);
+		m_numerOfDeadGuards = m_numberOfGuards;
 		i--;
 		//printPosGuards();
 	}
@@ -95,9 +105,9 @@ void AntHome::generateWorkers(int i, Node* root){
 		//position.z = rand() * 1.0f / 32767.0f;
 		//position.y = 10.0f;
 		//position.w = 0.0;
-		Ant *antAI = new Ant(glm::vec4(m_position.x, m_position.y + 10, m_position.z, 1.0), (rand()* 5.0f / 32767.0f));
+		Ant_Worker *antAI = new Ant_Worker(glm::vec4(m_position.x, m_position.y + 10, m_position.z, 1.0), (rand()* 5.0f / 32767.0f));
 		//Ant *antAI = new Ant(glm::vec4(m_position, 1.0) + position);
-		antAI->setAntAfraid(name.str(), m_afraidDecisionTree, m_afraidGraph);
+		antAI->setAntAfraid(m_numberOfAnts, name.str(), m_workerDecisionTree, m_afraidGraph);
 		//antAI->setAntAfraid();
 		aiWorkerNode->setObject(antAI);
 		antAI->addObserver(m_objectObserver);
@@ -107,6 +117,7 @@ void AntHome::generateWorkers(int i, Node* root){
 		name.str("");
 		root->addChildrenNode(aiWorkerNode);
 		m_workers.push_back(aiWorkerNode);
+		m_numberOfDeadWorkers = m_numberOfWorkers;
 		i--;
 		//printPosWorkers();
 	}
@@ -149,9 +160,7 @@ void AntHome::addAntsToSceneGraph(Node *rootNode){
 }
 
 void AntHome::updateAnts(){
-	/*for (Node antNode : m_ants){
-	antNode.getAI()->update();
-	}*/
+
 	for (int i = 0; i < m_guards.size(); i++){
 		m_guards.at(i)->getAI()->update();
 	}
@@ -192,5 +201,50 @@ void AntHome::setGrapHighOnTerrain(Terrain* t){
 		AStarNode* node = m_guardGraph->getGraph()->at(i);
 		glm::vec3 pos = node->getPosition();
 		node->setPosition(glm::vec3(pos.x, t->getHeight(glm::vec2(pos.x, pos.z))+1, pos.z));
+	}
+}
+
+void AntHome::resetDeadGuard(int i){
+	//Ant_Guardian guard = m_guards.at(i)->getAI();
+
+	//TODO: Can´t walk after dead, (First fix, that can walk after meet player)
+	if (m_guards.size() > 0 && i < m_guards.size()){
+		m_guards.at(i)->getAI()->setPosition(glm::vec3(m_position.x - 5, m_position.y, m_position.z + 5));
+
+		m_guards.at(i)->getAI()->setHealth(m_guards.at(i)->getAI()->getHealthMax());
+		m_guards.at(i)->getAI()->setHunger(m_guards.at(i)->getAI()->getHungerMax());
+		m_numerOfDeadGuards += 1;
+		std::stringstream name;
+		name << "Guard" << m_numerOfDeadGuards;
+		m_guards.at(i)->getAI()->setName(name.str());
+		m_guards.at(i)->getAI()->getInventory()->clearInventory();
+
+		m_guards.at(i)->getAI()->setHasDied(false);
+	}
+}
+
+void AntHome::resetDeadWorker(int i){
+	//Ant worker = m_workers.at(i)->getAI();
+
+	if (m_workers.size() > 0 && i < m_workers.size()){
+		m_workers.at(i)->getAI()->setPosition(m_position);
+		m_workers.at(i)->getAI()->setHealth(m_workers.at(i)->getAI()->getHealthMax());
+		m_workers.at(i)->getAI()->setHunger(m_workers.at(i)->getAI()->getHungerMax());
+		m_numberOfDeadWorkers += 1;
+		std::stringstream name;
+		name << "Worker" << m_numberOfDeadWorkers;
+		m_workers.at(i)->getAI()->setName(name.str());
+		m_workers.at(i)->getAI()->getInventory()->clearInventory();
+
+		m_workers.at(i)->getAI()->setHasDied(false);
+	}
+}
+
+void AntHome::resetDeadAnt(AntType type){
+	if (type == AntType::GUARD){
+		resetDeadGuard(0);
+	}
+	if (type == AntType::QUEEN){
+		resetDeadWorker(0);
 	}
 }

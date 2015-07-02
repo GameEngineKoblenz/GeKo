@@ -4,7 +4,7 @@
 #include <GeKo_Graphics/Scenegraph/Level.h>
 
 /**An Obsever for the AI and Player which handles collision between them and lets the object move.*/
-class ObjectObserver : public Observer<AI, Object_Event>, public Observer<AI, Collision_Event>, public Observer<Player, Object_Event>
+class ObjectObserver : public Observer<AI, Object_Event>, public Observer<AI, Collision_Event>, public Observer<Player, Object_Event>, public Observer<StaticObject, Object_Event>
 {
 public:
 	ObjectObserver(Level* level){ m_level = level; }
@@ -36,6 +36,13 @@ public:
 			tmp = m_level->getActiveScene()->getScenegraph()->searchNode(name);
 			tmp->addTranslation(glm::vec3(ai.getPosition()));
 			break;
+		case Object_Event::OBJECT_ROTATED:
+			name = ai.getNodeName();
+			tmp = m_level->getActiveScene()->getScenegraph()->searchNode(name);
+			tmp->addRotation(ai.getPhi(), glm::vec3(0, 1, 0));
+			break;
+
+
 
 		case Object_Event::OBJECT_DIED:
 			std::vector<ParticleSystem*>* ps = m_level->getActiveScene()->getScenegraph()->getParticleSet();

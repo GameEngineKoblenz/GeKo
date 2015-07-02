@@ -18,6 +18,7 @@ AI::AI(){
 
 	m_decisionTree = new DecisionTree();
 
+	m_states.clear();
 	std::pair<States, bool> s(States::HUNGER, false);
 	m_states.push_back(s);
 	s.first = States::VIEW;
@@ -29,6 +30,7 @@ AI::AI(){
 
 	m_speed = 0.01;
 	m_epsilon = 0.1;
+	m_phi = 0.0;
 
 	m_position = glm::vec4(0.0, 0.0, 0.0, 1.0);
 
@@ -104,6 +106,16 @@ AI::AI(glm::vec4 position){
 }
 
 AI::~AI(){}
+
+void AI::setPosition(glm::vec4 pos){
+	m_position = pos;
+	notify(*this, Object_Event::OBJECT_MOVED);
+}
+
+void AI::setPosition(glm::vec3 pos){
+	m_position = glm::vec4(pos, 1.0);
+	notify(*this, Object_Event::OBJECT_MOVED);
+}
 
 AStarNode* AI::getPosHome(){
 	return m_homeNode;
@@ -217,9 +229,10 @@ void AI::move(){
 	}
 
 	glm::vec3 diff = glm::vec3(m_position) - m_nextTarget->getPosition();
+	glm::vec3 diffNorm = glm::normalize(diff);
 	bool moved = false;
 	if (diff.x > 0){
-		m_position.x -= m_speed;
+		m_position.x -= m_speed * diffNorm.x;
 		moved = true;
 	}
 	if (diff.y > 0){
@@ -227,27 +240,57 @@ void AI::move(){
 
 	}
 	if (diff.z > 0){
-		m_position.z -= m_speed;
+		m_position.z -= m_speed * diffNorm.z;
 		moved = true;
 
 	}
 	if (diff.x < 0){
 		moved = true;
-		m_position.x += m_speed;
+		m_position.x += m_speed * -diffNorm.x;
 	}
 	if (diff.y < 0){
 		m_position.y += m_speed;
 
 	}
 	if (diff.z < 0){
-		m_position.z += m_speed;
+		m_position.z += m_speed * -diffNorm.z;
 		moved = true;
 
 	}
 
-	if (moved)
+	if (moved){
+		//TODO: Update rotation of the geometry
+		//m_phi to the observer
+
+		glm::vec2 targetDirection = glm::vec2(m_target->getPosition().x - m_position.x, m_target->getPosition().z - m_position.z);
+
+		targetDirection = glm::normalize(targetDirection);
+
+		float lengthFromTargetDirection = glm::length(targetDirection);
+
+		float lengthViewDirection = glm::length(m_viewDirection);
+		glm::vec2  m_viewDirection2 = glm::vec2(m_viewDirection.x, m_viewDirection.z);
+
+		glm::vec3 cross = glm::cross(glm::vec3(targetDirection.x, 0, targetDirection.y), glm::vec3(m_viewDirection2.x, 0, m_viewDirection2.y));
+
+		float dot = glm::dot(targetDirection, m_viewDirection2);
+		float tmp = m_phi;
+		m_phi = glm::acos(dot / (lengthFromTargetDirection * lengthViewDirection));
+		m_phi = m_phi * (180 / glm::pi<float>());
+
+
+		if (m_phi > 1.0f || m_phi < -1.0f){
+			if (cross.y > 0){
+				m_phi = 360.0f - m_phi;
+			}
+
+			notify(*this, Object_Event::OBJECT_ROTATED);
+			m_viewDirection = glm::normalize(glm::vec4(m_target->getPosition().x - m_position.x, 0.0, m_target->getPosition().z - m_position.z, 0.0));
+			int i = 0;
+		}
+
 		notify(*this, Object_Event::OBJECT_MOVED);
-	else
+	} else
 		notify(*this, Object_Event::OBJECT_STOPPED);
 
 	//std::cout << "Aktuelle Position der AI: x_" << m_position.x << " y_" << m_position.y << " z_" << m_position.z << std::endl;
@@ -323,9 +366,17 @@ void AI::stopSourcesInMap(){
 	}
 }
 
+void AI::setHasDied(bool b){
+	m_hasDied = b;
+}
+
 bool AI::hasDied()
 {
 	return m_hasDied;
+}
+
+float AI::getPhi(){
+	return m_phi;
 }
 
 AntType AI::getAntType(){
