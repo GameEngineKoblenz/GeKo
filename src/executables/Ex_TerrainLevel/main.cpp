@@ -507,7 +507,7 @@ int main()
 	//================== Setting up the playerGUI ========================//
 	//==================================================================//
 
-	PlayerGUI playerGUI(HUD_WIDTH, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler());
+	PlayerGUI playerGUI(HUD_WIDTH, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler(), testLevel.getHighscore());
 	testLevel.setGUI(&playerGUI);
 
 	std::cout << "SUCCESS: Load GUI" << std::endl;
