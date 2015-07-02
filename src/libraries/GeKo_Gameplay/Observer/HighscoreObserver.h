@@ -55,6 +55,7 @@ public:
 		{
 		case Object_Event::PLAYER_SET_ON_FIRE:
 			m_level->getHighscore()->addScore(2);
+			//TODO: + Punkte, wenn der Spieler am Fireplace ist 
 			break;
 
 		}
