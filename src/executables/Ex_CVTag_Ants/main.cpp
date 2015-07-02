@@ -361,6 +361,26 @@ int main()
 		testScene.getScenegraph()->getRootNode()->addChildrenNode(treeNode);
 		name.str("");
 	}
+	for (int i = 0; i<TreeData::foodTrees.size(); i++)
+	{
+		name << "FoodTree" << i;
+		std::string stringname = name.str();
+		StaticObject *treeStatic = new StaticObject();
+		treeStatic->setTree();
+		Node *treeNode = new Node(stringname);
+		treeNode->addGeometry(&treeGeometry);
+		treeNode->addTexture(&texTree);
+		treeNode->setObject(treeStatic);
+		tmp.x = TreeData::foodTrees[i].x;
+		tmp.z = TreeData::foodTrees[i].z;
+		TreeData::foodTrees[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = TreeData::foodTrees[i].y;
+		treeNode->addTranslation(tmp);
+		treeNode->getStaticObject()->setPosition(tmp);
+		treeNode->getBoundingSphere()->radius = 2.5;
+		testScene.getScenegraph()->getRootNode()->addChildrenNode(treeNode);
+		name.str("");
+	}
 
 	std::cout << "SUCCESS: Load ForestData" << std::endl;
 
@@ -432,14 +452,11 @@ int main()
 	// ==============================================================
 	// == Questsystem ===============================================
 	// ==============================================================
-
-	QuestHandler_CVTag questhandler;
-	questhandler.generateQuests();
-
+	//Reihenfolge wichtig! Erst questHandler zu level hinzufügen, dann generaten
 	QuestObserver questObserver(&testLevel);
-	questhandler.addObserver(&questObserver);
-
+	QuestHandler_CVTag questhandler;
 	testLevel.setQuestHandler(&questhandler);
+	questhandler.generateQuests(&questObserver);
 	testLevel.getFightSystem()->addObserver(&questObserver);
 
 	std::cout << "SUCCESS: Load Questsystem" << std::endl;

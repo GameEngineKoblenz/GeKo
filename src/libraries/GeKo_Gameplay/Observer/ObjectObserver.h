@@ -66,6 +66,7 @@ public:
 		std::string name = player.getNodeName();
 		Node* tmp = m_level->getActiveScene()->getScenegraph()->searchNode(name);
 		std::vector<ParticleSystem*>* ps = m_level->getActiveScene()->getScenegraph()->getParticleSet();
+		std::vector<Goal*> goal = m_level->getQuestHandler()->getQuests(GoalType::ACTION_FIRE);
 		switch (event)
 		{
 		case Object_Event::OBJECT_MOVED:
@@ -104,6 +105,12 @@ public:
 					particle->render(*m_level->getActiveScene()->getScenegraph()->getActiveCamera());
 				}
 			}
+
+			for (int i = 0; i < goal.size(); i++)
+			{
+				goal.at(i)->increase();
+			}
+
 			break;
 		case Object_Event::PLAYER_DIED:
 
