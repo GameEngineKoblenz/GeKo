@@ -21,6 +21,8 @@
 #include <GeKo_Graphics/Geometry/GekoMesh.h>
 #include <GeKo_Graphics/Geometry/Plane.h>
 #include <GeKo_Graphics/Geometry/ForestData.h>
+#include <GeKo_Graphics/Geometry/FireplaceData.h>
+
 
 #include <GeKo_Graphics/Geometry/Terrain.h>
 
@@ -37,6 +39,7 @@
 #include <GeKo_Gameplay/Questsystem/ExpReward.h>
 #include <GeKo_Gameplay/Questsystem/Goal_Kill.h>
 #include <GeKo_Gameplay/Questsystem/Goal_Eaten.h>
+#include <GeKo_Gameplay/Questsystem/QuestHandler_CVTag.h>
 
 #include <GeKo_Gameplay/Object/AntHome.h>
 
@@ -143,12 +146,12 @@ int main()
 	auto bushHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Bush2.obj");
 	auto bushGeometry = bushHandler.get().toGeometry();
 
-	auto coinHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Goldcoin.obj");
+	auto coinHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Goldcoin2.obj");
 	auto coinGeometry = coinHandler.get().toGeometry();
 
-	auto flowerHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Flower.ply");
+	auto flowerHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/RedFlower.obj");
 	auto flowerGeometry = flowerHandler.get().toGeometry();
-
+	
 	auto fireHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/fireplace.obj");
 	auto fireGeometry = fireHandler.get().toGeometry();
 
@@ -162,6 +165,8 @@ int main()
 	Texture texLeaf((char*)RESOURCES_PATH "/Texture/Grass.jpg");
 	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
 	Texture texFire((char*)RESOURCES_PATH "/Texture/fireplace.png");
+	Texture texFlower((char*)RESOURCES_PATH "/Texture/RedFlowers.png");
+
 
 
 	//===================================================================//
@@ -237,12 +242,20 @@ int main()
 	geko.setSourceName(ITEMSOUND, "Item", RESOURCES_PATH "/Sound/itempickup.wav");
 	geko.setSourceName(LEVELUP, "Levelup", RESOURCES_PATH "/Sound/Levelup.wav");
 	geko.setSourceName(RAIN, "Rain", RESOURCES_PATH "/Sound/lightrain.wav");
+	geko.setSourceName(COIN, "Coin", RESOURCES_PATH "/Sound/CollectCoin.wav");
+	geko.setSourceName(SECRET, "Secret", RESOURCES_PATH "/Sound/secretfound.wav");
+	geko.setSourceName(CHOP, "Chop", RESOURCES_PATH "/Sound/ChopChop.wav");
 	geko.updateSourcesInMap();
 	sfh.setGain("Hintergrund", 0.15f);
+	sfh.disableLooping("Chop");
+	sfh.setGain("Chop", 7.0f);
+	sfh.setPitch("Chop", 2.0f);
 	sfh.disableLooping("Essen");
+	sfh.disableLooping("Coin");
 	sfh.disableLooping("Levelup");
 	sfh.disableLooping("Quest");
 	sfh.disableLooping("Item");
+	sfh.disableLooping("Secret");
 	sfh.setGain("Quest", 10.0);
 	sfh.setPitch("Quest", 4.0);
 	sfh.setGain("Kampfsound", 0.8f);
@@ -322,6 +335,8 @@ int main()
 			tmp.z = TreeData::forestShort[i].z + (j * 10);
 			tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
 			treeNode->addTranslation(tmp);
+			float angleRandom = std::rand();
+			treeNode->addRotation(angleRandom, glm::vec3(0.0, 1.0, 0.0));
 			treeNode->getStaticObject()->setPosition(tmp);
 			treeNode->getBoundingSphere()->radius = 0.00001;
 			testScene.getScenegraph()->getRootNode()->addChildrenNode(treeNode);
@@ -369,7 +384,7 @@ int main()
 		flowerStatic->setTree(50 / TreeData::Flower.size());
 		Node *flowerNode = new Node(stringname);
 		flowerNode->addGeometry(&flowerGeometry);
-		flowerNode->addTexture(&texLeaf);
+		flowerNode->addTexture(&texFlower);
 		flowerNode->setObject(flowerStatic);
 		name.str("");
 		tmp.x = TreeData::Flower[i].x;
@@ -385,16 +400,27 @@ int main()
 	// ==============================================================
 	// == Object (Fireplace) ==========================================
 	// ==============================================================
-	StaticObject* fireplace = new StaticObject();
-	Node *fireNode = new Node("Flower");
-	fireNode->addGeometry(&fireGeometry);
-	fireNode->addScale(0.3, 0.3, 0.3);
-	fireNode->addTexture(&texFire);
-	fireNode->setObject(fireplace);	
-	fireNode->getBoundingSphere()->radius = 1.0;
-	fireNode->addTranslation(glm::vec3(143, terrain2.getHeight(glm::vec2(143, 63)), 63));
-	fireplace->setPosition(glm::vec3(143, terrain2.getHeight(glm::vec2(143, 63)), 63));
-	testLevel.getActiveScene()->getScenegraph()->getRootNode()->addChildrenNode(fireNode);
+	for (int i = 0; i<FireplaceData::fireplace.size(); i++)
+	{
+		name << "Fireplace" << i;
+		stringname = name.str();
+		StaticObject *fireStatic = new StaticObject();
+		fireStatic->setObjectType(ObjectType::FIREPLACE);
+		Node *fireplaceNode = new Node(stringname);
+		fireplaceNode->addGeometry(&fireGeometry);
+		fireplaceNode->addTexture(&texFire);
+		fireplaceNode->setObject(fireStatic);
+		name.str("");
+		tmp.x = FireplaceData::fireplace[i].x;
+		tmp.z = FireplaceData::fireplace[i].z;
+		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		fireplaceNode->addTranslation(tmp);
+		fireplaceNode->addScale(0.4, 0.4, 0.4);
+		fireplaceNode->getStaticObject()->setPosition(tmp);
+		fireplaceNode->getBoundingSphere()->radius = 0.5;
+		testScene.getScenegraph()->getRootNode()->addChildrenNode(fireplaceNode);
+		name.str("");
+	}
 	
 	// ==============================================================
 	// == Object (Coin) =============================================
@@ -466,42 +492,50 @@ int main()
 	// ==============================================================
 	// == Questsystem ===============================================
 	// ==============================================================
-	QuestHandler questhandler;
+	//QuestHandler questhandler;
 
-	Quest questKillAnt(1);
+	//Quest questKillAnt(1);
 
-	questKillAnt.setDescription("Kill one worker ant.");
+	//questKillAnt.setDescription("Kill one worker ant.");
 
-	Goal_Kill killAnt(1);
+	//Goal_Kill killAnt(1);
 
-	questKillAnt.addGoal(&killAnt);
+	//questKillAnt.addGoal(&killAnt);
 
-	ExpReward expReward(1);
-	expReward.setExp(100);
+	//ExpReward expReward(1);
+	//expReward.setExp(100);
 
-	questKillAnt.addReward(&expReward);
+	//questKillAnt.addReward(&expReward);
 
-	QuestGraph questGraph;
-	QuestGraphNode nodeStart;
-	nodeStart.setQuest(&questKillAnt);
-	questGraph.addNode(&nodeStart);
-	questKillAnt.setActive(true);
+	//QuestGraph questGraph;
+	//QuestGraphNode nodeStart;
+	//nodeStart.setQuest(&questKillAnt);
+	//questGraph.addNode(&nodeStart);
+	//questKillAnt.setActive(true);
 
-	testLevel.getQuestHandler()->addQuest(&questKillAnt);
+	//testLevel.getQuestHandler()->addQuest(&questKillAnt);
 
-	testLevel.getQuestHandler()->setGraph(&questGraph);
+	//testLevel.getQuestHandler()->setGraph(&questGraph);
+
+	//QuestObserver questObserver(&testLevel);
+
+	//questKillAnt.addObserver(&questObserver);
+	//questKillAnt.addObserver(&scoreObserver);
+	//questKillAnt.addObserver(&soundPlayerObserver);
+
+	//killAnt.addObserver(&questObserver);
+	//killAnt.addObserver(&scoreObserver);
+
+	//testLevel.getFightSystem()->addObserver(&questObserver);
+	//testLevel.getFightSystem()->addObserver(&scoreObserver);
 
 	QuestObserver questObserver(&testLevel);
-
-	questKillAnt.addObserver(&questObserver);
-	questKillAnt.addObserver(&scoreObserver);
-	questKillAnt.addObserver(&soundPlayerObserver);
-
-	killAnt.addObserver(&questObserver);
-	killAnt.addObserver(&scoreObserver);
-
+	QuestHandler_CVTag questhandler;
+	testLevel.setQuestHandler(&questhandler);
+	questhandler.generateQuests(&questObserver);
 	testLevel.getFightSystem()->addObserver(&questObserver);
-	testLevel.getFightSystem()->addObserver(&scoreObserver);
+
+	std::cout << "SUCCESS: Load Questsystem" << std::endl;
 
 
 	//===================================================================//
@@ -599,6 +633,11 @@ int main()
 		//==================================================================//
 		collision.update();
 		coinFactory->update();
+		coinFactory2->update();
+		coinFactory3->update();
+		coinFactory4->update();
+		coinFactory5->update();
+		coinFactory6->update();
 
 		//===================================================================//
 		//==================Input and update for the Player==================//

@@ -51,11 +51,41 @@ public:
 
 	void onNotify(Player& player, Object_Event event)
 	{
+		glm::vec4 pos;
+		glm::vec4 posPlayer;
+		bool gotScore = false;
 		switch (event)
 		{
 		case Object_Event::PLAYER_SET_ON_FIRE:
-			m_level->getHighscore()->addScore(2);
 			//TODO: + Punkte, wenn der Spieler am Fireplace ist 
+			//Lösung: Gehe durch szenegraph, suche object type fireplace, überprüfe positionen,dann gibt es + punkte
+			for (int i = 0; i < m_level->getActiveScene()->getScenegraph()->getRootNode()->getChildrenSet()->size(); i++)
+			{
+				if (m_level->getActiveScene()->getScenegraph()->getRootNode()->getChildrenSet()->at(i)->hasObject())
+				{
+					if (m_level->getActiveScene()->getScenegraph()->getRootNode()->getChildrenSet()->at(i)->getType() == ClassType::STATIC)
+					{
+						if (m_level->getActiveScene()->getScenegraph()->getRootNode()->getChildrenSet()->at(i)->getStaticObject()->getObjectType() == ObjectType::FIREPLACE)
+						{
+							pos = m_level->getActiveScene()->getScenegraph()->getRootNode()->getChildrenSet()->at(i)->getStaticObject()->getPosition();
+							posPlayer = player.getPosition();
+							if ((pos.x + 4.0f) > player.getPosition().x && (pos.x - 4.0f) < player.getPosition().x)
+							{
+								if ((pos.z + 4.0f) > player.getPosition().z && (pos.z - 4.0f) < player.getPosition().z)
+								{
+									m_level->getHighscore()->addScore(2);
+									gotScore = true;
+								}
+
+							}
+						}
+					}
+				}
+			}
+			if (!gotScore)
+			{
+				m_level->getHighscore()->addScore(-2);
+			}
 			break;
 
 		}

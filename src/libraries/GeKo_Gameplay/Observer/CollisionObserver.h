@@ -11,7 +11,7 @@ and collisions with static objects like trees will be handled as well.*/
 class CollisionObserver : public Observer<Node, Collision_Event>
 {
 public:
-	CollisionObserver(Level* level){ m_level = level; m_counter = new Counter(0); }
+	CollisionObserver(Level* level){ m_level = level; m_counter = new Counter(0); foundFireplace = false; }
 
 	~CollisionObserver(){}
 
@@ -48,6 +48,7 @@ public:
 		 if (((int)glfwGetTime() % 3) < 1 && particleFightIsStarted) particleFightIsStarted = false;
 
 		int tp;
+		std::string soundName;
 		std::vector<ParticleSystem*>* ps = m_level->getActiveScene()->getScenegraph()->getParticleSet();
 		 switch (event)
 		 {
@@ -60,6 +61,7 @@ public:
 			 nodeA.getBoundingSphere()->setCollisionDetected(true);
 			 nodeA.getAI()->getGraph()->searchNode(GraphNodeType::OBJECT)->setPosition(glm::vec3(nodeB.getPlayer()->getPosition()));
 			 nodeA.getAI()->viewArea(true);
+
 
 			 if (!nodeA.getAI()->getStates(States::HEALTH))
 			 {
@@ -223,6 +225,8 @@ public:
 
 				 nodeB.getStaticObject()->getInventory()->clearInventory();
 				 if (!nodeB.getChildrenSet()->empty()){
+					soundName = nodeA.getPlayer()->getSourceName(CHOP);
+					 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
 					 nodeB.deleteChildrenNode(nodeB.getChildrenSet()->at(0)->getNodeName());
 				 }
 				 std::vector<Goal*> tmp = m_level->getQuestHandler()->getQuests(GoalType::COLLECT);
@@ -239,6 +243,9 @@ public:
 			 }
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::COIN)
 			 {
+					soundName = nodeA.getPlayer()->getSourceName(COIN);
+				 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
+
 				 m_level->getHighscore()->addScore(5);
 				 glm::vec3 temp;
 				 temp.x = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
@@ -251,7 +258,12 @@ public:
 			 }
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::FIREPLACE)
 			 {
-				 m_level->getHighscore()->addScore(10);
+				 if (!foundFireplace){
+					 std::string soundName = nodeA.getPlayer()->getSourceName(SECRET);
+					 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
+					 m_level->getHighscore()->addScore(10);
+					 foundFireplace = true;
+				 }
 			 }
 
 		 }
@@ -265,4 +277,6 @@ public:
 		std::vector<Texture*> m_textures;
 
 		bool particleFightIsStarted = false;
+
+		bool foundFireplace;
 };

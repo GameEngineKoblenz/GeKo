@@ -85,6 +85,7 @@ void QuestHandler_CVTag::generateQuests(QuestObserver* qO){
 	workerNode->setQuest(questWorker);
 	workerNode->setParent(rootNode);
 	questWorker->setActive(false);
+	m_questGraph->addNode(workerNode);
 
 	QuestGraphNode* guardNode = new QuestGraphNode();
 	guardNode->setQuest(questGuard);
@@ -100,6 +101,8 @@ void QuestHandler_CVTag::generateQuests(QuestObserver* qO){
 	brancheNode->setQuest(questBranche);
 	brancheNode->setParent(rootNode);
 	questBranche->setActive(false);
+	m_questGraph->addNode(brancheNode);
+
 
 	QuestGraphNode* fireNode = new QuestGraphNode();
 	fireNode->setQuest(questFire);
@@ -108,12 +111,19 @@ void QuestHandler_CVTag::generateQuests(QuestObserver* qO){
 	
 
 	//Push Quest to Questlog
-	m_questLog.push_back(root);
+	/*m_questLog.push_back(root);
 	m_questLog.push_back(questWorker);
 	m_questLog.push_back(questGuard);
 	m_questLog.push_back(questQueen);
 	m_questLog.push_back(questBranche);
-	m_questLog.push_back(questFire);
+	m_questLog.push_back(questFire);*/
+
+	addQuest(root);
+	addQuest(questWorker);
+	addQuest(questGuard);
+	addQuest(questQueen);
+	addQuest(questBranche);
+	addQuest(questFire);
 
 
 	//Add Observer to Quest

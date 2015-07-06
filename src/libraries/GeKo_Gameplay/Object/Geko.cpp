@@ -17,7 +17,7 @@ Geko::Geko(std::string gekoName, glm::vec3 spawnPoint){
 	m_hungerMax = 100;
 	m_health = 10000;
 	m_healthMax = 10000;
-	m_strength = 3;
+	m_strength = 100;
 
 	m_inventory = new Inventory();
 
