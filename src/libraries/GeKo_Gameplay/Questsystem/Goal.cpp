@@ -45,3 +45,4 @@ void Goal::setAiTypeId(ObjectType id){}
 ObjectType Goal::getAiTypeId(){ return ObjectType::DEFAULTOBJECT; }
 void Goal::setAiID(int id){}
 void Goal::setPosition(glm::vec3 m_position){}
+void Goal::deletePosition(glm::vec3 pos){}

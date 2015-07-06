@@ -31,20 +31,16 @@ public:
 	bool getFinished();
 
 
-	 virtual void setActualCount(int actualC);
-
-	 virtual void setGoalCount(int goaldC);
-
+	virtual void setActualCount(int actualC);
+	virtual void setGoalCount(int goaldC);
 	virtual ItemType getItemType();
 	virtual void setItemType(ItemType iType);
 	virtual void increase();
-
 	virtual void setAiTypeId(ObjectType id);
 	virtual ObjectType getAiTypeId();
-
 	virtual void setAiID(int id);
 	virtual void setPosition(glm::vec3 m_position);
-
+	virtual void deletePosition(glm::vec3 pos);
 
 
 	protected:

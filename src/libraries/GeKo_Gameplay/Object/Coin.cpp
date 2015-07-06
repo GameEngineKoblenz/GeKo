@@ -25,16 +25,8 @@ Coin::Coin(Terrain *terrain, Geometry *coinGeometry, Texture *coinTexture, Node 
 
 	m_coinInstance->addTranslation(glm::vec3(100.0f, terrain->getHeight(glm::vec2(100.0f, 80.0f)) + 2.0f, 80.0f));
 	m_coinInstance->getStaticObject()->setPosition(glm::vec3(100.0f, terrain->getHeight(glm::vec2(100.0f, 80.0f)) + 100.0f, 80.0f));
-	std::cout << "Coin Pos :" << m_coinInstance->getStaticObject()->getPosition().x << " " << m_coinInstance->getStaticObject()->getPosition().y << " " << m_coinInstance->getStaticObject()->getPosition().z << std::endl;
-
-
-	
-
+	//std::cout << "Coin Pos :" << m_coinInstance->getStaticObject()->getPosition().x << " " << m_coinInstance->getStaticObject()->getPosition().y << " " << m_coinInstance->getStaticObject()->getPosition().z << std::endl;
 }
-
-
-
-
 
 void Coin::generateCoin(){
 
@@ -49,7 +41,7 @@ void Coin::generateNewPosition(){
 	temp.y = m_terrain->getHeight(glm::vec2(temp.x, temp.z)) + 2.0;
 	m_coinInstance->addTranslation(temp);
 	m_coinInstance->getStaticObject()->setPosition(temp);
-	std::cout << "Coin Pos :" << temp.x << " " << temp.y << " " << temp.z << std::endl;
+	//std::cout << "Coin Pos :" << temp.x << " " << temp.y << " " << temp.z << std::endl;
 }
 
 void Coin::update(){

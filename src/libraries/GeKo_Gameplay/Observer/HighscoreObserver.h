@@ -75,6 +75,11 @@ public:
 								{
 									m_level->getHighscore()->addScore(2);
 									gotScore = true;
+
+									std::vector<Goal*> goal = m_level->getQuestHandler()->getQuests(GoalType::ACTION_FIRE);
+									for (int i = 0; i < goal.size(); i++){
+										goal.at(i)->increase();
+									}
 								}
 
 							}

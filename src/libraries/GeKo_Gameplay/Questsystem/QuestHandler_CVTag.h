@@ -6,6 +6,7 @@
 #include "GeKo_Gameplay/Questsystem/Goal_Eaten.h"
 #include "GeKo_Gameplay/Questsystem/Goal_Collect.h"
 #include "GeKo_Gameplay/Questsystem/Goal_Action.h"
+#include "GeKo_Gameplay/Questsystem/Goal_Discover.h"
 
 #include "GeKo_Gameplay/Questsystem/ExpReward.h"
 
@@ -18,7 +19,7 @@ public:
 	QuestHandler_CVTag();
 	~QuestHandler_CVTag();
 
-	void generateQuests(QuestObserver* qO);
+	void generateQuests(QuestObserver* qO, std::vector<glm::vec3> flowerPos);
 
 protected:
 

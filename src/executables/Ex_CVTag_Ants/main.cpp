@@ -13,6 +13,7 @@
 #include "GeKo_Gameplay/AI_Decisiontree/DecisionTree.h"
 #include <GeKo_Gameplay/Object/Geko.h>
 #include <GeKo_Gameplay/Object/AI.h>
+#include "GeKo_Gameplay/Object/Coin.h"
 
 #include <GeKo_Graphics/Geometry/AntMesh.h>
 #include <GeKo_Graphics/Geometry/AntHomeMesh.h>
@@ -20,6 +21,7 @@
 #include <GeKo_Graphics/Geometry/GekoMesh.h>
 #include <GeKo_Graphics/Geometry/Plane.h>
 #include <GeKo_Graphics/Geometry/ForestData.h>
+#include <GeKo_Graphics/Geometry/FireplaceData.h>
 
 #include <GeKo_Graphics/Geometry/Terrain.h>
 
@@ -30,12 +32,9 @@
 #include <GeKo_Gameplay/Observer/GravityObserver.h>
 #include <GeKo_Gameplay/Observer/SoundObserver.h>
 #include <GeKo_Gameplay/Observer/QuestObserver.h>
+#include <GeKo_Gameplay/Observer/HighscoreObserver.h>
 
 #include <GeKo_Gameplay/Questsystem/QuestHandler_CVTag.h>
-//#include <GeKo_Gameplay/Questsystem/ItemReward.h>
-//#include <GeKo_Gameplay/Questsystem/ExpReward.h>
-//#include <GeKo_Gameplay/Questsystem/Goal_Kill.h>
-//#include <GeKo_Gameplay/Questsystem/Goal_Eaten.h>
 
 #include <GeKo_Gameplay/Object/AntHome.h>
 
@@ -175,7 +174,7 @@ int main()
 	//particleNodeFire.setCamera(&cam);
 	//particleNodeFire.setParticleActive(true);
 
-		std::cout << "SUCCESS: Load Particle" << std::endl;
+	//std::cout << "SUCCESS: Load Particle" << std::endl;
 
 	//===================================================================//
 	//==================Object declarations - Geometry, Texture, Node=== //
@@ -305,8 +304,10 @@ int main()
 
 	ObjectObserver playerObserver(&testLevel);
 	SoundObserver soundPlayerObserver(&testLevel);
+	HighscoreObserver scoreObserver(&testLevel);
 	geko.addObserver(&playerObserver);
 	geko.addObserver(&soundPlayerObserver);
+	geko.addObserver(&scoreObserver);
 
 	std::cout << "SUCCESS: Load Observer" << std::endl;
 
@@ -425,6 +426,89 @@ int main()
 
 	std::cout << "SUCCESS: Load AntHome" << std::endl;
 
+
+	//===================================================================//
+	//==================Setting up the Fireplace=========================//
+	//==================================================================//	
+
+	auto fireHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/fireplace.obj");
+	auto fireGeometry = fireHandler.get().toGeometry();
+
+	Texture texFire((char*)RESOURCES_PATH "/Texture/fireplace.png");
+
+	std::string stringname;
+
+	for (int i = 0; i<FireplaceData::fireplace.size(); i++)
+	{
+		name << "Fireplace" << i;
+		stringname = name.str();
+		StaticObject *fireStatic = new StaticObject();
+		fireStatic->setObjectType(ObjectType::FIREPLACE);
+		Node *fireplaceNode = new Node(stringname);
+		fireplaceNode->addGeometry(&fireGeometry);
+		fireplaceNode->addTexture(&texFire);
+		fireplaceNode->setObject(fireStatic);
+		name.str("");
+		tmp.x = FireplaceData::fireplace[i].x;
+		tmp.z = FireplaceData::fireplace[i].z;
+		FireplaceData::fireplace[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = FireplaceData::fireplace[i].y;
+		fireplaceNode->addTranslation(tmp);
+		fireplaceNode->addScale(0.4, 0.4, 0.4);
+		fireplaceNode->getStaticObject()->setPosition(tmp);
+		fireplaceNode->getBoundingSphere()->radius = 0.5;
+		testScene.getScenegraph()->getRootNode()->addChildrenNode(fireplaceNode);
+		name.str("");
+	}
+
+	//===================================================================//
+	//========================= Set the coins ===========================//
+	//==================================================================//
+
+	auto coinHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Goldcoin2.obj");
+	auto coinGeometry = coinHandler.get().toGeometry();
+
+	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
+
+	Coin *coinFactory = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory2 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory3 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory4 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory5 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+	Coin *coinFactory6 = new Coin(&terrain2, &coinGeometry, &texCoin, testLevel.getActiveScene()->getScenegraph()->getRootNode());
+
+	//===================================================================//
+	//======================== Set the Flowers ==========================//
+	//==================================================================//
+
+	auto flowerHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/RedFlower.obj");
+	auto flowerGeometry = flowerHandler.get().toGeometry();
+
+	Texture texFlower((char*)RESOURCES_PATH "/Texture/RedFlowers.png");
+
+	for (int i = 0; i<TreeData::Flower.size(); i++)
+	{
+		name << "Flower2Wiese" << i;
+		stringname = name.str();
+		StaticObject *flowerStatic = new StaticObject();
+		flowerStatic->setTree(50 / TreeData::Flower.size());
+		flowerStatic->setObjectType(ObjectType::FLOWER);
+		Node *flowerNode = new Node(stringname);
+		flowerNode->addGeometry(&flowerGeometry);
+		flowerNode->addTexture(&texFlower);
+		flowerNode->setObject(flowerStatic);
+		name.str("");
+		tmp.x = TreeData::Flower[i].x;
+		tmp.z = TreeData::Flower[i].z;
+		TreeData::Flower[i].y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		tmp.y = TreeData::Flower[i].y;
+		flowerNode->addTranslation(tmp);
+		flowerNode->getStaticObject()->setPosition(tmp);
+		flowerNode->getBoundingSphere()->radius = 0.5;
+		testScene.getScenegraph()->getRootNode()->addChildrenNode(flowerNode);
+		name.str("");
+	}
+
 	//===================================================================//
 	//==================Setting up the Collision=========================//
 	//==================================================================//
@@ -455,7 +539,7 @@ int main()
 	QuestObserver questObserver(&testLevel);
 	QuestHandler_CVTag questhandler;
 	testLevel.setQuestHandler(&questhandler);
-	questhandler.generateQuests(&questObserver);
+	questhandler.generateQuests(&questObserver, TreeData::Flower);
 	testLevel.getFightSystem()->addObserver(&questObserver);
 
 	std::cout << "SUCCESS: Load Questsystem" << std::endl;
@@ -506,6 +590,12 @@ int main()
 		//==================================================================//
 		collision.update();
 
+		coinFactory->update();
+		coinFactory2->update();
+		coinFactory3->update();
+		coinFactory4->update();
+		coinFactory5->update();
+		coinFactory6->update();
 
 		//===================================================================//
 		//==================Input and update for the Player==================//
@@ -544,7 +634,7 @@ int main()
 		//renderer.renderScene(testScene, testWindow);
 		playerGUI.update();
 		renderer.renderScene(testScene, testWindow);
-		//renderer.renderGUI(*playerGUI.getHUD(), testWindow);
+		renderer.renderGUI(*playerGUI.getHUD(), testWindow);
 
 
 		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() - glm::vec4(normalFromTerrain * 0.2f, 1.0));
