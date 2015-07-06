@@ -26,6 +26,7 @@ float Counter::getTime(){
 
 void Counter::start(){
 	m_started = true;
+	m_finished = false;
 }
 
 void Counter::update()

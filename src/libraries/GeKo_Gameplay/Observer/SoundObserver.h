@@ -2,13 +2,14 @@
 #include <glm/ext.hpp>
 #include <GeKo_Gameplay/Observer/Observer.h>
 #include <GeKo_Graphics/Scenegraph/Level.h>
+#include <GeKo_Gameplay/Questsystem/Counter.h>
 #include <sstream>
 
 /**This Observer handles all the sound actions like the move-sound or the fight-sounds.*/
 class SoundObserver : public Observer<AI, Object_Event>, public Observer<Player, Object_Event>, public Observer<Node, Collision_Event>, public Observer<Quest, Quest_Event>
 {
 public:
-	SoundObserver(Level* level){ m_level = level; m_fires = 0; }
+	SoundObserver(Level* level){ m_level = level; m_fires = 0; m_counter = new Counter(90); m_fightMusicIsPlaying = false; }
 
 	~SoundObserver(){}
 
@@ -143,45 +144,84 @@ public:
 
 	void onNotify(Node& nodeA, Node& nodeB, Collision_Event event)
 	{
-		std::string tmp;
+		std::string fightsound;
+		std::string battlesound;
+		std::string backgroundsound;
 		std::string soundName;
 		switch (event)
 		{
 		case Collision_Event::COLLISION_AI_FIGHT_PLAYER:
-			tmp = nodeB.getPlayer()->getSourceName(FIGHTSOUND);
+			fightsound = nodeB.getPlayer()->getSourceName(FIGHTSOUND);
+			battlesound = nodeB.getPlayer()->getSourceName(BATTLEMUSIC);
+			backgroundsound = nodeB.getPlayer()->getSourceName(BACKGROUNDMUSIC);
+
 
 			if (glm::length(nodeA.getBoundingSphere()->center - nodeB.getBoundingSphere()->center) <= 4.5)
 			{
 
 				if (nodeA.getAI()->getHealth() > 0)
 				{
-					if (tmp != "oor")
+					m_counter->setTime(100);
+					m_counter->start();
+					m_fightMusicIsPlaying = true;
+
+				
+					if (backgroundsound != "oor")
 					{
-						if (!nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(tmp))
+						nodeB.getPlayer()->getSoundHandler()->pauseSource(backgroundsound);
+					}
+					if (battlesound != "oor")
+					{
+						if (!nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(battlesound))
+							nodeB.getPlayer()->getSoundHandler()->playSource(battlesound);
+					}
+					if (fightsound != "oor")
+					{
+						if (!nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(fightsound))
 						{
-							nodeB.getPlayer()->getSoundHandler()->playSource(tmp);
+							nodeB.getPlayer()->getSoundHandler()->playSource(fightsound);
 						}
 
 					}
 
 				}
 				else{
-					nodeB.getPlayer()->getSoundHandler()->stopSource(tmp);
+					nodeB.getPlayer()->getSoundHandler()->stopSource(fightsound);
 				}
 			}
 
 			else{
-				if (nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(tmp))
+				if (nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(fightsound))
 				{
-					nodeB.getPlayer()->getSoundHandler()->stopSource(tmp);
+					nodeB.getPlayer()->getSoundHandler()->stopSource(fightsound);
 				}
 			}
 			break;
 
+		case Collision_Event::NO_COLLISION_KI_PLAYER:
+			m_counter->update();
+			if (m_counter->getTime() <= 0 && m_fightMusicIsPlaying == true)
+			{
+				battlesound = nodeB.getPlayer()->getSourceName(BATTLEMUSIC);
+				backgroundsound = nodeB.getPlayer()->getSourceName(BACKGROUNDMUSIC);
+				if (backgroundsound != "oor")
+				{
+					nodeB.getPlayer()->getSoundHandler()->playSource(backgroundsound);
+				}
+				if (battlesound != "oor")
+				{
+					//if (nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(battlesound))
+					nodeB.getPlayer()->getSoundHandler()->pauseSource(battlesound);
+				}
+				m_fightMusicIsPlaying = false;
+			}
+			break;
+
 		case Collision_Event::COLLISION_KI_PLAYER:
+
 			if (!nodeA.getAI()->getStates(States::HEALTH))
 			{
-				std::string soundName = nodeB.getPlayer()->getSourceName(EATSOUND);
+				soundName = nodeB.getPlayer()->getSourceName(EATSOUND);
 				if (soundName != "oor")
 				{
 					if (!(nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(soundName)))
@@ -192,7 +232,6 @@ public:
 				soundName = nodeA.getAI()->getSourceName(DEATHSOUND_FLIES_AI);
 				nodeA.getAI()->getSoundHandler()->stopSource(soundName);
 			}
-
 		}
 	}
 
@@ -247,4 +286,6 @@ protected:
 	Level* m_level;
 	int m_fires;
 	int m_flies;
+	Counter* m_counter;
+	bool m_fightMusicIsPlaying;
 };
