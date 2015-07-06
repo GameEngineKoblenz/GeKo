@@ -35,10 +35,6 @@
 #include <GeKo_Gameplay/Observer/QuestObserver.h>
 #include <GeKo_Gameplay/Observer/HighscoreObserver.h>
 
-#include <GeKo_Gameplay/Questsystem/ItemReward.h>
-#include <GeKo_Gameplay/Questsystem/ExpReward.h>
-#include <GeKo_Gameplay/Questsystem/Goal_Kill.h>
-#include <GeKo_Gameplay/Questsystem/Goal_Eaten.h>
 #include <GeKo_Gameplay/Questsystem/QuestHandler_CVTag.h>
 
 #include <GeKo_Gameplay/Object/AntHome.h>
@@ -104,7 +100,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 int main()
 {
 	SoundFileHandler sfh = SoundFileHandler(1000);
-	sfh.generateSource("Lademusik", glm::vec3(0.0, 0.0, 0.0), RESOURCES_PATH "/Sound/jingle2.wav");
+	sfh.generateSource("Lademusik", glm::vec3(0.0, 0.0, 0.0), RESOURCES_PATH "/Sound/cantina.wav");
 	sfh.setGain("Lademusik", 0.4f);
 	sfh.playSource("Lademusik");
 	//===================================================================//
@@ -155,6 +151,9 @@ int main()
 	auto fireHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/fireplace.obj");
 	auto fireGeometry = fireHandler.get().toGeometry();
 
+	auto rainHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Bee.ply");
+	auto rainGeometry = rainHandler.get().toGeometry();
+
 	Texture terrainTex((char*)RESOURCES_PATH "/Texture/Grass2.jpg");
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
 	Texture texTree((char*)RESOURCES_PATH "/Texture/cookie.jpg");
@@ -166,6 +165,7 @@ int main()
 	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
 	Texture texFire((char*)RESOURCES_PATH "/Texture/fireplace.png");
 	Texture texFlower((char*)RESOURCES_PATH "/Texture/RedFlowers.png");
+	Texture texRain((char*)RESOURCES_PATH "/Texture/seamless_marble.png");
 
 
 
@@ -235,7 +235,7 @@ int main()
 	geko.setSoundHandler(&sfh);
 	geko.setSourceName(FIRESOUND, "Fire", RESOURCES_PATH "/Sound/Feuer_kurz.wav");
 	geko.setSourceName(MOVESOUND, "SpielerFootsteps", RESOURCES_PATH "/Sound/Rascheln.wav");
-	geko.setSourceName(BACKGROUNDMUSIC, "Hintergrund", RESOURCES_PATH "/Sound/cantina.wav");
+	geko.setSourceName(BACKGROUNDMUSIC, "Hintergrund", RESOURCES_PATH "/Sound/Village.wav");
 	geko.setSourceName(FIGHTSOUND, "Kampfsound", RESOURCES_PATH "/Sound/punch.wav");
 	geko.setSourceName(EATSOUND, "Essen", RESOURCES_PATH "/Sound/Munching.wav");
 	geko.setSourceName(QUESTSOUND, "Quest", RESOURCES_PATH "/Sound/jingle.wav");
@@ -245,6 +245,7 @@ int main()
 	geko.setSourceName(COIN, "Coin", RESOURCES_PATH "/Sound/CollectCoin.wav");
 	geko.setSourceName(SECRET, "Secret", RESOURCES_PATH "/Sound/secretfound.wav");
 	geko.setSourceName(CHOP, "Chop", RESOURCES_PATH "/Sound/ChopChop.wav");
+	geko.setSourceName(BATTLEMUSIC, "Battle", RESOURCES_PATH "/Sound/Battle.wav");
 	geko.updateSourcesInMap();
 	sfh.setGain("Hintergrund", 0.15f);
 	sfh.disableLooping("Chop");
@@ -256,6 +257,7 @@ int main()
 	sfh.disableLooping("Quest");
 	sfh.disableLooping("Item");
 	sfh.disableLooping("Secret");
+	sfh.disableLooping("Battle");
 	sfh.setGain("Quest", 10.0);
 	sfh.setPitch("Quest", 4.0);
 	sfh.setGain("Kampfsound", 0.8f);
@@ -312,6 +314,25 @@ int main()
 	geko.addObserver(&playerObserver);
 	geko.addObserver(&scoreObserver);
 	geko.addObserver(&soundPlayerObserver);
+
+
+	// ==============================================================
+	// == Object (Rainsign) =========================================
+	// ==============================================================
+
+	StaticObject rainObject;
+	rainObject.setClassType(ClassType::STATIC);
+	rainObject.setObjectType(ObjectType::RAIN);
+
+	Node rainNode("Rain");
+	rainNode.addGeometry(&rainGeometry);
+	rainNode.addTexture(&texRain);
+	rainNode.setObject(&rainObject);
+	glm::vec3 rainPos;
+	rainPos = glm::vec3(terrain2.getResolutionX() / 3.0f, terrain2.getHeight(glm::vec2(terrain2.getResolutionX() / 3.0f, terrain2.getResolutionY() / 3.0f)), terrain2.getResolutionY() / 3.0f);
+	rainNode.addTranslation(rainPos);
+	rainNode.getStaticObject()->setPosition(rainPos);
+	testScene.getScenegraph()->getRootNode()->addChildrenNode(&rainNode);
 
 	// ==============================================================
 	// == Object (Forest) ==========================================
@@ -532,7 +553,7 @@ int main()
 	QuestObserver questObserver(&testLevel);
 	QuestHandler_CVTag questhandler;
 	testLevel.setQuestHandler(&questhandler);
-	questhandler.generateQuests(&questObserver);
+	questhandler.generateQuests(&questObserver, TreeData::Flower);
 	testLevel.getFightSystem()->addObserver(&questObserver);
 
 	std::cout << "SUCCESS: Load Questsystem" << std::endl;

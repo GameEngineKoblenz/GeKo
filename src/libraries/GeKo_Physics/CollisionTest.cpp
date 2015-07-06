@@ -106,6 +106,8 @@ void CollisionTest::update()
 							if (objects.at(i)->getType() == ClassType::AI && objects.at(j)->getType() == ClassType::PLAYER)
 							{
 								notify(*objects.at(i), Collision_Event::NO_COLLISION_KI_PLAYER);
+								notify(*objects.at(i), *objects.at(j), Collision_Event::NO_COLLISION_KI_PLAYER);
+
 							}
 							else
 							{

@@ -67,6 +67,18 @@ public:
 			 {
 				 nodeB.getPlayer()->eat();
 
+				 soundName = nodeB.getPlayer()->getSourceName(EATSOUND);
+				 if (soundName != "oor")
+				 {
+					 if (!(nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(soundName)))
+					 {
+						 nodeB.getPlayer()->getSoundHandler()->playSource(soundName);
+					 }
+				 }
+				 soundName = nodeA.getAI()->getSourceName(DEATHSOUND_FLIES_AI);
+				 nodeA.getAI()->getSoundHandler()->stopSource(soundName);
+
+
 				 tp = nodeA.getAI()->getInventory()->countItem(ItemType::COOKIE);
 				 if (tp > 0){
 					nodeB.getPlayer()->collectItem(ItemType::COOKIE, nodeA.getAI()->getInventory()->countItem(ItemType::COOKIE));
@@ -114,7 +126,7 @@ public:
 			 {
 				 if (nodeA.getAI()->getHealth() > 0)
 				 {
-					 //std::vector<ParticleSystem*>* ps = m_level->getActiveScene()->getScenegraph()->getParticleSet();
+
 					 for (auto particle : *ps)
 					 {
 						 if (particle->m_type == ParticleType::FIGHT && !particleFightIsStarted)
@@ -255,16 +267,43 @@ public:
 				 nodeB.getStaticObject()->setPosition(temp);
 				 std::cout << "Coin Pos :" << temp.x << " " << temp.y << " " << temp.z << std::endl;
 
+				 std::vector<Goal*> goal = m_level->getQuestHandler()->getQuests(GoalType::ACTION_COIN);
+				 for (int i = 0; i < goal.size(); i++)
+				 {
+					 goal.at(i)->increase();
+				 }
+
 			 }
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::FIREPLACE)
 			 {
 				 if (!foundFireplace){
-					 std::string soundName = nodeA.getPlayer()->getSourceName(SECRET);
+					 soundName = nodeA.getPlayer()->getSourceName(SECRET);
 					 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
 					 m_level->getHighscore()->addScore(10);
 					 foundFireplace = true;
 				 }
 			 }
+
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::FLOWER)
+			 {
+				 std::vector<Goal*> goal = m_level->getQuestHandler()->getQuests(GoalType::DISCOVER);
+				 for (int i = 0; i < goal.size(); i++)
+				 {
+					 goal.at(i)->deletePosition(glm::vec3(nodeB.getStaticObject()->getPosition()));
+				 }
+			 }
+
+			/* if (nodeB.getStaticObject()->getObjectType() == ObjectType::RAIN)
+			 {
+				 soundName = nodeB.getPlayer()->getSourceName(RAIN);
+				 if (soundName != "oor")
+				 {
+					 if (!(nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(soundName)))
+					 {
+						 nodeB.getPlayer()->getSoundHandler()->playSource(soundName);
+					 }
+				 }
+			 }*/
 
 		 }
 	 }
