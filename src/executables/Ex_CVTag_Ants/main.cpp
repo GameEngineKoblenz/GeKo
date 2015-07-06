@@ -158,13 +158,13 @@ int main()
 	//================== PArticle System ================================ //
 	//===================================================================//
 
-	ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
+	/*ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
 	particle->m_type = ParticleType::FIGHT;
 	ParticleSystem* particle2 = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/SwarmOfFliesEffect.xml");
 	particle2->m_type = ParticleType::SWARMOFFLIES;
 	ParticleSystem* particleFire = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_Fire.xml");
 	particleFire->m_type = ParticleType::FIRE;
-
+*/
 	//Node particleNode("ParticleNode");
 	//particleNode.addParticleSystem(particle2);
 	//particleNode.setCamera(&cam);
@@ -186,7 +186,7 @@ int main()
 
 	Texture terrainTex((char*)RESOURCES_PATH "/Texture/Grass2.jpg");
 
-	Terrain terrain2((char*)RESOURCES_PATH "/heightmap.jpg", 0.0f, 0.0f);
+	Terrain terrain2((char*)RESOURCES_PATH "/Texture/heightmap.jpg", 0.0f, 0.0f);
 	Node terrainNode2("Terrain");
 	terrainNode2.addGeometry(&terrain2);
 	terrainNode2.addTexture(&terrainTex);
@@ -200,10 +200,10 @@ int main()
 
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
 
-	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geko.ply");
+	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Geko.ply");
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
-	GekoMesh gekoMesh;
+	
 
 	Node playerNode("Player");
 
@@ -316,7 +316,7 @@ int main()
 
 	Texture texTree((char*)RESOURCES_PATH "/Texture/cookie.jpg");
 
-	auto treeHandle = manager.loadStaticMesh(RESOURCES_PATH "/Tree.ply");
+	auto treeHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Tree.ply");
 	auto treeGeometry = treeHandle.get().toGeometry();
 
 	glm::vec3 tmp;
@@ -390,11 +390,10 @@ int main()
 
 	Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
 
-	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
+	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/AntHome.ply");
 	auto antHomeGeometry = antHomeHandler.get().toGeometry();
 
 	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
-	AntMesh antMesh;
 
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
@@ -404,7 +403,7 @@ int main()
 
 	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
-	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
+	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
 	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);

@@ -2,7 +2,7 @@
 
 Gravity::Gravity()
 {
-	m_gravity = glm::vec3(0.0, -0.09, 0.0);
+	m_gravity = glm::vec3(0.0, -0.1, 0.0);
 }
 
 

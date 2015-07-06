@@ -27,9 +27,9 @@ public:
 				 }
 				 else if (node.getType() == ClassType::PLAYER){
 					 float height = tmp->getHeight(glm::vec2(node.getPlayer()->getPosition().x, node.getPlayer()->getPosition().z));
-					 if (node.getPlayer()->getPosition().y <= height + 0.5f){
+					 if (node.getPlayer()->getPosition().y <= height + 1.0f){
 						 node.setGravity(false);
-						 node.getPlayer()->setPosition(glm::vec4(node.getPlayer()->getPosition().x, height + 0.5f, node.getPlayer()->getPosition().z, 1.0));
+						 node.getPlayer()->setPosition(glm::vec4(node.getPlayer()->getPosition().x, height + 1.0f, node.getPlayer()->getPosition().z, 1.0));
 						 if (node.hasCamera()){
 							 node.setCameraToPlayer();
 						 }

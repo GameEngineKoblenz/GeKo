@@ -63,7 +63,7 @@ void CollisionTest::update()
 						bool collisionAfter = collides(objects.at(i)->getBoundingList()->at(k), objects.at(j)->getBoundingSphere());
 
 						//If the object did not collide untill now and is colliding now, we send a notify to the observers.
-						if ((!collisionBefore | collisionBefore) & collisionAfter)
+						if ((!collisionBefore || collisionBefore) && collisionAfter)
 						{
 							//We test with which objecttype our current object is collinding.
 							if (objects.at(j)->getType() == ClassType::TERRAIN)
@@ -96,27 +96,18 @@ void CollisionTest::update()
 						}
 
 						//If there is no collision nothing happens.
-						else if (!collisionBefore & !collisionAfter)
+						else if (!collisionBefore && !collisionAfter)
 						{
 						}
 
-						/*else if (collisionBefore & collisionAfter)
-						{
-							if (objects.at(j)->getType() == ClassType::TERRAIN)
-							{
-								notify(*objects.at(i), Collision_Event::PLANE_COLLISION);
-							}
-							collisionDetected = true;
-						}*/
-
 						//Sometimes before there was a collision and untill now there was no new collision.
-						else if ( collisionBefore & !collisionAfter)
+						else if (collisionBefore && !collisionAfter)
 						{
-							if (objects.at(i)->getType() == ClassType::AI & objects.at(j)->getType() == ClassType::PLAYER)
+							if (objects.at(i)->getType() == ClassType::AI && objects.at(j)->getType() == ClassType::PLAYER)
 							{
 								notify(*objects.at(i), Collision_Event::NO_COLLISION_KI_PLAYER);
 							}
-							else if (true)
+							else
 							{
 								notify(*objects.at(i), Collision_Event::NO_COLLISION_DETECTED);
 							}
