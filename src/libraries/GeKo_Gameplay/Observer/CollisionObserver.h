@@ -67,6 +67,17 @@ public:
 			 {
 				 nodeB.getPlayer()->eat();
 
+				 AntType t = nodeA.getAI()->getAntType();
+				 if (t == AntType::WORKER){
+					 nodeB.getPlayer()->addExp(10);
+				 }
+				 if (t == AntType::GUARD){
+					 nodeB.getPlayer()->addExp(60);
+				 }
+				 if (t == AntType::QUEEN){
+					 nodeB.getPlayer()->addExp(150);
+				 }
+
 				 soundName = nodeB.getPlayer()->getSourceName(EATSOUND);
 				 if (soundName != "oor")
 				 {
