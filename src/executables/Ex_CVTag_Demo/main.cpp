@@ -127,7 +127,7 @@ int main()
 	//==================================================================//
 	ResourceManager manager;
 
-	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Geko.ply");
+	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Gecko.obj");
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
 	auto treeHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Tree.ply");
@@ -151,8 +151,9 @@ int main()
 	auto fireHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/fireplace.obj");
 	auto fireGeometry = fireHandler.get().toGeometry();
 
-	auto rainHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Bee.ply");
+	auto rainHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/RainSign.obj");
 	auto rainGeometry = rainHandler.get().toGeometry();
+
 
 	Texture terrainTex((char*)RESOURCES_PATH "/Texture/Grass2.jpg");
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
@@ -160,12 +161,14 @@ int main()
 	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
 	Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
+	Texture texAnt3((char*)RESOURCES_PATH "/Texture/ant3.jpg");
 	Texture texStamm((char*)RESOURCES_PATH "/Texture/bark_loo.jpg");
 	Texture texLeaf((char*)RESOURCES_PATH "/Texture/Grass.jpg");
 	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
 	Texture texFire((char*)RESOURCES_PATH "/Texture/fireplace.png");
 	Texture texFlower((char*)RESOURCES_PATH "/Texture/RedFlowers.png");
-	Texture texRain((char*)RESOURCES_PATH "/Texture/seamless_marble.png");
+	Texture texRain((char*)RESOURCES_PATH "/Texture/RainSign.png");
+
 
 
 
@@ -328,6 +331,8 @@ int main()
 	rainNode.addGeometry(&rainGeometry);
 	rainNode.addTexture(&texRain);
 	rainNode.setObject(&rainObject);
+	rainNode.addScale(7.0, 7.0, 7.0);
+	rainNode.getBoundingSphere()->radius = 0.5;
 	glm::vec3 rainPos;
 	rainPos = glm::vec3(terrain2.getResolutionX() / 3.0f, terrain2.getHeight(glm::vec2(terrain2.getResolutionX() / 3.0f, terrain2.getResolutionY() / 3.0f)), terrain2.getResolutionY() / 3.0f);
 	rainNode.addTranslation(rainPos);
@@ -411,7 +416,9 @@ int main()
 		tmp.x = TreeData::Flower[i].x;
 		tmp.z = TreeData::Flower[i].z;
 		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		float angleRandom = std::rand();
 		flowerNode->addTranslation(tmp);
+		flowerNode->addRotation(angleRandom, glm::vec3(0.0, 1.0, 0.0));
 		flowerNode->getStaticObject()->setPosition(tmp);
 		flowerNode->getBoundingSphere()->radius = 0.5;
 		testScene.getScenegraph()->getRootNode()->addChildrenNode(flowerNode);
@@ -460,23 +467,23 @@ int main()
 	// == Object (Anthome) ==========================================
 	// ==============================================================
 
-	glm::vec3 posFood2((terrain2.getResolutionX() / 2.0f) + 10.0, 0.0, (terrain2.getResolutionY() / 2.0f) - 5.0);
-	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
-	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
 	//AntMesh antMesh;
+	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
-	possFoods.push_back(TreeData::foodTrees);
+	possFoods.push_back(TreeData::forest1);
+	possFoods.push_back(TreeData::forest2);
 	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
 
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);
-	antHome.setGrapHighOnTerrain(&terrain2);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, &texAnt3, antAfraidGraph, testScene.getScenegraph()->getRootNode());
 
+	antHome.setGrapHighOnTerrain(&terrain2);
 	antHome.setAntScale(0.5);
-	antHome.generateWorkers(1, testScene.getScenegraph()->getRootNode());
-	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
+	antHome.generateWorkers(1);
+	antHome.generateGuards(1);
+	antHome.addObserver(&playerObserver);
 
 	Node homeNode("AntHome");
 
@@ -486,7 +493,10 @@ int main()
 	homeNode.addTranslation(posSpawn);
 	homeNode.getBoundingSphere()->radius = 0.5;
 
+
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
+
+	std::cout << "SUCCESS: Load AntHome" << std::endl;
 
 
 	//===================================================================//
@@ -513,42 +523,6 @@ int main()
 	// ==============================================================
 	// == Questsystem ===============================================
 	// ==============================================================
-	//QuestHandler questhandler;
-
-	//Quest questKillAnt(1);
-
-	//questKillAnt.setDescription("Kill one worker ant.");
-
-	//Goal_Kill killAnt(1);
-
-	//questKillAnt.addGoal(&killAnt);
-
-	//ExpReward expReward(1);
-	//expReward.setExp(100);
-
-	//questKillAnt.addReward(&expReward);
-
-	//QuestGraph questGraph;
-	//QuestGraphNode nodeStart;
-	//nodeStart.setQuest(&questKillAnt);
-	//questGraph.addNode(&nodeStart);
-	//questKillAnt.setActive(true);
-
-	//testLevel.getQuestHandler()->addQuest(&questKillAnt);
-
-	//testLevel.getQuestHandler()->setGraph(&questGraph);
-
-	//QuestObserver questObserver(&testLevel);
-
-	//questKillAnt.addObserver(&questObserver);
-	//questKillAnt.addObserver(&scoreObserver);
-	//questKillAnt.addObserver(&soundPlayerObserver);
-
-	//killAnt.addObserver(&questObserver);
-	//killAnt.addObserver(&scoreObserver);
-
-	//testLevel.getFightSystem()->addObserver(&questObserver);
-	//testLevel.getFightSystem()->addObserver(&scoreObserver);
 
 	QuestObserver questObserver(&testLevel);
 	QuestHandler_CVTag questhandler;
@@ -630,7 +604,7 @@ int main()
 		renderer.useBloom(true, bloomStrength);
 		renderer.useDoF(true, focusDepth);
 		renderer.useShadowMapping(true, useShadowMode, &slight);
-		if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_R))
+	/*	if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_R))
 		{
 			useReflection = true;
 			sfh.playSource("Rain");
@@ -646,6 +620,11 @@ int main()
 		}
 		else{
 			renderer.useReflections(false, reflectionStrength);
+		}*/
+
+		if (sfh.sourceIsPlaying("Rain"))
+		{
+			renderer.useReflections(true, reflectionStrength);
 		}
 
 

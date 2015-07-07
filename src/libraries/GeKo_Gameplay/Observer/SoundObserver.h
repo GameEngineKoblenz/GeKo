@@ -172,8 +172,9 @@ public:
 					}
 					if (battlesound != "oor")
 					{
-						if (!nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(battlesound))
+						if (!nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(battlesound)){
 							nodeB.getPlayer()->getSoundHandler()->playSource(battlesound);
+						}
 					}
 					if (fightsound != "oor")
 					{
@@ -186,7 +187,7 @@ public:
 
 				}
 				else{
-					nodeB.getPlayer()->getSoundHandler()->stopSource(fightsound);
+					nodeB.getPlayer()->getSoundHandler()->pauseSource(fightsound);
 				}
 			}
 

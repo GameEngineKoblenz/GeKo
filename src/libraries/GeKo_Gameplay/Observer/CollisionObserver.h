@@ -293,17 +293,17 @@ public:
 				 }
 			 }
 
-			/* if (nodeB.getStaticObject()->getObjectType() == ObjectType::RAIN)
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::RAIN)
 			 {
-				 soundName = nodeB.getPlayer()->getSourceName(RAIN);
+				 soundName = nodeA.getPlayer()->getSourceName(RAIN);
 				 if (soundName != "oor")
 				 {
-					 if (!(nodeB.getPlayer()->getSoundHandler()->sourceIsPlaying(soundName)))
+					 if (!(nodeA.getPlayer()->getSoundHandler()->sourceIsPlaying(soundName)))
 					 {
-						 nodeB.getPlayer()->getSoundHandler()->playSource(soundName);
+						 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
 					 }
 				 }
-			 }*/
+			 }
 
 		 }
 	 }

@@ -21,7 +21,7 @@ void QuestHandler_CVTag::generateQuests(QuestObserver* qO, std::vector<glm::vec3
 	questWorker->setDescription("- Kill and eat ten worker-ants. \n A worker-ant has a black-colored skin.");
 	questGuard->setDescription("- Kill and eat five guard-ants. \n A guard-ant has a red-colored skin.");
 	questQueen->setDescription("- Kill and eat one queen-ant. \n The queen-ant has a gold-colored skin.");
-	questBranche->setDescription("- Collect one branche. \n (You can earn branches from trees with bushes.)");
+	questBranche->setDescription("- Collect one branch. \n (You can earn branches from trees with bushes.)");
 	questFire->setDescription("- Find a fireplace and set a fire there. \n (Press F to set a fire.)");
 	questMoreFire->setDescription("- Find more branches \n and set ten fire at a fireplace.");
 	questCoin->setDescription("- Find three coins anywhere on the terrain.");

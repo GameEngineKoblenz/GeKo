@@ -83,11 +83,20 @@ ELSEIF (MSVC)
 
 	#Copy needed dll files to current bin folder
 	
-	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+	IF(RELEASE_BUILD)
+		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  
-			${CMAKE_BINARY_DIR}/dependencies/glew/src/glew-build/bin/$<CONFIGURATION>/glewd.dll      
+			${CMAKE_BINARY_DIR}/dependencies/glew/src/glew-build/bin/Release/glew.dll      
 			$<TARGET_FILE_DIR:${PROJECT_NAME}>
 		)
+	ELSE()
+		#Copy needed dll files to current bin folder
+		add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different  
+				${CMAKE_BINARY_DIR}/dependencies/glew/src/glew-build/bin/Debug/glewd.dll      
+				$<TARGET_FILE_DIR:${PROJECT_NAME}>
+			)	
+	ENDIF()
 		
 	add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different  
