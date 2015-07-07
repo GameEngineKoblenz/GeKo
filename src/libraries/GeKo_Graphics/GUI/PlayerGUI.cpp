@@ -9,6 +9,7 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	m_QUEST_WIDTH = questWidth;
 	m_QUEST_HEIGHT = questHeight;
 	m_highscore = 0;
+	m_timeOver = false;
 
 	Texture bricks((char*)RESOURCES_PATH "/Texture/bricks.bmp");
 	m_hud = new GUI("testGUI", m_HUD_WIDTH, m_HUD_HEIGHT);
@@ -170,12 +171,22 @@ void PlayerGUI::update()
 		}
 	}
 
-	if (finishedQuests.size() == m_questhandler->getQuests().size()){
+	//if (finishedQuests.size() == m_questhandler->getQuests().size()){
+	//	m_endGameWindow->clearElements();
+	//	m_endGameWindow->show();
+	//	m_endGameWindow->addElement(new GuiElement::Text("YOU WON! :-D"));
+	//	//TODO: Notify Sound
+	//}
+
+	if (m_timeOver){
 		m_endGameWindow->clearElements();
 		m_endGameWindow->show();
-		m_endGameWindow->addElement(new GuiElement::Text("YOU WON! :-D"));
+		/*m_level->getPlayerGUI()->setTexture((char*)RESOURCES_PATH "/Texture/Cookie_02.png");
+		m_level->getPlayerGUI()->getInventory()->insert(std::pair<std::string, Texture*>(std::string("Cookie"), m_level->getPlayerGUI()->getTextures()->back()));*/
+		m_endGameWindow->addElement(new GuiElement::Text("Your Time is up. \n Congratulations, your Score is" + m_highscore));
 		//TODO: Notify Sound
 	}
+
 
 	if (m_player->getHealth() <= 0){
 		m_endGameWindow->clearElements();
@@ -206,4 +217,9 @@ void PlayerGUI::setTexture(char* fileName){
 
 std::vector<Texture*>* PlayerGUI::getTextures(){
 	return &m_textures;
+}
+
+void PlayerGUI::setTimeOver()
+{
+	m_timeOver = true;
 }

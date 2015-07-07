@@ -24,6 +24,8 @@ public:
 	void youWon();
 	void youLost();
 
+	void setTimeOver();
+
 protected:
 	GUI* m_hud;
 	int m_HUD_WIDTH, m_HUD_HEIGHT, m_WINDOW_WIDTH, m_WINDOW_HEIGHT, m_QUEST_WIDTH, m_QUEST_HEIGHT;
@@ -46,4 +48,6 @@ protected:
 	GuiElement::Inventory *m_inventory;
 	std::vector<Texture*> m_textures;
 	int m_highscore;
+
+	bool m_timeOver;
 };

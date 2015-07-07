@@ -35,6 +35,7 @@
 #include <GeKo_Gameplay/Observer/HighscoreObserver.h>
 
 #include <GeKo_Gameplay/Questsystem/QuestHandler_CVTag.h>
+#include <Geko_Gameplay/Questsystem/Counter.h>
 
 #include <GeKo_Gameplay/Object/AntHome.h>
 
@@ -559,73 +560,79 @@ int main()
 	float phi;
 	glm::vec4 tangente;
 	float dot;
+	
+	Counter counter;
+	counter.setTime(60 * 30);
+
 
 	sfh.stopSource("Lademusik");
 	sfh.playSource("Hintergrund");
 
+	counter.start();
 	while (!glfwWindowShouldClose(testWindow.getWindow()))
 	{
 
-		testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Rotation();
-		//testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Translate();
+		if (counter.getTime() > 0)
+		{
+			counter.update();
 
-		float currentTime = glfwGetTime();
-		float deltaTime = currentTime - lastTime;
-		lastTime = currentTime;
+		if (geko.getStates(States::HEALTH)){
+			//===================================================================//
+			//==================Update your Objects per Frame here =============//
+			//==================================================================//
 
+			testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Rotation();
+			//testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Translate();
 
-		//===================================================================//
-		//==================Update your Objects per Frame here =============//
-		//==================================================================//
-		testLevel.getCollision()->update();
+			float currentTime = glfwGetTime();
+			float deltaTime = currentTime - lastTime;
+			lastTime = currentTime;
 
-		coinFactory->update();
-		coinFactory2->update();
-		coinFactory3->update();
-		coinFactory4->update();
-		coinFactory5->update();
-		coinFactory6->update();
+			testLevel.getCollision()->update();
 
-		//===================================================================//
-		//==================Input and update for the Player==================//
-		//==================================================================//
+			coinFactory->update();
+			coinFactory2->update();
+			coinFactory3->update();
+			coinFactory4->update();
+			coinFactory5->update();
+			coinFactory6->update();
 
-		geko.update();
-		geko.setDeltaTime(currentTime);
+			geko.update();
+			geko.setDeltaTime(currentTime);
 
+			tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
 
-		tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
+			viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
 
-		viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
+			//ToDo calculate Normal funktioniert evtl falsch
+			normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
+			rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
+			lengthFromNormal = glm::length(normalFromTerrain);
+			lengthFromUp = glm::length(up);
+			up = glm::normalize(up);
+			dot = glm::dot(normalFromTerrain, up);
 
-		//ToDo calculate Normal funktioniert evtl falsch
-		normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
-		rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
-		lengthFromNormal = glm::length(normalFromTerrain);
-		lengthFromUp = glm::length(up);
-		up = glm::normalize(up);
-		dot = glm::dot(normalFromTerrain, up);
+			phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
+			phi = phi * (180 / glm::pi<float>());
 
-		phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
-		phi = phi * (180 / glm::pi<float>());
-		//std::cout << phi << std::endl;
+			if (dot <0.99)
+				testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
 
-		if (dot <0.99)
-			testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
-
-		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
-		antHome.updateAnts();
+			testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
+			antHome.updateAnts();
 		
-		
-		//std::cout << "Terrain: " << terrain2. 
-		
+			testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
+		}
 
-
-		testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
+		}
 		//===================================================================//
 		//==================Render your Objects==============================//
 		//==================================================================//
 		//renderer.renderScene(testScene, testWindow);
+		if (counter.getTime() <= 0)
+		{
+			playerGUI.setTimeOver();
+		}
 		playerGUI.update();
 		renderer.renderScene(testScene, testWindow);
 		renderer.renderGUI(*playerGUI.getHUD(), testWindow);
@@ -635,7 +642,8 @@ int main()
 		//std::cout << "FPS " << 1 / deltaTime << std::endl;
 
 		glfwSwapBuffers(testWindow.getWindow());
-		glfwPollEvents();
+		if (counter.getTime() > 0)
+			glfwPollEvents();
 
 	}
 

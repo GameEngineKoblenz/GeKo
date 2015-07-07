@@ -151,7 +151,7 @@ void Object::updateStates(){
 		m_health--;
 		//::cout << "Object " << m_name << ": Looses health because it is too hungry!" << std::endl;
 	}
-	if (m_health == 0){
+	if (m_health <= 0){
 		std::cout << "Object " << m_name << ": Died" << std::endl;
 		setStates(States::HEALTH, false);
 		
