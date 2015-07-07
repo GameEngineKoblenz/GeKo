@@ -127,7 +127,7 @@ int main()
 	//==================================================================//
 	ResourceManager manager;
 
-	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Geko.ply");
+	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Gecko.obj");
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
 	auto treeHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Tree.ply");
@@ -151,8 +151,9 @@ int main()
 	auto fireHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/fireplace.obj");
 	auto fireGeometry = fireHandler.get().toGeometry();
 
-	auto rainHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Bee.ply");
+	auto rainHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/RainSign.obj");
 	auto rainGeometry = rainHandler.get().toGeometry();
+
 
 	Texture terrainTex((char*)RESOURCES_PATH "/Texture/Grass2.jpg");
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
@@ -165,7 +166,8 @@ int main()
 	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
 	Texture texFire((char*)RESOURCES_PATH "/Texture/fireplace.png");
 	Texture texFlower((char*)RESOURCES_PATH "/Texture/RedFlowers.png");
-	Texture texRain((char*)RESOURCES_PATH "/Texture/seamless_marble.png");
+	Texture texRain((char*)RESOURCES_PATH "/Texture/RainSign.png");
+
 
 
 
@@ -328,6 +330,8 @@ int main()
 	rainNode.addGeometry(&rainGeometry);
 	rainNode.addTexture(&texRain);
 	rainNode.setObject(&rainObject);
+	rainNode.addScale(7.0, 7.0, 7.0);
+	rainNode.getBoundingSphere()->radius = 0.5;
 	glm::vec3 rainPos;
 	rainPos = glm::vec3(terrain2.getResolutionX() / 3.0f, terrain2.getHeight(glm::vec2(terrain2.getResolutionX() / 3.0f, terrain2.getResolutionY() / 3.0f)), terrain2.getResolutionY() / 3.0f);
 	rainNode.addTranslation(rainPos);
@@ -411,7 +415,9 @@ int main()
 		tmp.x = TreeData::Flower[i].x;
 		tmp.z = TreeData::Flower[i].z;
 		tmp.y = terrain2.getHeight(glm::vec2(tmp.x, tmp.z));
+		float angleRandom = std::rand();
 		flowerNode->addTranslation(tmp);
+		flowerNode->addRotation(angleRandom, glm::vec3(0.0, 1.0, 0.0));
 		flowerNode->getStaticObject()->setPosition(tmp);
 		flowerNode->getBoundingSphere()->radius = 0.5;
 		testScene.getScenegraph()->getRootNode()->addChildrenNode(flowerNode);
@@ -513,42 +519,6 @@ int main()
 	// ==============================================================
 	// == Questsystem ===============================================
 	// ==============================================================
-	//QuestHandler questhandler;
-
-	//Quest questKillAnt(1);
-
-	//questKillAnt.setDescription("Kill one worker ant.");
-
-	//Goal_Kill killAnt(1);
-
-	//questKillAnt.addGoal(&killAnt);
-
-	//ExpReward expReward(1);
-	//expReward.setExp(100);
-
-	//questKillAnt.addReward(&expReward);
-
-	//QuestGraph questGraph;
-	//QuestGraphNode nodeStart;
-	//nodeStart.setQuest(&questKillAnt);
-	//questGraph.addNode(&nodeStart);
-	//questKillAnt.setActive(true);
-
-	//testLevel.getQuestHandler()->addQuest(&questKillAnt);
-
-	//testLevel.getQuestHandler()->setGraph(&questGraph);
-
-	//QuestObserver questObserver(&testLevel);
-
-	//questKillAnt.addObserver(&questObserver);
-	//questKillAnt.addObserver(&scoreObserver);
-	//questKillAnt.addObserver(&soundPlayerObserver);
-
-	//killAnt.addObserver(&questObserver);
-	//killAnt.addObserver(&scoreObserver);
-
-	//testLevel.getFightSystem()->addObserver(&questObserver);
-	//testLevel.getFightSystem()->addObserver(&scoreObserver);
 
 	QuestObserver questObserver(&testLevel);
 	QuestHandler_CVTag questhandler;
@@ -630,7 +600,7 @@ int main()
 		renderer.useBloom(true, bloomStrength);
 		renderer.useDoF(true, focusDepth);
 		renderer.useShadowMapping(true, useShadowMode, &slight);
-		if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_R))
+	/*	if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_R))
 		{
 			useReflection = true;
 			sfh.playSource("Rain");
@@ -646,6 +616,11 @@ int main()
 		}
 		else{
 			renderer.useReflections(false, reflectionStrength);
+		}*/
+
+		if (sfh.sourceIsPlaying("Rain"))
+		{
+			renderer.useReflections(true, reflectionStrength);
 		}
 
 
