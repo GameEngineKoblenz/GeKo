@@ -161,6 +161,7 @@ int main()
 	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
 	Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
+	Texture texAnt3((char*)RESOURCES_PATH "/Texture/ant3.jpg");
 	Texture texStamm((char*)RESOURCES_PATH "/Texture/bark_loo.jpg");
 	Texture texLeaf((char*)RESOURCES_PATH "/Texture/Grass.jpg");
 	Texture texCoin((char*)RESOURCES_PATH "/Texture/Goldcoin.png");
@@ -466,23 +467,23 @@ int main()
 	// == Object (Anthome) ==========================================
 	// ==============================================================
 
-	glm::vec3 posFood2((terrain2.getResolutionX() / 2.0f) + 10.0, 0.0, (terrain2.getResolutionY() / 2.0f) - 5.0);
-	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
-	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
 	//AntMesh antMesh;
+	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
 	std::vector<std::vector<glm::vec3>> possFoods;
-	possFoods.push_back(TreeData::foodTrees);
+	possFoods.push_back(TreeData::forest1);
+	possFoods.push_back(TreeData::forest2);
 	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
 
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);
-	antHome.setGrapHighOnTerrain(&terrain2);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, &texAnt3, antAfraidGraph, testScene.getScenegraph()->getRootNode());
 
+	antHome.setGrapHighOnTerrain(&terrain2);
 	antHome.setAntScale(0.5);
-	antHome.generateWorkers(1, testScene.getScenegraph()->getRootNode());
-	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
+	antHome.generateWorkers(1);
+	antHome.generateGuards(1);
+	antHome.addObserver(&playerObserver);
 
 	Node homeNode("AntHome");
 
@@ -492,7 +493,10 @@ int main()
 	homeNode.addTranslation(posSpawn);
 	homeNode.getBoundingSphere()->radius = 0.5;
 
+
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
+
+	std::cout << "SUCCESS: Load AntHome" << std::endl;
 
 
 	//===================================================================//
