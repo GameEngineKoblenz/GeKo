@@ -355,45 +355,57 @@ int main()
 	// == Object (Anthome) ==========================================
 	// ==============================================================
 
-	Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
+	//Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
 
-	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
-	auto antHomeGeometry = antHomeHandler.get().toGeometry();
+	//auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
+	//auto antHomeGeometry = antHomeHandler.get().toGeometry();
 
-	glm::vec3 posFood(10.0, 0.0, -5.0);
-	glm::vec3 posFood2((terrain2.getResolutionX() / 2.0f) + 10.0, 0.0, (terrain2.getResolutionY() / 2.0f) - 5.0);
-	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
-	glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
-	AntMesh antMesh;
+	//glm::vec3 posFood(10.0, 0.0, -5.0);
+	//glm::vec3 posFood2((terrain2.getResolutionX() / 2.0f) + 10.0, 0.0, (terrain2.getResolutionY() / 2.0f) - 5.0);
+	//glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
+	//glm::vec3 posDefaultPlayer(0.0, 0.0, 0.0);
+	//AntMesh antMesh;
 
-	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
-	std::vector<std::vector<glm::vec3>> possFoods;
-	possFoods.push_back(TreeData::forest1);
-	possFoods.push_back(TreeData::forest2);
-	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
+	//Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
+	//std::vector<std::vector<glm::vec3>> possFoods;
+	//possFoods.push_back(TreeData::forest1);
+	//possFoods.push_back(TreeData::forest2);
+	//antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
 
-	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
-	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
-	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
-	auto antGeometry = antHandler.get().toGeometry();
-	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);
-	antHome.setGrapHighOnTerrain(&terrain2);
-	
-	antHome.setGrapHighOnTerrain(&terrain2);
-	antHome.setAntScale(0.5);
-	antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
-	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
+	//Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
+	//Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
+	//auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Ant.ply");
+	//auto antGeometry = antHandler.get().toGeometry();
+	//glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 
-	Node homeNode("AntHome");
+	//Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
+	//std::vector<std::vector<glm::vec3>> possFoods;
+	//possFoods.push_back(TreeData::forest1);
+	//possFoods.push_back(TreeData::forest2);
+	//antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
 
-	homeNode.setObject(&antHome);
-	homeNode.addTexture(&texAntHome);
-	homeNode.addGeometry(&antHomeGeometry);
-	homeNode.addTranslation(posSpawn);
-	homeNode.getBoundingSphere()->radius = 0.5;
+	//sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
+	//AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, &texAnt3, antAfraidGraph, testScene.getScenegraph()->getRootNode());
 
-	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
+	//antHome.setGrapHighOnTerrain(&terrain2);
+	//antHome.setAntScale(0.5);
+	//antHome.generateWorkers(1);
+	//antHome.generateGuards(1);
+	//antHome.addObserver(&playerObserver);
+
+	//Node homeNode("AntHome");
+
+	//homeNode.setObject(&antHome);
+	//homeNode.addTexture(&texAntHome);
+	//homeNode.addGeometry(&antHomeGeometry);
+	//homeNode.addTranslation(posSpawn);
+	//homeNode.getBoundingSphere()->radius = 0.5;
+
+
+	//testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
+
+	//std::cout << "SUCCESS: Load AntHome" << std::endl;
+
 
 
 	//===================================================================//
@@ -564,7 +576,7 @@ int main()
 			testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
 
 		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
-		antHome.updateAnts();
+		//antHome.updateAnts();
 
 		testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
 		//===================================================================//

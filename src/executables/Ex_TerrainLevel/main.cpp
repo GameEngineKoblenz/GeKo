@@ -361,7 +361,7 @@ int main()
 	// == Object (Anthome) ==========================================
 	// ==============================================================
 	
-	Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
+	/*Texture texAntHome((char*)RESOURCES_PATH "/Texture/antHome.jpg");
 
 	auto antHomeHandler = manager.loadStaticMesh(RESOURCES_PATH "/AntHome.ply");
 	auto antHomeGeometry = antHomeHandler.get().toGeometry();
@@ -403,7 +403,7 @@ int main()
 
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
 
-	std::cout << "SUCCESS: Load AntHome" << std::endl;
+	std::cout << "SUCCESS: Load AntHome" << std::endl;*/
 
 	//===================================================================//
 	//==================Setting up the Collision=========================//
@@ -577,8 +577,8 @@ int main()
 			testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
 
 		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
-		antHome.updateAnts();
-
+	/*	antHome.updateAnts();
+*/
 		testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
 		//===================================================================//
 		//==================Render your Objects==============================//

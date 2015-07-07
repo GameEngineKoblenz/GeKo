@@ -291,9 +291,9 @@ int main()
 	////antHome.generateGuards(5, &aiObserver);
 	//antHome.generateWorkers(1, &aiObserver);
 	SoundFileHandler sfh(1000);
-	AntHome antHome(posSpawn, &sfh, antMesh, &soundObserver, &playerObserver, &texCV, &texCV, antAfraidGraph);
-	antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
-	antHome.addAntsToSceneGraph(testScene.getScenegraph()->getRootNode());
+	//AntHome antHome(posSpawn, &sfh, antMesh, &soundObserver, &playerObserver, &texCV, &texCV, antAfraidGraph);
+	//antHome.generateWorkers(5, testScene.getScenegraph()->getRootNode());
+	//antHome.addAntsToSceneGraph(testScene.getScenegraph()->getRootNode());
 
 	//antHome.setGrapHighOnTerrain(&terrain);
 
@@ -312,8 +312,8 @@ int main()
 		lastTime = currentTime;
 		collision.update();
 
-		antHome.updateAnts();
-		antHome.printPosWorkers();
+		/*antHome.updateAnts();*/
+		/*antHome.printPosWorkers();*/
 
 		/*	ant_Flick.update();
 		ant_Flack.update();*/
