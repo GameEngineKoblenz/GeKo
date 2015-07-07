@@ -23,9 +23,11 @@ void Goal_Action::setGoalCount(int goalC){
 }
 
 void Goal_Action::increase(){
-	m_actualCount++;
-	if (m_actualCount >= m_goalCount){
-		m_finished = true;
-		notify(*this, Quest_Event::GOAL_FINISHED);
+	if (!m_finished){
+		m_actualCount++;
+		if (m_actualCount >= m_goalCount){
+			m_finished = true;
+			notify(*this, Quest_Event::GOAL_FINISHED);
+		}
 	}
 }

@@ -17,6 +17,8 @@ void Goal_Travel::setPosition(glm::vec3 pos){
 }
 
 void Goal_Travel::completed(){
-	m_finished = true;
-	notify(*this, Quest_Event::GOAL_FINISHED);
+	if (!m_finished){
+		m_finished = true;
+		notify(*this, Quest_Event::GOAL_FINISHED);
+	}
 }

@@ -33,9 +33,11 @@ void Goal_Collect::setItemType(ItemType iType){
 }
 
 void Goal_Collect::increase(){
-	m_actualCount++;
-	if (m_actualCount >= m_goalCount){
-		m_finished = true;
-		notify(*this, Quest_Event::GOAL_FINISHED);
+	if (!m_finished){
+		m_actualCount++;
+		if (m_actualCount >= m_goalCount){
+			m_finished = true;
+			notify(*this, Quest_Event::GOAL_FINISHED);
+		}
 	}
 }

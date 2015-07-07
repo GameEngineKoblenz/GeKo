@@ -31,9 +31,11 @@ ObjectType Goal_Eaten::getAiTypeId(){
 }
 
 void Goal_Eaten::increase(){
-	m_actualCount++;
-	if (m_actualCount >= m_goalCount){
-		m_finished = true;
-		notify(*this, Quest_Event::GOAL_FINISHED);
+	if (!m_finished){
+		m_actualCount++;
+		if (m_actualCount >= m_goalCount){
+			m_finished = true;
+			notify(*this, Quest_Event::GOAL_FINISHED);
+		}
 	}
 }

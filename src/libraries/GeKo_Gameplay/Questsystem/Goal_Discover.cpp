@@ -44,10 +44,12 @@ void Goal_Discover::setGoalCount(int goalC){
 }
 
 void Goal_Discover::increase(){
-	m_actualCount++;
-	//Attention: Hier wird nur der Counter verändert, aber nicht die Position aus dem Vektor m_positions gelöscht!
-	if (m_actualCount >= m_goalCount){
-		m_finished = true;
-		notify(*this, Quest_Event::GOAL_FINISHED);
+	if (!m_finished){
+		m_actualCount++;
+		//Attention: Hier wird nur der Counter verändert, aber nicht die Position aus dem Vektor m_positions gelöscht!
+		if (m_actualCount >= m_goalCount){
+			m_finished = true;
+			notify(*this, Quest_Event::GOAL_FINISHED);
+		}
 	}
 }

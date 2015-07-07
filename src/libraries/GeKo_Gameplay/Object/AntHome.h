@@ -32,7 +32,7 @@
 class AntHome : public StaticObject,public Subject<Node, Object_Event>{
 public:
 	AntHome();
-	AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, Texture *queenTex, Graph<AStarNode, AStarAlgorithm> *afraidGraph, Node *rootNode);
+	AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Node *rootNode, std::vector<std::vector<glm::vec3>> possTreeFoods, Terrain* terrain);
 	~AntHome();
 	void generateGuards(int i);
 	void generateWorkers(int i);
@@ -46,6 +46,7 @@ public:
 	float getAntScale();
 
 	void setGraphGuards();
+	void setGraphWorker(std::vector<std::vector<glm::vec3>> posTreeFoods);
 	void setGrapHighOnTerrain(Terrain* t);
 
 	void resetDeadGuard(int i);

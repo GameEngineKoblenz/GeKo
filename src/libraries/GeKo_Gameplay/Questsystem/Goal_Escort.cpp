@@ -22,6 +22,8 @@ void Goal_Escort::setPosition(glm::vec3 pos){
 }
 
 void Goal_Escort::completed(){
-	m_finished = true;
-	notify(*this, Quest_Event::GOAL_FINISHED);
+	if (!m_finished){
+		m_finished = true;
+		notify(*this, Quest_Event::GOAL_FINISHED);
+	}
 }

@@ -50,15 +50,17 @@ void Quest::setActive(bool activity){
 }
 
 void Quest::isFinished(){
-	m_finished = true;
-	for (int i = 0; i < m_goals.size(); i++){
-		if (!m_goals.at(i)->getFinished()){
-			m_finished = false;
+	if (!m_finished){
+		m_finished = true;
+		for (int i = 0; i < m_goals.size(); i++){
+			if (!m_goals.at(i)->getFinished()){
+				m_finished = false;
+			}
 		}
-	}
-	if (m_finished){
-		m_active = false;
-		notify(*this, Quest_Event::QUEST_FINISHED);
+		if (m_finished){
+			m_active = false;
+			notify(*this, Quest_Event::QUEST_FINISHED);
+		}
 	}
 }
 
