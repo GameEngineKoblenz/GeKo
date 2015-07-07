@@ -30,7 +30,7 @@ public:
 		{
 		case Quest_Event::GOAL_FINISHED:
 			//TODO: Wenn Goal beendet, addScore()
-			m_level->getHighscore()->addScore(5);
+			m_level->getHighscore()->addScore(3);
 			break;
 		}
 			
@@ -43,7 +43,7 @@ public:
 		case Quest_Event::GOAL_FINISHED:
 
 			//TODO: Wenn Goal beendet, addScore()
-			m_level->getHighscore()->addScore(5);
+			m_level->getHighscore()->addScore(3);
 			break;
 		}
 	
@@ -74,6 +74,7 @@ public:
 								if ((pos.z + 4.0f) > player.getPosition().z && (pos.z - 4.0f) < player.getPosition().z)
 								{
 									m_level->getHighscore()->addScore(2);
+									player.setExp(5);
 									gotScore = true;
 
 									std::vector<Goal*> goal = m_level->getQuestHandler()->getQuests(GoalType::ACTION_FIRE);
@@ -93,6 +94,13 @@ public:
 			}
 			break;
 
+		case Object_Event::PLAYER_LVLUP:
+			m_level->getHighscore()->addScore(10);
+			break;
+
+		case Object_Event::PLAYER_DIED:
+			m_level->getHighscore()->addScore(-30);
+			break;
 		}
 	}
 

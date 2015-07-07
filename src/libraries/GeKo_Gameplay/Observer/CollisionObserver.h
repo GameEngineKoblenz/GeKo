@@ -11,7 +11,7 @@ and collisions with static objects like trees will be handled as well.*/
 class CollisionObserver : public Observer<Node, Collision_Event>
 {
 public:
-	CollisionObserver(Level* level){ m_level = level; m_counter = new Counter(0); foundFireplace = false; }
+	CollisionObserver(Level* level){ m_level = level; m_counter = new Counter(0); foundFireplace = false; foundFlowerplace = false; rainDance = false; }
 
 	~CollisionObserver(){}
 
@@ -243,7 +243,7 @@ public:
 				 if (count != 0){
 					 m_level->getPlayerGUI()->setTexture((char*)RESOURCES_PATH "/Texture/Branch_cookie.png");
 					 m_level->getPlayerGUI()->getInventory()->insert(std::pair<std::string, Texture*>(std::string("Branch"), m_level->getPlayerGUI()->getTextures()->back()));
-					 m_level->getHighscore()->addScore(1);
+					 m_level->getHighscore()->addScore(count);
 				 }
 
 				 nodeB.getStaticObject()->getInventory()->clearInventory();
@@ -269,7 +269,7 @@ public:
 					soundName = nodeA.getPlayer()->getSourceName(COIN);
 				 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
 
-				 m_level->getHighscore()->addScore(5);
+				 m_level->getHighscore()->addScore(6);
 				 glm::vec3 temp;
 				 temp.x = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
 				 temp.z = 5.0 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / 190.0));
@@ -297,6 +297,12 @@ public:
 
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::FLOWER)
 			 {
+				 if (!foundFlowerplace){
+					 soundName = nodeA.getPlayer()->getSourceName(SECRET);
+					 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
+					 m_level->getHighscore()->addScore(10);
+					 foundFlowerplace = true;
+				 }
 				 std::vector<Goal*> goal = m_level->getQuestHandler()->getQuests(GoalType::DISCOVER);
 				 for (int i = 0; i < goal.size(); i++)
 				 {
@@ -306,6 +312,12 @@ public:
 
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::RAIN)
 			 {
+				 if (!rainDance){
+					 nodeA.getPlayer()->setExp(5);
+					 m_level->getHighscore()->addScore(5);
+					 rainDance = true;
+				 }
+
 				 soundName = nodeA.getPlayer()->getSourceName(RAIN);
 				 if (soundName != "oor")
 				 {
@@ -329,4 +341,6 @@ public:
 		bool particleFightIsStarted = false;
 
 		bool foundFireplace;
+		bool foundFlowerplace;
+		bool rainDance;
 };
