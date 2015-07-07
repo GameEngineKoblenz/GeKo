@@ -127,7 +127,8 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	m_endGameWindow->setName("EndGame");
 	m_endGameWindow->setCollapsable(false);
 	m_endGameWindow->setResizable(false);
-	m_endGameWindow->setPosition(25,25);
+	m_endGameWindow->setPosition(75,400);
+	//m_endGameWindow->setPosition(25, 25);
 	m_endGameWindow->setSize(m_WINDOW_HEIGHT - 50, m_WINDOW_WIDTH - 50);
 	m_hud->addNestedWindow(m_endGameWindow);
 
@@ -183,7 +184,7 @@ void PlayerGUI::update()
 		m_endGameWindow->show();
 		/*m_level->getPlayerGUI()->setTexture((char*)RESOURCES_PATH "/Texture/Cookie_02.png");
 		m_level->getPlayerGUI()->getInventory()->insert(std::pair<std::string, Texture*>(std::string("Cookie"), m_level->getPlayerGUI()->getTextures()->back()));*/
-		m_endGameWindow->addElement(new GuiElement::Text("Your Time is up. \n Congratulations, your Score is" + m_highscore));
+		m_endGameWindow->addElement(new GuiElement::Text("Your Time is up. \n Congratulations, your Score is"));
 		//TODO: Notify Sound
 	}
 

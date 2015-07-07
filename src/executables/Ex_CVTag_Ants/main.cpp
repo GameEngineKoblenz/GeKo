@@ -158,24 +158,26 @@ int main()
 	//================== PArticle System ================================ //
 	//===================================================================//
 
-	/*ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
+	ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
 	particle->m_type = ParticleType::FIGHT;
 	ParticleSystem* particle2 = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/SwarmOfFliesEffect.xml");
 	particle2->m_type = ParticleType::SWARMOFFLIES;
 	ParticleSystem* particleFire = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_Fire.xml");
 	particleFire->m_type = ParticleType::FIRE;
-*/
-	//Node particleNode("ParticleNode");
-	//particleNode.addParticleSystem(particle2);
-	//particleNode.setCamera(&cam);
-	//particleNode.setParticleActive(true);
+	ParticleSystem* particleFireWork = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
+	particleFireWork->m_type = ParticleType::FIREWORK;
 
-	//Node particleNodeFire("ParticleNodeFire");
-	//particleNodeFire.addParticleSystem(particleFire);
-	//particleNodeFire.setCamera(&cam);
-	//particleNodeFire.setParticleActive(true);
+	/*Node particleNode("ParticleNode");
+	particleNode.addParticleSystem(particle2);
+	particleNode.setCamera(&cam);
+	particleNode.setParticleActive(true);
 
-	//std::cout << "SUCCESS: Load Particle" << std::endl;
+	Node particleNodeFire("ParticleNodeFire");
+	particleNodeFire.addParticleSystem(particleFire);
+	particleNodeFire.setCamera(&cam);
+	particleNodeFire.setParticleActive(true);*/
+
+	std::cout << "SUCCESS: Load Particle" << std::endl;
 
 	//===================================================================//
 	//==================Object declarations - Geometry, Texture, Node=== //
@@ -227,6 +229,8 @@ int main()
 	sfh.disableLooping("Levelup");
 	sfh.disableLooping("Quest");
 	sfh.disableLooping("Item");
+	sfh.disableLooping("Kampfsound");
+
 	sfh.setGain("Quest", 10.0);
 	sfh.setPitch("Quest", 4.0);
 	sfh.setGain("Kampfsound", 0.8f);
@@ -291,11 +295,12 @@ int main()
 	testScene.setSkyboxNode(&skyboxNode);
 
 	//================== Particles ========================//
-	//testScene.getScenegraph()->addParticleSystem(particle);
-	//testScene.getScenegraph()->addParticleSystem(particle2);
-	//testScene.getScenegraph()->addParticleSystem(particleFire);
+	testScene.getScenegraph()->addParticleSystem(particle);
+	testScene.getScenegraph()->addParticleSystem(particle2);
+	testScene.getScenegraph()->addParticleSystem(particleFire);
+	testScene.getScenegraph()->addParticleSystem(particleFireWork);
 
-	//std::cout << "SUCCESS: Load Scene" << std::endl;
+	std::cout << "SUCCESS: Load Scene" << std::endl;
 
 	//===================================================================//
 	//==================Setting up the Observers========================//
@@ -563,10 +568,23 @@ int main()
 	
 	Counter counter;
 	counter.setTime(60 * 30);
+	bool fireWorkStarted = false;
 
 
 	sfh.stopSource("Lademusik");
 	sfh.playSource("Hintergrund");
+
+	std::vector<ParticleSystem*>* ps = testLevel.getActiveScene()->getScenegraph()->getParticleSet();
+	for (auto particle : *ps)
+	{
+		if (particle->m_type == ParticleType::FIREWORK)
+		{
+			particle->setPosition(glm::vec3(geko.getPosition()));
+			particle->start();
+			particle->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+			particle->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+		}
+	}
 
 	counter.start();
 	while (!glfwWindowShouldClose(testWindow.getWindow()))
@@ -631,7 +649,14 @@ int main()
 		//renderer.renderScene(testScene, testWindow);
 		if (counter.getTime() <= 0)
 		{
-			playerGUI.setTimeOver();
+			if (!fireWorkStarted){
+				fireWorkStarted = true;
+				playerGUI.setTimeOver();
+				particleFire->setPosition(glm::vec3(geko.getPosition()));
+				particleFire->start();
+				particleFire->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+				particleFire->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+			}
 		}
 		playerGUI.update();
 		renderer.renderScene(testScene, testWindow);
