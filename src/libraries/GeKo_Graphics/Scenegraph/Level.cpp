@@ -8,6 +8,7 @@ Level::Level(const char* levelName)
 	m_fightSystem = new FightSystem();
 	m_hasTerrain = false;
 	m_highscore = new Highscore();
+	m_collisionTest = new CollisionTest();
 }
 
 Level::~Level()
@@ -138,4 +139,9 @@ PlayerGUI* Level::getPlayerGUI()
 
 Highscore* Level::getHighscore(){
 	return m_highscore;
+}
+
+CollisionTest* Level::getCollision()
+{
+	return m_collisionTest;
 }

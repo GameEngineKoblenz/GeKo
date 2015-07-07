@@ -3,6 +3,8 @@
 #include "GeKo_Gameplay/Object/Ant.h"
 #include "GeKo_Gameplay/Object/Ant_Guardian.h"
 #include "GeKo_Gameplay/Object/Ant_Worker.h"
+#include "GeKo_Gameplay/Object/Ant_Queen.h"
+
 
 #include "GeKo_Gameplay/AI_Decisiontree/DecisionTree.h"
 #include "GeKo_Gameplay/AI_Pathfinding/Graph.h"
@@ -27,18 +29,16 @@
 
 
 ///This class represents an anthome and is used to generate ants at a certain spawning position.
-class AntHome : public StaticObject, public Subject<StaticObject, Object_Event>{
+class AntHome : public StaticObject,public Subject<Node, Object_Event>{
 public:
 	AntHome();
-	AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh,SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, Graph<AStarNode, AStarAlgorithm> *afraidGraph);
+	AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, Texture *queenTex, Graph<AStarNode, AStarAlgorithm> *afraidGraph, Node *rootNode);
 	~AntHome();
-	void generateGuards(int i, Node* root);
+	void generateGuards(int i);
 	void generateWorkers(int i);
-	void generateWorkers(int i, Node* root);
-
+	void generateQueen();
 	void generateSound(AI *ai);
 	void updateAnts();
-	void addAntsToSceneGraph(Node *rootNode);
 	//void putObserver();
 	void printPosGuards();
 	void printPosWorkers();
@@ -55,6 +55,8 @@ public:
 protected:
 	std::vector<Node*> m_guards;
 	std::vector<Node*> m_workers;
+	Node* m_queen;
+	Node* m_rootNode;
 	glm::vec3 m_position;
 
 	//AI: n_id; SoundFile: identification
@@ -63,6 +65,8 @@ protected:
 	Geometry m_antMesh;
 	Texture *m_guardTexture;
 	Texture *m_workerTexture;
+	Texture *m_queenTexture;
+
 	Gravity *m_gravity;
 
 	Graph<AStarNode, AStarAlgorithm> *m_guardGraph;
@@ -76,6 +80,7 @@ protected:
 	int m_numerOfDeadGuards;
 	int m_numberOfWorkers;
 	int m_numberOfDeadWorkers;
+	bool m_queenIsAlive;
 
 	SoundFileHandler *m_sfh;
 	ObjectObserver *m_objectObserver;

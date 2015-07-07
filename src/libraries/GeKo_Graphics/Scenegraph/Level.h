@@ -7,6 +7,8 @@
 #include <GeKo_Graphics/Geometry/Terrain.h>
 #include <GeKo_Graphics/GUI/PlayerGUI.h>
 #include <GeKo_Gameplay/Questsystem/Highscore.h>
+#include <GeKo_Physics/CollisionTest.h>
+
 
 ///A Level is the necessary unit to create a game
 /**
@@ -72,6 +74,8 @@ public:
 
 	Highscore* getHighscore();
 
+	CollisionTest* getCollision();
+
 protected:
 	const char* m_levelName;
 	bool m_hasTerrain;
@@ -90,4 +94,6 @@ protected:
 	PlayerGUI* m_playerGui;
 
 	Highscore* m_highscore;
+
+	CollisionTest* m_collisionTest;
 };

@@ -4,7 +4,7 @@
 #include <GeKo_Graphics/Scenegraph/Level.h>
 
 /**An Obsever for the AI and Player which handles collision between them and lets the object move.*/
-class ObjectObserver : public Observer<AI, Object_Event>, public Observer<AI, Collision_Event>, public Observer<Player, Object_Event>, public Observer<StaticObject, Object_Event>
+class ObjectObserver : public Observer<AI, Object_Event>, public Observer<AI, Collision_Event>, public Observer<Player, Object_Event>, public Observer<StaticObject, Object_Event>, public Observer<Node, Object_Event>
 {
 public:
 	ObjectObserver(Level* level){ m_level = level; }
@@ -107,6 +107,16 @@ public:
 			break;
 		case Object_Event::PLAYER_DIED:
 
+			break;
+		}
+	}
+
+	void onNotify(Node& node, Object_Event event)
+	{
+		switch (event)
+		{
+		case Object_Event::OBJECT_ADDED_TO_SCENE:
+			m_level->getCollision()->addNode(&node);
 			break;
 		}
 	}

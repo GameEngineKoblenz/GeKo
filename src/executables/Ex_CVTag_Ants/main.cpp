@@ -199,7 +199,7 @@ int main()
 
 	Texture texGeko((char*)RESOURCES_PATH "/Texture/Snake.jpg");
 
-	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Geko.ply");
+	auto gekoHandle = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Gecko.obj");
 	auto gekoGeometry = gekoHandle.get().toGeometry();
 
 	
@@ -404,15 +404,17 @@ int main()
 
 	Texture texAnt((char*)RESOURCES_PATH "/Texture/ant.jpg");
 	Texture texAnt2((char*)RESOURCES_PATH "/Texture/ant2.jpg");
+	Texture texAnt3((char*)RESOURCES_PATH "/Texture/ant3.jpg");
 	auto antHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/Ant.ply");
 	auto antGeometry = antHandler.get().toGeometry();
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, antAfraidGraph);
+	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, &texAnt3, antAfraidGraph, testScene.getScenegraph()->getRootNode());
+	
 	antHome.setGrapHighOnTerrain(&terrain2);
-
 	antHome.setAntScale(0.5);
-	antHome.generateWorkers(1, testScene.getScenegraph()->getRootNode());
-	antHome.generateGuards(1, testScene.getScenegraph()->getRootNode());
+	antHome.generateWorkers(1);
+	antHome.generateGuards(1);
+	antHome.addObserver(&playerObserver);
 
 	Node homeNode("AntHome");
 	
@@ -421,6 +423,7 @@ int main()
 	homeNode.addGeometry(&antHomeGeometry);
 	homeNode.addTranslation(posSpawn);
 	homeNode.getBoundingSphere()->radius = 0.5;
+
 
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
 
@@ -513,15 +516,14 @@ int main()
 	//==================Setting up the Collision=========================//
 	//==================================================================//
 
-	CollisionTest collision;
-	collision.collectNodes(testScene.getScenegraph()->getRootNode());
+	testLevel.getCollision()->collectNodes(testScene.getScenegraph()->getRootNode());
 
 	CollisionObserver colObserver(&testLevel);
-	collision.addObserver(&colObserver);
-	collision.addObserver(&soundPlayerObserver);
+	testLevel.getCollision()->addObserver(&colObserver);
+	testLevel.getCollision()->addObserver(&soundPlayerObserver);
 
 	GravityObserver gravityObserver(&testLevel);
-	collision.addObserver(&gravityObserver);
+	testLevel.getCollision()->addObserver(&gravityObserver);
 
 	//===================================================================//
 	//==================Setting up the Gravity===========================//
@@ -588,7 +590,7 @@ int main()
 		//===================================================================//
 		//==================Update your Objects per Frame here =============//
 		//==================================================================//
-		collision.update();
+		testLevel.getCollision()->update();
 
 		coinFactory->update();
 		coinFactory2->update();
@@ -626,6 +628,11 @@ int main()
 
 		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
 		antHome.updateAnts();
+		
+		
+		//std::cout << "Terrain: " << terrain2. 
+		
+
 
 		testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
 		//===================================================================//
@@ -634,7 +641,7 @@ int main()
 		//renderer.renderScene(testScene, testWindow);
 		playerGUI.update();
 		renderer.renderScene(testScene, testWindow);
-		renderer.renderGUI(*playerGUI.getHUD(), testWindow);
+		//renderer.renderGUI(*playerGUI.getHUD(), testWindow);
 
 
 		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() - glm::vec4(normalFromTerrain * 0.2f, 1.0));

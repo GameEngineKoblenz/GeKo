@@ -4,7 +4,7 @@ AntHome::AntHome(){
 
 }
 
-AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, Graph<AStarNode, AStarAlgorithm> *afraidGraph){
+AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, SoundObserver *soundObserver, ObjectObserver *objectObserver, Texture *guardTex, Texture *workerTex, Texture *queenTex, Graph<AStarNode, AStarAlgorithm> *afraidGraph, Node *rootNode){
 	m_myNodeName = "Anthome";
 	
 	m_position = position;
@@ -12,6 +12,9 @@ AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, So
 	//Texture texCV((char*)RESOURCES_PATH "/cv_logo.bmp");
 	m_guardTexture = guardTex;
 	m_workerTexture = workerTex;
+	m_queenTexture = queenTex;
+
+	m_rootNode = rootNode;
 
 	m_guardsDistanceToHome = 6;
 	setGraphGuards();
@@ -29,6 +32,8 @@ AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, So
 	m_numerOfDeadGuards = m_numberOfGuards;
 	m_numberOfWorkers = 0;
 	m_numberOfDeadWorkers = m_numberOfWorkers;
+	m_queenIsAlive = false;
+
 	m_objectObserver = objectObserver;
 	m_soundObserver = soundObserver;
 	m_gravity = new Gravity();
@@ -41,13 +46,16 @@ AntHome::AntHome(glm::vec3 position, SoundFileHandler *sfh, Geometry antMesh, So
 	cookie.setName("Cookie");
 	cookie.setTypeId(ItemType::COOKIE);
 	m_inventory->addItem(&cookie, 100);
+
+	
+	
 }
 
 AntHome::~AntHome(){
 
 }
 
-void AntHome::generateGuards(int i, Node *root){
+void AntHome::generateGuards(int i){
 	if (i < 0)
 		return;
 	glm::vec4 position;
@@ -59,15 +67,15 @@ void AntHome::generateGuards(int i, Node *root){
 		name << "Guard" << m_numberOfGuards++ + 1;
 		Node *aiGuardNode = new Node(name.str());
 		//Node (scenegraph)
-		aiGuardNode->addScale(m_antScale, m_antScale, m_antScale);
 		aiGuardNode->addGeometry(&m_antMesh);
+		aiGuardNode->addScale(m_antScale, m_antScale, m_antScale);
 		aiGuardNode->addTexture(m_guardTexture);
 		aiGuardNode->addGravity(m_gravity);
 		//Position
-		position.x = rand() * 3 / 32767.0;
+		/*position.x = rand() * 3 / 32767.0;
 		position.z = rand() * 3 / 32767.0;
 		position.y = 0.0;
-		position.w = 0.0;
+		position.w = 0.0;*/
 		//Ant (AI)
 		Ant_Guardian *antAI = new Ant_Guardian();
 		antAI->setAntAggressiv(m_numberOfAnts, name.str(), m_guardDecisionTree, m_guardGraph);
@@ -77,7 +85,7 @@ void AntHome::generateGuards(int i, Node *root){
 		antAI->addObserver(m_soundObserver);
 		generateSound(antAI);
 		name.str("");
-		root->addChildrenNode(aiGuardNode);
+		m_rootNode->addChildrenNode(aiGuardNode);
 		m_guards.push_back(aiGuardNode);
 		m_numerOfDeadGuards = m_numberOfGuards;
 		i--;
@@ -86,19 +94,22 @@ void AntHome::generateGuards(int i, Node *root){
 }
 
 
-void AntHome::generateWorkers(int i, Node* root){
+
+
+void AntHome::generateWorkers(int i){
 	if (i < 0)
 		return;
 	glm::vec4 position;
 	time_t t;
 	time(&t);
+
 	srand((unsigned int)t);
 	std::stringstream name;
 	while (i > 0){
 		name << "Worker" << m_numberOfWorkers++ + 1;
 		Node *aiWorkerNode = new Node(name.str());
-		aiWorkerNode->addScale(m_antScale, m_antScale, m_antScale);
 		aiWorkerNode->addGeometry(&m_antMesh);
+		aiWorkerNode->addScale(m_antScale*0.8, m_antScale*0.8, m_antScale*0.8);
 		aiWorkerNode->addTexture(m_workerTexture);
 		aiWorkerNode->addGravity(m_gravity);
 		//position.x = rand() * 1.0f / 32767.0f;
@@ -115,7 +126,7 @@ void AntHome::generateWorkers(int i, Node* root){
 		antAI->addObserver(m_soundObserver);
 		generateSound(antAI);
 		name.str("");
-		root->addChildrenNode(aiWorkerNode);
+		m_rootNode->addChildrenNode(aiWorkerNode);
 		m_workers.push_back(aiWorkerNode);
 		m_numberOfDeadWorkers = m_numberOfWorkers;
 		i--;
@@ -123,6 +134,41 @@ void AntHome::generateWorkers(int i, Node* root){
 	}
 }
 
+void AntHome::generateQueen(){
+
+	glm::vec4 position;
+	time_t t;
+	time(&t);
+	srand((unsigned int)t);
+		//Node (scenegraph)
+	
+	m_queen = new Node("Queen");
+	m_queen->addGeometry(&m_antMesh);
+	m_queen->addScale(m_antScale*2.0, m_antScale*2.0, m_antScale*2.0);
+	m_queen->addTexture(m_queenTexture);
+	m_queen->addGravity(m_gravity);
+	m_queen->addTranslation(glm::vec3(0.0, 2.0, 0.0));
+	m_queen->getBoundingSphere()->center.y -= 2.0;
+
+		//Position
+		/*position.x = rand() * 3 / 32767.0;
+		position.z = rand() * 3 / 32767.0;
+		position.y = 0.0;
+		position.w = 0.0;*/
+		//Ant (AI)
+	Ant_Queen *antAI = new Ant_Queen();
+		antAI->setAntQueen(m_numberOfAnts, "Queen", m_guardDecisionTree, m_guardGraph);
+		m_queen->setObject(antAI);
+
+		antAI->addObserver(m_objectObserver);
+		antAI->setSoundHandler(m_sfh);
+		antAI->addObserver(m_soundObserver);
+		generateSound(antAI);
+		m_rootNode->addChildrenNode(m_queen);
+		m_queenIsAlive = true;
+		//printPosGuards();
+		notify(*m_queen, Object_Event::OBJECT_ADDED_TO_SCENE);
+}
 
 void AntHome::generateSound(AI *ai){
 	std::stringstream name;
@@ -150,23 +196,16 @@ void AntHome::generateSound(AI *ai){
 	name.str("");
 }
 
-void AntHome::addAntsToSceneGraph(Node *rootNode){
-	for (Node* antNode : m_guards){
-		rootNode->addChildrenNode(antNode);
-	}
-	for (Node* antNode : m_workers){
-		rootNode->addChildrenNode(antNode);
-	}
-}
-
 void AntHome::updateAnts(){
-
 	for (int i = 0; i < m_guards.size(); i++){
 		m_guards.at(i)->getAI()->update();
 	}
 	for (int i = 0; i < m_workers.size(); i++){
 		m_workers.at(i)->getAI()->update();
 	}
+	if (m_queenIsAlive)
+		m_queen->getAI()->update();
+	//std::cout << m_queen->getBoundingSphere()->center.x << m_queen->getBoundingSphere()->center.y << m_queen->getBoundingSphere()->center.z << std::endl;
 }
 
 void AntHome::printPosGuards(){
@@ -213,7 +252,7 @@ void AntHome::resetDeadGuard(int i){
 
 		m_guards.at(i)->getAI()->setHealth(m_guards.at(i)->getAI()->getHealthMax());
 		m_guards.at(i)->getAI()->setHunger(m_guards.at(i)->getAI()->getHungerMax());
-		m_numerOfDeadGuards += 1;
+		m_numerOfDeadGuards++;
 		std::stringstream name;
 		name << "Guard" << m_numerOfDeadGuards;
 		m_guards.at(i)->getAI()->setName(name.str());
@@ -221,6 +260,9 @@ void AntHome::resetDeadGuard(int i){
 
 		m_guards.at(i)->getAI()->setStates(States::HEALTH, true);
 		m_guards.at(i)->getAI()->setHasDied(false);
+	}
+	if (m_numerOfDeadGuards == 2){
+		generateQueen();
 	}
 }
 

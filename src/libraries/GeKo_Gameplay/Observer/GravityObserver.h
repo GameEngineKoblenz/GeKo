@@ -43,16 +43,31 @@ public:
 				 else if (node.getType() == ClassType::AI)
 				 {
 					 float height = tmp->getHeight(glm::vec2(node.getAI()->getPosition().x, node.getAI()->getPosition().z));
-					 if (node.getBoundingSphere()->center.y-node.getBoundingSphere()->radius <= height + 1.5f){
-						 node.setGravity(false);
-						 node.getAI()->setPosition(glm::vec4(node.getAI()->getPosition().x, height + 1.5f, node.getAI()->getPosition().z, 1.0));
-					 }
-					 else if (true)
+					 if (node.getAI()->getAntType() == AntType::QUEEN)
 					 {
-						 node.setGravity(true);
+						 if (node.getBoundingSphere()->center.y - node.getBoundingSphere()->radius <= height + 2.5f){
+							 node.setGravity(false);
+							 node.getAI()->setPosition(glm::vec4(node.getAI()->getPosition().x, height + 2.5f, node.getAI()->getPosition().z, 1.0));
+						 }
+						 else if (true)
+						 {
+							 node.setGravity(true);
+						 }
+					 }
+					 else{
+
+						 if (node.getBoundingSphere()->center.y - node.getBoundingSphere()->radius <= height + 1.5f){
+							 node.setGravity(false);
+							 node.getAI()->setPosition(glm::vec4(node.getAI()->getPosition().x, height + 1.5f, node.getAI()->getPosition().z, 1.0));
+						 }
+						 else if (true)
+						 {
+							 node.setGravity(true);
+						 }
 					 }
 				 }
 			 }
+			 //BEWARE: The code below handles the collision if there is no terrain in the level.
 			 else
 			 {
 				 if (node.getType() == ClassType::OBJECT)
@@ -85,6 +100,7 @@ public:
 					 {
 						 node.setGravity(true);
 					 }
+
 				 }
 			 }
 

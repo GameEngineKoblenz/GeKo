@@ -21,5 +21,4 @@ public:
 	void setExampleAntHome();
 
 	virtual void resetDeadAnt(AntType type);
-
 };
