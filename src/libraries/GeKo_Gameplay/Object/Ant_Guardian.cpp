@@ -12,8 +12,8 @@ Ant_Guardian::Ant_Guardian(){
 	m_hunger = 10;
 
 	m_hungerMax = 10;
-	m_health = 1000;
-	m_healthMax = 1000;
+	m_health = 10000;
+	m_healthMax = 10000;
 	m_strength = 10;
 	m_hasDied = false;
 

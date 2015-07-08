@@ -253,6 +253,7 @@ void AntHome::resetDeadGuard(int i){
 		m_guards.at(i)->getAI()->setStates(States::HEALTH, true);
 		m_guards.at(i)->getAI()->setHasDied(false);
 	}
+	std::cout << "m_numerOfDeadGuards : " << m_numerOfDeadGuards << " ; m_numberOfGuards : " << m_numberOfGuards << std::endl;
 	if (m_numerOfDeadGuards == m_numberOfGuards+5){
 		generateQueen();
 	}
