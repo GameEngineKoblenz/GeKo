@@ -35,7 +35,7 @@
 #include <GeKo_Gameplay/Observer/HighscoreObserver.h>
 
 #include <GeKo_Gameplay/Questsystem/QuestHandler_CVTag.h>
-//#include <Geko_Gameplay/Questsystem/Counter.h>
+#include <Geko_Gameplay/Questsystem/Counter.h>
 
 #include <GeKo_Gameplay/Object/AntHome.h>
 
@@ -160,14 +160,14 @@ int main()
 
 	ParticleSystem* particle = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_ComicCloud.xml");
 	particle->m_type = ParticleType::FIGHT;
-	ParticleSystem* particle2 = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/SwarmOfFliesEffect.xml");
+	ParticleSystem* particle2 = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_FruitFlies.xml");
 	particle2->m_type = ParticleType::SWARMOFFLIES;
 	ParticleSystem* particleFire = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_Fire.xml");
 	particleFire->m_type = ParticleType::FIRE;
 	ParticleSystem* particleFireWork = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
 	particleFireWork->m_type = ParticleType::FIREWORK;
 	ParticleSystem* particleRain = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_Rain.xml");
-	particleFireWork->m_type = ParticleType::RAIN;
+	particleRain->m_type = ParticleType::RAIN;
 
 	/*Node particleNode("ParticleNode");
 	particleNode.addParticleSystem(particle2);
@@ -316,6 +316,8 @@ int main()
 	testScene.getScenegraph()->addParticleSystem(particle2);
 	testScene.getScenegraph()->addParticleSystem(particleFire);
 	testScene.getScenegraph()->addParticleSystem(particleFireWork);
+	testScene.getScenegraph()->addParticleSystem(particleRain);
+
 
 	std::cout << "SUCCESS: Load Scene" << std::endl;
 
@@ -406,6 +408,31 @@ int main()
 
 	std::cout << "SUCCESS: Load ForestData" << std::endl;
 
+
+	// ==============================================================
+	// == Object (Rainsign) =========================================
+	// ==============================================================
+
+	auto rainHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/RainSign.obj");
+	auto rainGeometry = rainHandler.get().toGeometry();
+	Texture texRain((char*)RESOURCES_PATH "/Texture/RainSign2.png");
+
+	StaticObject rainObject;
+	rainObject.setClassType(ClassType::STATIC);
+	rainObject.setObjectType(ObjectType::RAIN);
+
+	Node rainNode("Rain");
+	rainNode.addGeometry(&rainGeometry);
+	rainNode.addTexture(&texRain);
+	rainNode.setObject(&rainObject);
+	rainNode.addScale(7.0, 7.0, 7.0);
+	rainNode.getBoundingSphere()->radius = 0.5;
+	glm::vec3 rainPos;
+	rainPos = glm::vec3(terrain2.getResolutionX() / 3.0f, terrain2.getHeight(glm::vec2(terrain2.getResolutionX() / 3.0f, terrain2.getResolutionY() / 3.0f)), terrain2.getResolutionY() / 3.0f);
+	rainNode.addTranslation(rainPos);
+	rainNode.getStaticObject()->setPosition(rainPos);
+	testScene.getScenegraph()->getRootNode()->addChildrenNode(&rainNode);
+
 	// ==============================================================
 	// == Object (Anthome) ==========================================
 	// ==============================================================
@@ -428,12 +455,12 @@ int main()
 	AntHome antHome(posAntHome, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, testScene.getScenegraph()->getRootNode(), posFoods, &terrain2);
 
 	Node homeNode("AntHome");
-	
+
 	homeNode.setObject(&antHome);
 	homeNode.addTexture(&texAntHome);
 	homeNode.addGeometry(&antHomeGeometry);
 	homeNode.addTranslation(posAntHome);
-	homeNode.getBoundingSphere()->radius = 0.5;
+	homeNode.getBoundingSphere()->radius = 1.0;
 
 	testScene.getScenegraph()->getRootNode()->addChildrenNode(&homeNode);
 
@@ -560,7 +587,7 @@ int main()
 	//================== Setting up the playerGUI ========================//
 	//==================================================================//
 
-	PlayerGUI playerGUI(HUD_WIDTH+50, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler(), testLevel.getHighscore());
+	PlayerGUI playerGUI(HUD_WIDTH + 50, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler(), testLevel.getHighscore());
 	testLevel.setGUI(&playerGUI);
 
 	std::cout << "SUCCESS: Load GUI" << std::endl;
@@ -582,30 +609,20 @@ int main()
 	float phi;
 	glm::vec4 tangente;
 	float dot;
-	
+
 	Counter counter;
-	counter.setTime(60* 30);
+	counter.setTime(60 * 300);
 	bool fireWorkStarted = false;
-	bool isRaining = false;
+	//bool isRaining = false;
 
 
 	sfh.stopSource("Lademusik");
 	sfh.playSource("Hintergrund");
 
-	//std::vector<ParticleSystem*>* ps = testLevel.getActiveScene()->getScenegraph()->getParticleSet();
-	//for (auto particle : *ps)
-	//{
-	//	if (particle->m_type == ParticleType::FIREWORK)
-	//	{
-	//		particle->setPosition(glm::vec3(geko.getPosition()));
-	//		particle->start();
-	//		particle->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-	//		particle->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-	//	}
-	//}
-
 	counter.start();
-	sfh.playSource("Rain");
+	/*sfh.playSource("Rain");*/
+	//std::vector<ParticleSystem*>* ps = testLevel.getActiveScene()->getScenegraph()->getParticleSet();
+
 	while (!glfwWindowShouldClose(testWindow.getWindow()))
 	{
 
@@ -613,63 +630,61 @@ int main()
 		{
 			counter.update();
 			if (!geko.getStates(States::HEALTH)){
-			
+
 				counter.end();
 			}
 
-		if (geko.getStates(States::HEALTH)){
-			//===================================================================//
-			//==================Update your Objects per Frame here =============//
-			//==================================================================//
+			if (geko.getStates(States::HEALTH)){
+				//===================================================================//
+				//==================Update your Objects per Frame here =============//
+				//==================================================================//
 
-			testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Rotation();
-			//testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Translate();
+				testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Rotation();
 
-			float currentTime = glfwGetTime();
-			float deltaTime = currentTime - lastTime;
-			lastTime = currentTime;
+				float currentTime = glfwGetTime();
+				float deltaTime = currentTime - lastTime;
+				lastTime = currentTime;
 
-			testLevel.getCollision()->update();
+				testLevel.getCollision()->update();
 
-			coinFactory->update();
-			coinFactory2->update();
-			coinFactory3->update();
-			coinFactory4->update();
-			coinFactory5->update();
-			coinFactory6->update();
+				coinFactory->update();
+				coinFactory2->update();
+				coinFactory3->update();
+				coinFactory4->update();
+				coinFactory5->update();
+				coinFactory6->update();
 
-			geko.update();
-			geko.setDeltaTime(currentTime);
+				geko.update();
+				geko.setDeltaTime(currentTime);
 
-			tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
+				tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
 
-			viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
+				viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
 
-			//ToDo calculate Normal funktioniert evtl falsch
-			normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
-			rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
-			lengthFromNormal = glm::length(normalFromTerrain);
-			lengthFromUp = glm::length(up);
-			up = glm::normalize(up);
-			dot = glm::dot(normalFromTerrain, up);
+				//ToDo calculate Normal funktioniert evtl falsch
+				normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
+				rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
+				lengthFromNormal = glm::length(normalFromTerrain);
+				lengthFromUp = glm::length(up);
+				up = glm::normalize(up);
+				dot = glm::dot(normalFromTerrain, up);
 
-			phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
-			phi = phi * (180 / glm::pi<float>());
+				phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
+				phi = phi * (180 / glm::pi<float>());
 
-			if (dot <0.99)
-				testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
+				if (dot < 0.99)
+					testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
 
-			testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
-			antHome.updateAnts();
-		
-			testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
-		}
+				testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
+				antHome.updateAnts();
+
+				testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
+			}
 
 		}
 		//===================================================================//
 		//==================Render your Objects==============================//
 		//==================================================================//
-		//renderer.renderScene(testScene, testWindow);
 		if (counter.getTime() <= 0)
 		{
 			if (!fireWorkStarted){
@@ -681,33 +696,23 @@ int main()
 				particleFireWork->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
 			}
 		}
-		/*if (((int)glfwGetTime() % 7) < 1 && !fireWorkStarted && counter.getTime() <= 0){
-			playerGUI.setTimeOver();
 
-			fireWorkStarted = true;
+		//if (sfh.sourceIsPlaying("Rain"))
+		//{
+		//	//renderer.useReflections(true, reflectionStrength);
 
-			particleFireWork->setPosition(glm::vec3(geko.getPosition()));
+		//	for (auto particle : *ps)
+		//	{
+		//		if (particle->m_type == ParticleType::RAIN && !isRaining)
+		//		{
+		//			particle->start();
+		//			isRaining = true;
+		//		}
+		//	}
 
-			particleFireWork->start();
-			particleFireWork->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-			particleFireWork->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+		//}
 
-		}
-		else if (((int)glfwGetTime() % 5) > 3 && fireWorkStarted && counter.getTime() <= 0){
-			fireWorkStarted = false;
-			particleFireWork->stop();
-		}*/
-		if (sfh.sourceIsPlaying("Rain"))
-		{
-			if (!isRaining){
-				//renderer.useReflections(true, reflectionStrength);
-				isRaining = true;
-				particleRain->setPosition(glm::vec3(geko.getPosition()));
-				particleRain->start();
-				particleRain->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-				particleRain->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-			}
-		}
+
 		playerGUI.receiveFramesLeft(counter.getTime());
 		playerGUI.update();
 		renderer.renderScene(testScene, testWindow);

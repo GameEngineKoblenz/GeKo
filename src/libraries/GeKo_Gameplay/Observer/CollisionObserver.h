@@ -36,7 +36,7 @@ public:
 			 {
 				 if (particle->m_type == ParticleType::FIGHT)
 				 {
-					 particle->stop();
+					// particle->stop();
 				 }
 			 }
 			 break;
@@ -106,7 +106,6 @@ public:
 				 {
 					 if (particle->m_type == ParticleType::SWARMOFFLIES)
 					 {
-						 particle->stop();
 						 nodeA.getAI()->getSoundHandler()->stopSource("Flies");
 					 }
 				 }
@@ -142,17 +141,14 @@ public:
 					 {
 						 if (particle->m_type == ParticleType::FIGHT && !particleFightIsStarted)
 						 {
-							 particle->stop();
+							 particle->setPosition(glm::vec3(nodeB.getPlayer()->getPosition().x, nodeB.getPlayer()->getPosition().y + 1.0f, nodeB.getPlayer()->getPosition().z));
 							 particle->start();
 							 particleFightIsStarted = true;
-							 //particle->update(*nodeB.getCamera());
-							 //particle->render(*nodeB.getCamera());
 						 }
 						 if (particle->m_type == ParticleType::FIGHT)
 						 {
-							 particle->setPosition(glm::vec3(nodeB.getPlayer()->getPosition()));
-							 particle->update(*nodeB.getCamera());
-							 particle->render(*nodeB.getCamera());
+							 //particle->update(*nodeB.getCamera());
+							 //particle->render(*nodeB.getCamera());
 						 }
 					 }
 
@@ -187,7 +183,7 @@ public:
 			 {
 				 if (particle->m_type == ParticleType::FIGHT)
 				 {
-					 particle->stop();
+					// particle->stop();
 				 }
 			 }
 			 break;
@@ -223,7 +219,7 @@ public:
 				 }
 			 }
 			
-			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::HOUSE && nodeA.getAI()->getAntType() == AntType::GUARD)
+			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::HOUSE && (nodeA.getAI()->getAntType() == AntType::GUARD || nodeA.getAI()->getAntType() == AntType::QUEEN))
 			 {
 				 int count = nodeB.getStaticObject()->getInventory()->countItem(ItemType::COOKIE);
 				 if (count > 0)
@@ -316,16 +312,17 @@ public:
 					 nodeA.getPlayer()->setExp(5);
 					 m_level->getHighscore()->addScore(5);
 					 rainDance = true;
+					 nodeA.getPlayer()->setDancing(true);
 				 }
 
-				 soundName = nodeA.getPlayer()->getSourceName(RAIN);
+				/* soundName = nodeA.getPlayer()->getSourceName(RAIN);
 				 if (soundName != "oor")
 				 {
 					 if (!(nodeA.getPlayer()->getSoundHandler()->sourceIsPlaying(soundName)))
 					 {
 						 nodeA.getPlayer()->getSoundHandler()->playSource(soundName);
 					 }
-				 }
+				 }*/
 			 }
 
 		 }

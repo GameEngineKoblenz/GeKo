@@ -33,16 +33,16 @@ public:
 
 	///A method to move forward in view Direction
 	/**Changes the position vector*/
-	void moveForward();
+	virtual void moveForward();
 	///A method to move backwards in relation to view direction
 	/**Changes the position vector*/
-	void moveBackward();
+	virtual void moveBackward();
 	///A method to move sidewards, right
 	/**Changes the position vector*/
-	void moveRight();
+	virtual	void moveRight();
 	///A method to move sidewards, left
 	/**Changes the position vector*/
-	void moveLeft();
+	virtual	void moveLeft();
 
 	///A method to turn left
 	/**Changes the direction vector*/
@@ -82,8 +82,6 @@ public:
 	/**Used for activating/deactivating the sound*/
 	bool checkActiveMoveKeys();
 
-	//Implemented in the specific AI
-	virtual void setFire();
 
 	float getExp();
 	void addExp(float exp);
@@ -95,6 +93,11 @@ public:
 
 	float getLevelThreshold();
 	void setLevelThreshold(float threshold);
+
+	//Implemented in the specific Player
+	virtual void setFire();
+	virtual bool isDancing();
+	virtual void setDancing(bool dancing);
 
 protected:
 

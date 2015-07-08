@@ -7,7 +7,7 @@
 class ObjectObserver : public Observer<AI, Object_Event>, public Observer<AI, Collision_Event>, public Observer<Player, Object_Event>, public Observer<StaticObject, Object_Event>, public Observer<Node, Object_Event>
 {
 public:
-	ObjectObserver(Level* level){ m_level = level; }
+	ObjectObserver(Level* level){ m_level = level; isRaining = false; }
 
 	~ObjectObserver(){}
 
@@ -50,10 +50,9 @@ public:
 			{
 				if (particle->m_type == ParticleType::SWARMOFFLIES)
 				{
+					particle->stop();
 					particle->setPosition(glm::vec3(ai.getPosition()));
 					particle->start();
-					particle->update(*m_level->getActiveScene()->getScenegraph()->getActiveCamera());
-					particle->render(*m_level->getActiveScene()->getScenegraph()->getActiveCamera());
 				}
 			}
 
@@ -65,6 +64,7 @@ public:
 	{
 		std::string name = player.getNodeName();
 		Node* tmp = m_level->getActiveScene()->getScenegraph()->searchNode(name);
+		std::string soundName;
 		std::vector<ParticleSystem*>* ps = m_level->getActiveScene()->getScenegraph()->getParticleSet();
 		switch (event)
 		{
@@ -89,6 +89,30 @@ public:
 
 			break;
 
+		case Object_Event::RAINDANCE:
+			if (!isRaining)
+			{ 
+				player.setExp(10);
+				m_level->getHighscore()->addScore(20);
+				soundName = player.getSourceName(RAIN);
+				if (soundName != "oor")
+				{
+					if (!(player.getSoundHandler()->sourceIsPlaying(soundName)))
+					{
+						player.getSoundHandler()->playSource(soundName);
+					}
+				}
+
+				for (auto particle : *ps)
+				{
+					if (particle->m_type == ParticleType::RAIN)
+					{
+						particle->start();
+						isRaining = true;
+					}
+				}
+			}
+			break;
 		
 
 		case Object_Event::PLAYER_SET_ON_FIRE:
@@ -108,6 +132,7 @@ public:
 		case Object_Event::PLAYER_DIED:
 
 			break;
+
 		}
 	}
 
@@ -123,4 +148,5 @@ public:
 
 protected:
 	Level* m_level;
+	bool isRaining;
 };

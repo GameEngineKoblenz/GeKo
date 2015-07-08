@@ -47,6 +47,87 @@ Geko::Geko(){}
 Geko::~Geko(){
 }
 
+void Geko::moveForward(){
+	if (getStates(States::HEALTH)){
+		m_position.x += m_speed* m_deltaTime *m_viewDirection.x;
+		m_position.y += m_speed* m_deltaTime *m_viewDirection.y;
+		m_position.z += m_speed* m_deltaTime *m_viewDirection.z;
+
+		//std::cout << "Player moveFwd to: x:" << m_position.x << "; z: " << m_position.z << std::endl;
+
+		notify(*this, Object_Event::OBJECT_MOVED);
+		if (m_rainDanceActive)
+		{
+			if (!m_step1)
+			{
+				m_step1 = true;
+			}
+			else if (m_step2 && !m_step3)
+			{
+				m_step3 = true;
+			}
+		}
+	}
+}
+
+void Geko::moveBackward(){
+	if (getStates(States::HEALTH)){
+		m_position.x -= m_speed* m_deltaTime *m_viewDirection.x;
+		m_position.y -= m_speed* m_deltaTime *m_viewDirection.y;
+		m_position.z -= m_speed* m_deltaTime *m_viewDirection.z;
+
+		//std::cout << "Player moveBwd" << std::endl;
+
+		notify(*this, Object_Event::OBJECT_MOVED);
+		if (m_rainDanceActive)
+		{
+			if (m_step1 && !m_step2)
+			{
+				m_step2 = true;
+			}
+			else if (m_step3 && !m_step4)
+			{
+				m_step4 = true;
+			}
+		}
+	}
+}
+
+void Geko::moveLeft(){
+	if (getStates(States::HEALTH)){
+		glm::vec3 directionOrtho = glm::cross(glm::vec3(m_viewDirection), glm::vec3(0, 1, 0));
+		m_position.x -= m_speed* m_deltaTime*directionOrtho.x;
+		m_position.y -= m_speed* m_deltaTime*directionOrtho.y;
+		m_position.z -= m_speed* m_deltaTime*directionOrtho.z;
+
+		//std::cout << "Player moveLeft" << std::endl;
+
+		notify(*this, Object_Event::OBJECT_MOVED);
+	}
+}
+
+void Geko::moveRight(){
+	if (getStates(States::HEALTH)){
+		glm::vec3 directionOrtho = glm::cross(glm::vec3(m_viewDirection), glm::vec3(0, 1, 0));
+		m_position.x += m_speed* m_deltaTime*directionOrtho.x;
+		m_position.y += m_speed* m_deltaTime*directionOrtho.y;
+		m_position.z += m_speed* m_deltaTime*directionOrtho.z;
+
+		//std::cout << "Player moveRight" << std::endl;
+
+		notify(*this, Object_Event::OBJECT_MOVED);
+		if (m_rainDanceActive)
+		{
+			if (m_step4 && !m_step5)
+			{
+				m_step5 = true;
+				notify(*this, Object_Event::RAINDANCE);
+			}
+			
+		}
+	}
+}
+
 void Geko::setFire(){
 	//TODO: Attention! The input calls this method two times, so that the fire uses two branches!
 	if (getStates(States::HEALTH)){
@@ -58,4 +139,14 @@ void Geko::setFire(){
 			//TODO: GUI sagt, dass das Inventar keine Branches hat
 		}
 	}
+}
+
+void Geko::setDancing(bool dancing)
+{
+	m_rainDanceActive = dancing;
+}
+
+bool Geko::isDancing()
+{
+	return m_rainDanceActive;
 }

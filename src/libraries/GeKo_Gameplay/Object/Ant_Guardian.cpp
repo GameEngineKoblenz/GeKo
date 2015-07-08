@@ -9,11 +9,11 @@ Ant_Guardian::Ant_Guardian(){
 
 	m_myNodeName = "NULL";
 
-	m_hunger = 10;
 
-	m_hungerMax = 10;
-	m_health = 10000;
+	m_hungerMax = 8;
+	m_hunger = m_hungerMax;
 	m_healthMax = 10000;
+	m_health = m_healthMax;
 	m_strength = 10;
 	m_hasDied = false;
 

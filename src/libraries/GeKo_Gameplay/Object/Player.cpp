@@ -279,5 +279,7 @@ void Player::setLevelThreshold(float threshold)
 }
 
 
-// Implemented in the specific AI
+// Implemented in the specific Player
 void Player::setFire(){}
+bool Player::isDancing(){ return false; }
+void Player::setDancing(bool dancing){}
