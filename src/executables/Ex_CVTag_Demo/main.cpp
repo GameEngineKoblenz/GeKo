@@ -450,6 +450,24 @@ int main()
 		name.str("");
 	}
 	
+	auto treeStammHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/TreeStamm.obj");
+	auto treeStammGeo = treeStammHandler.get().toGeometry();
+
+	auto treeLeafHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/TreeLeafs.obj");
+	auto treeLeafGeo = treeLeafHandler.get().toGeometry();
+
+	Node testBaum("TestBaum");
+	testBaum.addGeometry(&treeStammGeo);
+	testBaum.addTexture(&texStamm);
+	testBaum.addTranslation(glm::vec3(geko.getPosition()));
+	testBaum.addScale(2.0, 2.0, 2.0);
+
+	Node testLeaf("TestLeaf");
+	testLeaf.addTexture(&texLeaf);
+	testLeaf.addGeometry(&treeLeafGeo);
+	testBaum.addChildrenNode(&testLeaf);
+	testScene.getScenegraph()->getRootNode()->addChildrenNode(&testBaum);
+
 	// ==============================================================
 	// == Object (Coin) =============================================
 	// ==============================================================
@@ -471,13 +489,14 @@ int main()
 	glm::vec3 posSpawn(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 
 	Graph<AStarNode, AStarAlgorithm>* antAfraidGraph = new Graph<AStarNode, AStarAlgorithm>();
-	std::vector<std::vector<glm::vec3>> possFoods;
-	possFoods.push_back(TreeData::forest1);
-	possFoods.push_back(TreeData::forest2);
-	antAfraidGraph->setExampleAntAfraid2(posSpawn, possFoods);
+	std::vector<std::vector<glm::vec3>> posFoods;
+	posFoods.push_back(TreeData::forest1);
+	posFoods.push_back(TreeData::forest2);
+	antAfraidGraph->setExampleAntAfraid2(posSpawn, posFoods);
+	glm::vec3 posAntHome(terrain2.getResolutionX() / 2.0f, 3.0, terrain2.getResolutionY() / 2.0f);
 
 	sfh.generateSource("tst", glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/jingle2.wav");
-	AntHome antHome(posSpawn, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, &texAnt2, &texAnt, &texAnt3, antAfraidGraph, testScene.getScenegraph()->getRootNode());
+	AntHome antHome(posAntHome, &sfh, antGeometry, &soundPlayerObserver, &playerObserver, testScene.getScenegraph()->getRootNode(), posFoods, &terrain2);
 
 	antHome.setGrapHighOnTerrain(&terrain2);
 	antHome.setAntScale(0.5);
