@@ -249,6 +249,8 @@ int main()
 	geko.setSourceName(SECRET, "Secret", RESOURCES_PATH "/Sound/secretfound.wav");
 	geko.setSourceName(CHOP, "Chop", RESOURCES_PATH "/Sound/ChopChop.wav");
 	geko.setSourceName(BATTLEMUSIC, "Battle", RESOURCES_PATH "/Sound/Battle.wav");
+	geko.setSourceName(WIN, "Win", RESOURCES_PATH "/Sound/victorysound.wav");
+	geko.setSourceName(LOSE, "Lose", RESOURCES_PATH "/Sound/losesound.wav");
 	geko.updateSourcesInMap();
 	sfh.setGain("Hintergrund", 0.15f);
 	sfh.disableLooping("Chop");
@@ -258,6 +260,8 @@ int main()
 	sfh.disableLooping("Coin");
 	sfh.disableLooping("Levelup");
 	sfh.disableLooping("Quest");
+	sfh.disableLooping("Win");
+	sfh.disableLooping("Lose");
 	sfh.disableLooping("Item");
 	sfh.disableLooping("Secret");
 	sfh.disableLooping("Battle");
@@ -450,23 +454,23 @@ int main()
 		name.str("");
 	}
 	
-	auto treeStammHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/TreeStamm.obj");
+	/*auto treeStammHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/TreeStamm2.obj");
 	auto treeStammGeo = treeStammHandler.get().toGeometry();
 
-	auto treeLeafHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/TreeLeafs.obj");
+	auto treeLeafHandler = manager.loadStaticMesh(RESOURCES_PATH "/Geometry/TreeLeafs2.obj");
 	auto treeLeafGeo = treeLeafHandler.get().toGeometry();
 
 	Node testBaum("TestBaum");
 	testBaum.addGeometry(&treeStammGeo);
 	testBaum.addTexture(&texStamm);
-	testBaum.addTranslation(glm::vec3(geko.getPosition()));
-	testBaum.addScale(2.0, 2.0, 2.0);
+	testBaum.addTranslation(115, terrain2.getHeight(glm::vec2(115, 60)), 60);
+	testBaum.addScale(4.0, 4.0, 4.0);
 
 	Node testLeaf("TestLeaf");
 	testLeaf.addTexture(&texLeaf);
 	testLeaf.addGeometry(&treeLeafGeo);
 	testBaum.addChildrenNode(&testLeaf);
-	testScene.getScenegraph()->getRootNode()->addChildrenNode(&testBaum);
+	testScene.getScenegraph()->getRootNode()->addChildrenNode(&testBaum);*/
 
 	// ==============================================================
 	// == Object (Coin) =============================================
@@ -605,87 +609,102 @@ int main()
 	sfh.stopSource("Lademusik");
 	sfh.playSource("Hintergrund");
 
+	Counter counter;
+	counter.setTime(60 * 30);
+	counter.start();
+
+
 	while (!glfwWindowShouldClose(testWindow.getWindow()))
 	{
-
-		testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Rotation();
-
-		float currentTime = glfwGetTime();
-		float deltaTime = currentTime - lastTime;
-		lastTime = currentTime;
-
-
-		//===================================================================//
-		//==================Graphics activate =============//
-		//==================================================================//
-
-		renderer.useAntiAliasing(true);
-		renderer.useBloom(true, bloomStrength);
-		renderer.useDoF(true, focusDepth);
-		renderer.useShadowMapping(true, useShadowMode, &slight);
-	/*	if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_R))
+		if (counter.getTime() > 0)
 		{
-			useReflection = true;
-			sfh.playSource("Rain");
+			counter.update();
+
+
+			testScene.getScenegraph()->searchNode("Player")->setIdentityMatrix_Rotation();
+
+			float currentTime = glfwGetTime();
+			float deltaTime = currentTime - lastTime;
+			lastTime = currentTime;
+
+
+			//===================================================================//
+			//==================Graphics activate =============//
+			//==================================================================//
+
+			renderer.useAntiAliasing(true);
+			renderer.useBloom(true, bloomStrength);
+			renderer.useDoF(true, focusDepth);
+			renderer.useShadowMapping(true, useShadowMode, &slight);
+			/*	if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_R))
+				{
+				useReflection = true;
+				sfh.playSource("Rain");
+				}
+				if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_T))
+				{
+				useReflection = false;
+				sfh.stopSource("Rain");
+				}
+				if (useReflection)
+				{
+				renderer.useReflections(true, reflectionStrength);
+				}
+				else{
+				renderer.useReflections(false, reflectionStrength);
+				}*/
+
+			if (sfh.sourceIsPlaying("Rain"))
+			{
+				renderer.useReflections(true, reflectionStrength);
+			}
+
+
+			//===================================================================//
+			//==================Update your Objects per Frame here =============//
+			//==================================================================//
+			collision.update();
+			coinFactory->update();
+			coinFactory2->update();
+			coinFactory3->update();
+			coinFactory4->update();
+			coinFactory5->update();
+			coinFactory6->update();
+
+			//===================================================================//
+			//==================Input and update for the Player==================//
+			//==================================================================//
+
+			geko.update();
+			geko.setDeltaTime(currentTime);
+
+			tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
+
+			viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
+
+			normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
+			rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
+			lengthFromNormal = glm::length(normalFromTerrain);
+			lengthFromUp = glm::length(up);
+			up = glm::normalize(up);
+			dot = glm::dot(normalFromTerrain, up);
+
+			phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
+			phi = phi * (180 / glm::pi<float>());
+
+			if (dot < 0.99)
+				testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
+
+			testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
+			antHome.updateAnts();
+
+			testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
+
 		}
-		if (glfwGetKey(testWindow.getWindow(), GLFW_KEY_T))
+		if (counter.getTime() <= 0)
 		{
-			useReflection = false;
-			sfh.stopSource("Rain");
+				playerGUI.setTimeOver();
 		}
-		if (useReflection)
-		{
-			renderer.useReflections(true, reflectionStrength);
-		}
-		else{
-			renderer.useReflections(false, reflectionStrength);
-		}*/
-
-		if (sfh.sourceIsPlaying("Rain"))
-		{
-			renderer.useReflections(true, reflectionStrength);
-		}
-
-
-		//===================================================================//
-		//==================Update your Objects per Frame here =============//
-		//==================================================================//
-		collision.update();
-		coinFactory->update();
-		coinFactory2->update();
-		coinFactory3->update();
-		coinFactory4->update();
-		coinFactory5->update();
-		coinFactory6->update();
-
-		//===================================================================//
-		//==================Input and update for the Player==================//
-		//==================================================================//
-
-		geko.update();
-		geko.setDeltaTime(currentTime);
-
-		tmpPos = testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition();
-
-		viewDirFromPlayer = glm::normalize(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getViewDirection());
-
-		normalFromTerrain = glm::normalize(terrain2.calculateNormal(tmpPos.x, tmpPos.z));
-		rotateAxis = glm::cross(glm::vec3(normalFromTerrain), up);
-		lengthFromNormal = glm::length(normalFromTerrain);
-		lengthFromUp = glm::length(up);
-		up = glm::normalize(up);
-		dot = glm::dot(normalFromTerrain, up);
-
-		phi = glm::acos(dot / (lengthFromNormal * lengthFromUp));
-		phi = phi * (180 / glm::pi<float>());
-
-		if (dot <0.99)
-			testScene.getScenegraph()->searchNode("Player")->addRotation(-phi, rotateAxis);
-
-		testScene.getScenegraph()->searchNode("Player")->getPlayer()->setPosition(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPosition() + glm::vec4(normalFromTerrain * 0.2f, 1.0));
-		antHome.updateAnts();
-
-		testScene.getScenegraph()->searchNode("Player")->addRotation(testScene.getScenegraph()->searchNode("Player")->getPlayer()->getPhi(), glm::vec3(0, -1, 0));
 		//===================================================================//
 		//==================Render your Objects==============================//
 		//==================================================================//
@@ -700,8 +719,8 @@ int main()
 		slight.m_position = glm::vec4(playerNode.getPlayer()->getPosition().x, slight.m_position.y, playerNode.getPlayer()->getPosition().z, 1.0);
 
 		glfwSwapBuffers(testWindow.getWindow());
-		glfwPollEvents();
-		//std::cout << "R" << slight.m_radius << ", Angle " << slight.m_angle << ", Expo" << slight.m_exponent << std::endl;
+		if (counter.getTime() > 0)
+			glfwPollEvents();
 	}
 
 

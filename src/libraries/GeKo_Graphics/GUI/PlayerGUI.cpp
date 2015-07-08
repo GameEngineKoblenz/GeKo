@@ -1,4 +1,5 @@
 #include "PlayerGUI.h"
+#include <sstream>
 
 PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWidth, const int windowHeight, const int questHeight, const int questWidth, Player* player, QuestHandler* qH, Highscore* score)
 {
@@ -40,12 +41,12 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	exp = m_player->getExp();
 	expMax = m_player->getLevelThreshold();
 
-	GuiElement::ProgressBar *hpBar = new GuiElement::ProgressBar(&hp, &hpMax, 300, glm::fvec4(1.0f, 0.0f, 0.0f, 1.0f));
+	GuiElement::ProgressBar *hpBar = new GuiElement::ProgressBar(&hp, &hpMax, 350, glm::fvec4(1.0f, 0.0f, 0.0f, 1.0f));
 	m_hud->addElement(hpBar);
 	m_hud->addElement(new GuiElement::SameLine());
 	m_hud->addElement(new GuiElement::Text("HP"));
 
-	GuiElement::ProgressBar *expBar = new GuiElement::ProgressBar(&exp, &expMax, 300, glm::fvec4(1.0f, 0.9960784f, 0.9529411f, 1.0f));
+	GuiElement::ProgressBar *expBar = new GuiElement::ProgressBar(&exp, &expMax, 350, glm::fvec4(1.0f, 0.9960784f, 0.9529411f, 1.0f));
 	m_hud->addElement(expBar);
 	m_hud->addElement(new GuiElement::SameLine());
 	m_hud->addElement(new GuiElement::Text("EXP"));
@@ -69,10 +70,17 @@ PlayerGUI::PlayerGUI(const int hudWidth, const int hudHeight, const int windowWi
 	m_hud->addElement(questButton);
 	m_hud->addElement(new GuiElement::SameLine());
 
-	m_hud->addElement(new GuiElement::Text("   Score"));
+	m_hud->addElement(new GuiElement::Text(" Score"));
 	m_hud->addElement(new GuiElement::SameLine());
 	GuiElement::IntBox *scoreBox = new GuiElement::IntBox(&m_highscore, glm::fvec4(1.0f, 1.0f, 1.0f, 1.0f), glm::fvec4(0.7f, 0.7f, 0.7f, 1.0f));
 	m_hud->addElement(scoreBox);
+
+	m_hud->addElement(new GuiElement::SameLine());
+	m_hud->addElement(new GuiElement::Text(" Frames left"));
+	m_hud->addElement(new GuiElement::SameLine());
+	GuiElement::IntBox *framesLeftBox = new GuiElement::IntBox(&m_framesLeft, glm::fvec4(1.0f, 1.0f, 1.0f, 1.0f), glm::fvec4(0.7f, 0.7f, 0.7f, 1.0f));
+	m_hud->addElement(framesLeftBox);
+	m_hud->addElement(new GuiElement::SameLine());
 
 	m_questWindow = new GuiElement::NestedWindow();
 	m_questWindow->setPosition(560, 300);
@@ -184,15 +192,32 @@ void PlayerGUI::update()
 		m_endGameWindow->show();
 		/*m_level->getPlayerGUI()->setTexture((char*)RESOURCES_PATH "/Texture/Cookie_02.png");
 		m_level->getPlayerGUI()->getInventory()->insert(std::pair<std::string, Texture*>(std::string("Cookie"), m_level->getPlayerGUI()->getTextures()->back()));*/
-		m_endGameWindow->addElement(new GuiElement::Text("Your Time is up. \n Congratulations, your Score is"));
-		//TODO: Notify Sound
+		std::stringstream scoreText;
+		scoreText << "Your Time is up. \n Congratulations, your Score is " << m_highscore;
+		m_endGameWindow->addElement(new GuiElement::Text(scoreText.str()));
+
+		std::string soundName = m_player->getSourceName(WIN);
+		if (soundName != "oor")
+		{
+			m_player->getSoundHandler()->playSource(soundName);
+		}
 	}
 
 
 	if (m_player->getHealth() <= 0){
+
+
 		m_endGameWindow->clearElements();
 		m_endGameWindow->show();
-		m_endGameWindow->addElement(new GuiElement::Text("GAME OVER! YOU LOST! :-("));
+		std::stringstream scoreText;
+		scoreText << "GAME OVER! YOU LOST! :-( \n Your Score is " << m_highscore;
+		m_endGameWindow->addElement(new GuiElement::Text(scoreText.str()));
+
+		std::string soundName = m_player->getSourceName(LOSE);
+		if (soundName != "oor")
+		{
+			m_player->getSoundHandler()->playSource(soundName);
+		}
 		//TODO Notify Sound
 	}
 
@@ -206,6 +231,13 @@ void PlayerGUI::update()
 		m_questWindow->toggleVisibility();
 	}
 }
+
+
+void PlayerGUI::receiveFramesLeft(int framesLeft){
+	m_framesLeft = framesLeft;
+}
+
+
 
 std::map<std::string, Texture*>* PlayerGUI::getInventory(){
 	return m_inventoryItems;

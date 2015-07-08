@@ -20,6 +20,8 @@ public:
 
 	///Updates all the information in the GUI
 	void update();
+	void receiveFramesLeft(int framesLeft);
+
 
 	void youWon();
 	void youLost();
@@ -48,6 +50,7 @@ protected:
 	GuiElement::Inventory *m_inventory;
 	std::vector<Texture*> m_textures;
 	int m_highscore;
+	int m_framesLeft;
 
 	bool m_timeOver;
 };
