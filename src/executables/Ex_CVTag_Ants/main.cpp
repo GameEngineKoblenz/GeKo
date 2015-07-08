@@ -166,6 +166,8 @@ int main()
 	particleFire->m_type = ParticleType::FIRE;
 	ParticleSystem* particleFireWork = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_FireworkBlue.xml");
 	particleFireWork->m_type = ParticleType::FIREWORK;
+	ParticleSystem* particleRain = new ParticleSystem(glm::vec3(0, 0, 0), (char*)RESOURCES_PATH "/XML/Effect_Rain.xml");
+	particleFireWork->m_type = ParticleType::RAIN;
 
 	/*Node particleNode("ParticleNode");
 	particleNode.addParticleSystem(particle2);
@@ -212,34 +214,49 @@ int main()
 	playerNode.addTexture(&texGeko);
 
 	geko.setPosition(glm::vec4(terrain2.getResolutionX() / 2.0f + 10.0f, 5.0f, terrain2.getResolutionY() / 2.0f + 10.0f, 1.0));
+
+	playerNode.setCamera(&cam);
+
+	std::cout << "SUCCESS: Load Player" << std::endl;
+
+
+	//===================================================================//
+	//==================Setting up the Sound==================//
+	//==================================================================//
 	sfh.generateSource(glm::vec3(geko.getPosition()), RESOURCES_PATH "/Sound/Rascheln.wav");
 	geko.setSoundHandler(&sfh);
 	geko.setSourceName(FIRESOUND, "Fire", RESOURCES_PATH "/Sound/Feuer_kurz.wav");
 	geko.setSourceName(MOVESOUND, "SpielerFootsteps", RESOURCES_PATH "/Sound/Rascheln.wav");
-	geko.setSourceName(BACKGROUNDMUSIC, "Hintergrund", RESOURCES_PATH "/Sound/cantina.wav");
+	geko.setSourceName(BACKGROUNDMUSIC, "Hintergrund", RESOURCES_PATH "/Sound/Village.wav");
 	geko.setSourceName(FIGHTSOUND, "Kampfsound", RESOURCES_PATH "/Sound/punch.wav");
 	geko.setSourceName(EATSOUND, "Essen", RESOURCES_PATH "/Sound/Munching.wav");
 	geko.setSourceName(QUESTSOUND, "Quest", RESOURCES_PATH "/Sound/jingle.wav");
 	geko.setSourceName(ITEMSOUND, "Item", RESOURCES_PATH "/Sound/itempickup.wav");
 	geko.setSourceName(LEVELUP, "Levelup", RESOURCES_PATH "/Sound/Levelup.wav");
-	//sfh.playSource("Levelup");
+	geko.setSourceName(RAIN, "Rain", RESOURCES_PATH "/Sound/lightrain.wav");
+	geko.setSourceName(COIN, "Coin", RESOURCES_PATH "/Sound/CollectCoin.wav");
+	geko.setSourceName(SECRET, "Secret", RESOURCES_PATH "/Sound/secretfound.wav");
+	geko.setSourceName(CHOP, "Chop", RESOURCES_PATH "/Sound/ChopChop.wav");
+	geko.setSourceName(BATTLEMUSIC, "Battle", RESOURCES_PATH "/Sound/Battle.wav");
 	geko.updateSourcesInMap();
 	sfh.setGain("Hintergrund", 0.15f);
+	sfh.disableLooping("Chop");
+	sfh.setGain("Chop", 7.0f);
+	sfh.setPitch("Chop", 2.0f);
 	sfh.disableLooping("Essen");
+	sfh.disableLooping("Coin");
 	sfh.disableLooping("Levelup");
 	sfh.disableLooping("Quest");
 	sfh.disableLooping("Item");
-	sfh.disableLooping("Kampfsound");
-
+	sfh.disableLooping("Secret");
+	sfh.disableLooping("Battle");
 	sfh.setGain("Quest", 10.0);
 	sfh.setPitch("Quest", 4.0);
 	sfh.setGain("Kampfsound", 0.8f);
 	sfh.updateListenerPosition(glm::vec3(geko.getPosition()));
 	sfh.updateSourcePosition("Lademusik", glm::vec3(geko.getPosition()));
-	//sfh.generateSource("Feuer",posFood, RESOURCES_PATH "/Sound/Feuer kurz.wav");
-	playerNode.setCamera(&cam);
 
-	std::cout << "SUCCESS: Load Player" << std::endl;
+	std::cout << "SUCCESS: Load Sound" << std::endl;
 
 	//===================================================================//
 	//==================Setting up the Level and Scene==================//
@@ -543,7 +560,7 @@ int main()
 	//================== Setting up the playerGUI ========================//
 	//==================================================================//
 
-	PlayerGUI playerGUI(HUD_WIDTH, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler(), testLevel.getHighscore());
+	PlayerGUI playerGUI(HUD_WIDTH+50, HUD_HEIGHT, WINDOW_HEIGHT, WINDOW_WIDTH, QUEST_HEIGHT, QUEST_WIDTH, playerNode.getPlayer(), testLevel.getQuestHandler(), testLevel.getHighscore());
 	testLevel.setGUI(&playerGUI);
 
 	std::cout << "SUCCESS: Load GUI" << std::endl;
@@ -567,32 +584,38 @@ int main()
 	float dot;
 	
 	Counter counter;
-	counter.setTime(60 * 30);
+	counter.setTime(60* 30);
 	bool fireWorkStarted = false;
+	bool isRaining = false;
 
 
 	sfh.stopSource("Lademusik");
 	sfh.playSource("Hintergrund");
 
-	std::vector<ParticleSystem*>* ps = testLevel.getActiveScene()->getScenegraph()->getParticleSet();
-	for (auto particle : *ps)
-	{
-		if (particle->m_type == ParticleType::FIREWORK)
-		{
-			particle->setPosition(glm::vec3(geko.getPosition()));
-			particle->start();
-			particle->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-			particle->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-		}
-	}
+	//std::vector<ParticleSystem*>* ps = testLevel.getActiveScene()->getScenegraph()->getParticleSet();
+	//for (auto particle : *ps)
+	//{
+	//	if (particle->m_type == ParticleType::FIREWORK)
+	//	{
+	//		particle->setPosition(glm::vec3(geko.getPosition()));
+	//		particle->start();
+	//		particle->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+	//		particle->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+	//	}
+	//}
 
 	counter.start();
+	sfh.playSource("Rain");
 	while (!glfwWindowShouldClose(testWindow.getWindow()))
 	{
 
 		if (counter.getTime() > 0)
 		{
 			counter.update();
+			if (!geko.getStates(States::HEALTH)){
+			
+				counter.end();
+			}
 
 		if (geko.getStates(States::HEALTH)){
 			//===================================================================//
@@ -652,12 +675,40 @@ int main()
 			if (!fireWorkStarted){
 				fireWorkStarted = true;
 				playerGUI.setTimeOver();
-				particleFire->setPosition(glm::vec3(geko.getPosition()));
-				particleFire->start();
-				particleFire->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
-				particleFire->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+				particleFireWork->setPosition(glm::vec3(geko.getPosition()));
+				particleFireWork->start();
+				particleFireWork->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+				particleFireWork->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
 			}
 		}
+		/*if (((int)glfwGetTime() % 7) < 1 && !fireWorkStarted && counter.getTime() <= 0){
+			playerGUI.setTimeOver();
+
+			fireWorkStarted = true;
+
+			particleFireWork->setPosition(glm::vec3(geko.getPosition()));
+
+			particleFireWork->start();
+			particleFireWork->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+			particleFireWork->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+
+		}
+		else if (((int)glfwGetTime() % 5) > 3 && fireWorkStarted && counter.getTime() <= 0){
+			fireWorkStarted = false;
+			particleFireWork->stop();
+		}*/
+		if (sfh.sourceIsPlaying("Rain"))
+		{
+			if (!isRaining){
+				//renderer.useReflections(true, reflectionStrength);
+				isRaining = true;
+				particleRain->setPosition(glm::vec3(geko.getPosition()));
+				particleRain->start();
+				particleRain->update(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+				particleRain->render(*testLevel.getActiveScene()->getScenegraph()->getActiveCamera());
+			}
+		}
+		playerGUI.receiveFramesLeft(counter.getTime());
 		playerGUI.update();
 		renderer.renderScene(testScene, testWindow);
 		renderer.renderGUI(*playerGUI.getHUD(), testWindow);
