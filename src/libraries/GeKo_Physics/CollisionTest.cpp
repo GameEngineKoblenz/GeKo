@@ -57,6 +57,12 @@ void CollisionTest::update()
 				else if (objects.at(i)->getNodeName() == "Plane"){  }
 				//If it is not the same object...
 				else if(true){
+					if (i == 33)
+					{
+						if (j == 34)
+							int p = 0;
+					}
+
 					for (int k = 0; k < objects.at(i)->getBoundingList()->size(); k++)
 					{
 						bool collisionBefore = objects.at(i)->getBoundingList()->at(k)->getCollisionDetected();
@@ -71,23 +77,23 @@ void CollisionTest::update()
 								notify(*objects.at(i), Collision_Event::PLANE_COLLISION);
 							}
 							
-							else if (objects.at(i)->getType() == ClassType::AI & objects.at(j)->getType() == ClassType::PLAYER)
+							if (objects.at(i)->getType() == ClassType::AI & objects.at(j)->getType() == ClassType::PLAYER)
 							{
 								
 								notify(*objects.at(i), *objects.at(j), Collision_Event::COLLISION_KI_PLAYER);
 								notify(*objects.at(i), *objects.at(j), Collision_Event::COLLISION_AI_FIGHT_PLAYER);
 							}
 
-							else if (objects.at(i)->getType() == ClassType::AI & objects.at(j)->getType() == ClassType::STATIC)
+							if (objects.at(i)->getType() == ClassType::AI & objects.at(j)->getType() == ClassType::STATIC)
 							{
 								notify(*objects.at(i), *objects.at(j), Collision_Event::AI_STATIC_COLLISION);
 							}
-							else if (objects.at(i)->getType() == ClassType::PLAYER & objects.at(j)->getType() == ClassType::STATIC)
+							if (objects.at(i)->getType() == ClassType::PLAYER & objects.at(j)->getType() == ClassType::STATIC)
 							{
 								notify(*objects.at(i), *objects.at(j), Collision_Event::PLAYER_STATIC_COLLISION);
 							}
 
-							else if (objects.at(i)->getType() == ClassType::PLAYER & objects.at(j)->getType() == ClassType::AI)
+							 if (objects.at(i)->getType() == ClassType::PLAYER & objects.at(j)->getType() == ClassType::AI)
 							{
 								notify(*objects.at(i), Collision_Event::COLLISION_DETECTED);
 							}

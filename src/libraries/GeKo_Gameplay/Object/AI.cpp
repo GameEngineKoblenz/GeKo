@@ -262,7 +262,8 @@ void AI::move(){
 		//TODO: Update rotation of the geometry
 		//m_phi to the observer
 
-		glm::vec2 targetDirection = glm::vec2(m_target->getPosition().x - m_position.x, m_target->getPosition().z - m_position.z);
+		//glm::vec2 targetDirection = glm::vec2(m_target->getPosition().x - m_position.x, m_target->getPosition().z - m_position.z);
+		glm::vec2 targetDirection = glm::vec2(m_nextTarget->getPosition().x - m_position.x, m_nextTarget->getPosition().z - m_position.z);
 
 		targetDirection = glm::normalize(targetDirection);
 
@@ -285,7 +286,7 @@ void AI::move(){
 			}
 
 			notify(*this, Object_Event::OBJECT_ROTATED);
-			m_viewDirection = glm::normalize(glm::vec4(m_target->getPosition().x - m_position.x, 0.0, m_target->getPosition().z - m_position.z, 0.0));
+			m_viewDirection = glm::normalize(glm::vec4(m_nextTarget->getPosition().x - m_position.x, 0.0, m_nextTarget->getPosition().z - m_position.z, 0.0));
 			int i = 0;
 		}
 
