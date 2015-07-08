@@ -37,6 +37,8 @@ public:
 				 if (particle->m_type == ParticleType::FIGHT)
 				 {
 					// particle->stop();
+					 particleFightIsStarted = false;
+
 				 }
 			 }
 			 break;
@@ -66,6 +68,7 @@ public:
 			 if (!nodeA.getAI()->getStates(States::HEALTH))
 			 {
 				 nodeB.getPlayer()->eat();
+				 particleFightIsStarted = false;
 
 				 AntType t = nodeA.getAI()->getAntType();
 				 if (t == AntType::WORKER){
@@ -142,6 +145,7 @@ public:
 						 if (particle->m_type == ParticleType::FIGHT && !particleFightIsStarted)
 						 {
 							 particle->setPosition(glm::vec3(nodeB.getPlayer()->getPosition().x, nodeB.getPlayer()->getPosition().y + 1.0f, nodeB.getPlayer()->getPosition().z));
+							 particle->stop();
 							 particle->start();
 							 particleFightIsStarted = true;
 						 }
@@ -184,6 +188,7 @@ public:
 				 if (particle->m_type == ParticleType::FIGHT)
 				 {
 					// particle->stop();
+					 particleFightIsStarted = false;
 				 }
 			 }
 			 break;
@@ -309,7 +314,6 @@ public:
 			 if (nodeB.getStaticObject()->getObjectType() == ObjectType::RAIN)
 			 {
 				 if (!rainDance){
-					 nodeA.getPlayer()->setExp(5);
 					 m_level->getHighscore()->addScore(5);
 					 rainDance = true;
 					 nodeA.getPlayer()->setDancing(true);
