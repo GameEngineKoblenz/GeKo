@@ -199,7 +199,9 @@ void PlayerGUI::update()
 		std::string soundName = m_player->getSourceName(WIN);
 		if (soundName != "oor")
 		{
-			m_player->getSoundHandler()->playSource(soundName);
+			if (!m_player->getSoundHandler()->sourceIsPlaying(soundName)){
+				m_player->getSoundHandler()->playSource(soundName);
+			}
 		}
 	}
 
@@ -216,7 +218,9 @@ void PlayerGUI::update()
 		std::string soundName = m_player->getSourceName(LOSE);
 		if (soundName != "oor")
 		{
-			m_player->getSoundHandler()->playSource(soundName);
+			if (!m_player->getSoundHandler()->sourceIsPlaying(soundName)){
+				m_player->getSoundHandler()->playSource(soundName);
+			}
 		}
 		//TODO Notify Sound
 	}

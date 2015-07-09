@@ -240,6 +240,7 @@ int main()
 	geko.setSourceName(MOVESOUND, "SpielerFootsteps", RESOURCES_PATH "/Sound/Rascheln.wav");
 	geko.setSourceName(BACKGROUNDMUSIC, "Hintergrund", RESOURCES_PATH "/Sound/Village.wav");
 	geko.setSourceName(FIGHTSOUND, "Kampfsound", RESOURCES_PATH "/Sound/punch.wav");
+	geko.setSourceName(BATTLEMUSIC, "Battlemusic", RESOURCES_PATH "/Sound/Battle.wav");
 	geko.setSourceName(EATSOUND, "Essen", RESOURCES_PATH "/Sound/Munching.wav");
 	geko.setSourceName(QUESTSOUND, "Quest", RESOURCES_PATH "/Sound/jingle.wav");
 	geko.setSourceName(ITEMSOUND, "Item", RESOURCES_PATH "/Sound/itempickup.wav");
@@ -265,11 +266,15 @@ int main()
 	sfh.disableLooping("Item");
 	sfh.disableLooping("Secret");
 	sfh.disableLooping("Battle");
-	sfh.setGain("Quest", 10.0);
-	sfh.setPitch("Quest", 4.0);
+	sfh.setGain("Quest", 10.0f);
+	sfh.setPitch("Quest", 4.0f);
 	sfh.setGain("Kampfsound", 0.8f);
+	sfh.disableLooping("Battlemusic");
+
 	sfh.updateListenerPosition(glm::vec3(geko.getPosition()));
 	sfh.updateSourcePosition("Lademusik", glm::vec3(geko.getPosition()));
+
+	sfh.playSource("Hintergrund");
 
 	//===================================================================//
 	//==================Setting up the Level and Scene==================//
@@ -321,6 +326,12 @@ int main()
 	geko.addObserver(&playerObserver);
 	geko.addObserver(&scoreObserver);
 	geko.addObserver(&soundPlayerObserver);
+
+	// ==============================================================
+	// == Object (Rainsign) =========================================
+	// ==============================================================
+
+	sfh.stopSource("Lademusik");
 
 
 	// ==============================================================
