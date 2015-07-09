@@ -106,7 +106,7 @@ void SoundFileHandler::generateSource(ALfloat position[3], const char *filepath)
 		{
 			alSourcef(m_sources[m_numberOfSources], AL_PITCH, 1.0);
 		}
-		alSourcef(m_sources[m_numberOfSources], AL_GAIN, 1.0);
+		alSourcef(m_sources[m_numberOfSources], AL_GAIN, 0.5);
 		alSourcefv(m_sources[m_numberOfSources], AL_POSITION, position);
 		alSourcefv(m_sources[m_numberOfSources], AL_VELOCITY, vel);
 		alSourcei(m_sources[m_numberOfSources], AL_LOOPING, AL_TRUE);
@@ -175,7 +175,7 @@ void SoundFileHandler::generateSource(std::string name, ALfloat position[3], con
 			{
 				alSourcef(m_sources[m_numberOfSources], AL_PITCH, 1.0);
 			}
-			alSourcef(m_sources[m_numberOfSources], AL_GAIN, 1.0);
+			alSourcef(m_sources[m_numberOfSources], AL_GAIN, 0.5);
 			alSourcefv(m_sources[m_numberOfSources], AL_POSITION, position);
 			alSourcefv(m_sources[m_numberOfSources], AL_VELOCITY, vel);
 			alSourcei(m_sources[m_numberOfSources], AL_LOOPING, AL_TRUE);
@@ -222,12 +222,16 @@ void SoundFileHandler::setPitch(std::string name, float f){
 }
 
 void SoundFileHandler::setGain(int i, float f){
+	if (f <= 0.0f)
+		alSourcef(m_sources[i], AL_GAIN, 0.0f);
 	alSourcef(m_sources[i], AL_GAIN, f);
 }
 
 void SoundFileHandler::setGain(std::string name, float f){
 	try {
 		int i = m_sourceMap.at(name);
+		if (f <= 0.0f)
+			alSourcef(m_sources[i], AL_GAIN, 0.0f);
 		alSourcef(m_sources[i], AL_GAIN, f);
 
 	}
