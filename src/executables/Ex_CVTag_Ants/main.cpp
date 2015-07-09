@@ -35,7 +35,6 @@
 #include <GeKo_Gameplay/Observer/HighscoreObserver.h>
 
 #include <GeKo_Gameplay/Questsystem/QuestHandler_CVTag.h>
-#include <Geko_Gameplay/Questsystem/Counter.h>
 
 #include <GeKo_Gameplay/Object/AntHome.h>
 
